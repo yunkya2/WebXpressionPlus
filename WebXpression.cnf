@@ -1,0 +1,48 @@
+#	WebXpression.cnf
+#		'#' で始まる行はコメントです
+#		[] 内はデフォルト値です
+
+# ver0.42 で追加された項目
+check-local-link	0	# HTML読み込み時にリンク先のローカルファイルが
+				# 存在するかどうかチェックする	0:しない [1]:する
+
+
+# 以下は ver0.40 と共通です
+hold-online	1	# 通信中に画面更新をするか	0:する
+			#				1:しない（68000機では1を推奨）
+color-back		26,26,26	# 背景色 (r,g,b)
+#color-back		0,6,0	# 背景色 (r,g,b)
+color-str		0,0,1		# 文字色
+#color-str		31,31,31	# 文字色
+color-link		31,0,0		# リンク色_
+color-fixed-back	20,20,20	# 固定部背景色
+color-fixed-highlight	31,31,31	# 固定部ハイライト色
+color-fixed-str		0,0,1		# 固定部文字色
+color-mode		1	# スクロール部の色を [0]:WebXpression.cnf で指定された色に
+				#		      1 :HTML 中で指定された色に
+
+cache-image	4	# メモリ上にキャッシュするイメージ数	[4]
+image-compress	1	# イメージを	 0 :そのままの大きさで表示する
+			#		[1]:1/2に圧縮して表示する
+image-quality	0	# イメージ1/2圧縮において[0]:速度を優先する（単に間引く）
+			#			  1 :画質を優先する（色の平均を取る）
+refresh-rate	4	# イメージを何枚読む毎に画面を更新するか [4]
+webcache-save	4	# HTML を webcache-save 回読むごとに WebCache.env を保存する [4]
+history-max	64	# 両クリックで戻る事のできる回数 [32]
+
+key-repeat-1st	30	# 最初にキーリピートするまでの時間（単位：垂直同期）	[30]
+key-repeat-2nd	5	# ２回目以降キーリピートするまでの時間			[5]
+
+text-editor	"ED.X"		# [SHIFT]+[F1] で起動するテキストエディタ
+#text-editor	"ED.R -n%d"	# ED.R の場合
+#text-editor	"em.x -g%d"	# em.x の場合
+
+
+#	ここから先は内部構造を理解した上で編集して下さい
+
+line-table-size		4096	# 行頭リストのサイズ（単位・行）	[4096]
+link-table-size		1024	# リンクテーブルのサイズ		[1024]
+link-table-buffer-size	32768	# リンクテーブルバッファのサイズ	[32768]
+image-table-size	1024	# イメージテーブルのサイズ		[1024]
+anchor-table-size	1024	# アンカーテーブルのサイズ		[1024]
+
