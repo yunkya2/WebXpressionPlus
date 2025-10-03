@@ -1,15 +1,15 @@
 /* Config.h */
 
-#ifdef GLOBAL_DEFINE		/* ƒOƒ[ƒoƒ‹•Ï”‚Ì’è‹`‚ÆéŒ¾‚ğ‚P‚Â‚É‚Ü‚Æ‚ß‚éƒeƒN */
-#define Extern			/* Extern ‚ğƒkƒ‹•¶š—ñ‚É’uŠ· */
+#ifdef GLOBAL_DEFINE		/* ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã®å®šç¾©ã¨å®£è¨€ã‚’ï¼‘ã¤ã«ã¾ã¨ã‚ã‚‹ãƒ†ã‚¯ */
+#define Extern			/* Extern ã‚’ãƒŒãƒ«æ–‡å­—åˆ—ã«ç½®æ› */
 #else
-#define Extern extern		/* Extern ‚ğ extern ‚É’uŠ· */
+#define Extern extern		/* Extern ã‚’ extern ã«ç½®æ› */
 #endif
 
 
-/* ƒOƒ[ƒoƒ‹•Ï” */
+/* ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•° */
 
-/* WebCache.cnf ‚Åİ’è‚·‚é’l */
+/* WebCache.cnf ã§è¨­å®šã™ã‚‹å€¤ */
 Extern unsigned char check_local_link;
 Extern unsigned char hold_online;
 Extern unsigned char image_compress;
@@ -30,5 +30,5 @@ Extern int anchor_table_size;
 Extern char text_editor[64];
 
 
-/* ŠÖ”ƒvƒƒgƒ^ƒCƒvéŒ¾ */
+/* é–¢æ•°ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ */
 int InitConfig (char *);

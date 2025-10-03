@@ -56,7 +56,7 @@ func_tag FuncTag[]=
 {
 	TagBr,
 	TagA,
-	Tag_A,			/* •Â‚¶‚éƒ^ƒO‚Í Tag_A ‚Ì‚æ‚¤‚É•\‹L‚µ‚Æ‚«‚Ü‚· */
+	Tag_A,			/* é–‰ã˜ã‚‹ã‚¿ã‚°ã¯ Tag_A ã®ã‚ˆã†ã«è¡¨è¨˜ã—ã¨ãã¾ã™ */
 	TagImg,
 	TagFrameset,
 	TagFrame,

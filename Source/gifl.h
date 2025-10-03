@@ -1,6 +1,6 @@
 /* gifl.h */
 
-/* ƒIƒŠƒWƒiƒ‹‚Ì struct.hiƒRƒƒ“ƒg by Mitsukyj */
+/* ã‚ªãƒªã‚¸ãƒŠãƒ«ã® struct.hï¼ˆã‚³ãƒ¡ãƒ³ãƒˆ by Mitsukyï¼‰ */
 
 typedef struct {
 	char	*addr;

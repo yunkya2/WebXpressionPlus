@@ -1,7 +1,7 @@
 /* Compress.h */
 
 
-/* ŠÖ”ƒvƒƒgƒ^ƒCƒvéŒ¾ */
+/* é–¢æ•°ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ */
 void CompressImageHS (void *, void *, unsigned short, unsigned short);
 void CompressImageHQ (void *, void *, unsigned short, unsigned short);
 void CompressImage256HS (unsigned short *, unsigned char *,

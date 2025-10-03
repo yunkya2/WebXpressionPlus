@@ -1,6 +1,6 @@
 /* MpuCache.h */
 
-/* ŠÖ”ƒvƒƒgƒ^ƒCƒvéŒ¾ */
+/* é–¢æ•°ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ */
 int GetMpuType (void);
 int GetMpuCacheMode (void);
 void FlushMpuCache (void);

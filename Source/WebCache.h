@@ -1,26 +1,26 @@
 /* WebCache.h */
 
-/* WCExist �̕Ԃ�l */
+/* WCExist の返り値 */
 enum {
-	WC_NON = 0,		/* �L���b�V���ɑ��݂��Ȃ� */
-	WC_INCACHE,		/* �V    �ɑ��݂��A�N���㏉�߂ẴA�N�Z�X */
-	WC_INCACHE2,		/* �V    �ɑ��݂��A�N����P��ȏ�A�N�Z�X���Ă��� */
-	WC_LOCAL		/* ���[�J���t�@�C���Ƃ��đ��݂���ifile:// ���j */
+	WC_NON = 0,		/* キャッシュに存在しない */
+	WC_INCACHE,		/* 〃    に存在し、起動後初めてのアクセス */
+	WC_INCACHE2,		/* 〃    に存在し、起動後１回以上アクセスしている */
+	WC_LOCAL		/* ローカルファイルとして存在する（file:// 時） */
 };
 
 
-#ifdef GLOBAL_DEFINE		/* �O���[�o���ϐ��̒�`�Ɛ錾���P�ɂ܂Ƃ߂�e�N */
-#define Extern			/* Extern ���k��������ɒu�� */
+#ifdef GLOBAL_DEFINE		/* グローバル変数の定義と宣言を１つにまとめるテク */
+#define Extern			/* Extern をヌル文字列に置換 */
 #else
-#define Extern extern		/* Extern �� extern �ɒu�� */
+#define Extern extern		/* Extern を extern に置換 */
 #endif
 
 
-/* �O���[�o���ϐ� */
+/* グローバル変数 */
 
 
 
-/* �֐��v���g�^�C�v�錾 */
+/* 関数プロトタイプ宣言 */
 int WCInit (void);
 int WCExist (HTTPFILE *, char *);
 int WCSetAccess (HTTPFILE *);

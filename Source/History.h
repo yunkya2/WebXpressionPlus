@@ -1,7 +1,7 @@
 /* History.h */
 
 
-/* ŠÖ”ƒvƒƒgƒ^ƒCƒvéŒ¾ */
+/* é–¢æ•°ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ */
 int InitHistory (void);
 void AddHistory (char *, char *, int);
 char *BeforeHistory (char *, int *);

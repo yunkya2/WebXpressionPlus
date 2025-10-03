@@ -18,21 +18,21 @@ extern unsigned char check_local_link;
 #include "WebCache.h"
 
 
-/* URL ‚Æƒeƒ“ƒ|ƒ‰ƒŠƒtƒ@ƒCƒ‹–¼‚Ì‘Î‰\‘¢‘Ì */
+/* URL ã¨ãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚¡ã‚¤ãƒ«åã®å¯¾å¿œæ§‹é€ ä½“ */
 typedef struct _temptable {
-	struct _temptable *next;	/* •Ğ•ûŒüƒŠƒXƒg */
-	char hash;		/* ƒnƒbƒVƒ…’l */
+	struct _temptable *next;	/* ç‰‡æ–¹å‘ãƒªã‚¹ãƒˆ */
+	char hash;		/* ãƒãƒƒã‚·ãƒ¥å€¤ */
 	char type;		/* Content-Type */
-	int number;		/* ƒeƒ“ƒ|ƒ‰ƒŠƒtƒ@ƒCƒ‹–¼i‚Ì”’l•”j */
-	int length;		/* ƒtƒ@ƒCƒ‹ƒTƒCƒY */
+	int number;		/* ãƒ†ãƒ³ãƒãƒ©ãƒªãƒ•ã‚¡ã‚¤ãƒ«åï¼ˆã®æ•°å€¤éƒ¨ï¼‰ */
+	int length;		/* ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚º */
 	short year;		/* 0...32767 */
 	char mon;		/* 1...12 */
 	char day;		/* 1...31 */
 	char hour;		/* 0...23 */
 	char min;		/* 0...59 */
 	char sec;		/* 0...59 */
-	char access;		/* ƒAƒNƒZƒXƒtƒ‰ƒO */
-	char url[0];		/* urliGCC ‚ÉˆË‘¶‚µ‚½•\‹L‚Å‚ ‚é‚±‚Æ‚É’ˆÓj */
+	char access;		/* ã‚¢ã‚¯ã‚»ã‚¹ãƒ•ãƒ©ã‚° */
+	char url[0];		/* urlï¼ˆGCC ã«ä¾å­˜ã—ãŸè¡¨è¨˜ã§ã‚ã‚‹ã“ã¨ã«æ³¨æ„ï¼‰ */
 } TEMPTABLE;
 
 
@@ -51,23 +51,23 @@ static char *ext_type_str[] =
 
 
 static TEMPTABLE *tt_top = NULL, *tt_end = NULL;
-static int cache_sum = 0;	/* Œ»İƒLƒƒƒbƒVƒ…‚µ‚Ä‚¢‚éƒtƒ@ƒCƒ‹” */
-static int abs_max = 0;		/* Cxxxxxxx ‚ÌÅ‘å’l+1 */
-static int abs_min = -1;	/* Cxxxxxxx ‚ÌÅ¬’l */
-static char cachedir[256];	/* ŠÂ‹«•Ï” WEBCACHE */
-static char cache_changed;	/* ƒLƒƒƒbƒVƒ…‚Ì“à—e‚ğ‚P‰ñ‚Å‚à•ÏX‚µ‚½‚©H */
+static int cache_sum = 0;	/* ç¾åœ¨ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã—ã¦ã„ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«æ•° */
+static int abs_max = 0;		/* Cxxxxxxx ã®æœ€å¤§å€¤+1 */
+static int abs_min = -1;	/* Cxxxxxxx ã®æœ€å°å€¤ */
+static char cachedir[256];	/* ç’°å¢ƒå¤‰æ•° WEBCACHE */
+static char cache_changed;	/* ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã®å†…å®¹ã‚’ï¼‘å›ã§ã‚‚å¤‰æ›´ã—ãŸã‹ï¼Ÿ */
 
 
-/* url ‚©‚çƒnƒbƒVƒ…’l‚ğ‹‚ß‚é */
-/* —v‚·‚é‚É•¶š—ñ‚©‚çˆêˆÓ‚È”’l‚ª“¾‚ç‚ê‚ê‚Î‚¢‚¢‚Ì‚ÅŠÈ’P‚ÈƒAƒ‹ƒSƒŠƒYƒ€‚Å */
+/* url ã‹ã‚‰ãƒãƒƒã‚·ãƒ¥å€¤ã‚’æ±‚ã‚ã‚‹ */
+/* è¦ã™ã‚‹ã«æ–‡å­—åˆ—ã‹ã‚‰ä¸€æ„ãªæ•°å€¤ãŒå¾—ã‚‰ã‚Œã‚Œã°ã„ã„ã®ã§ç°¡å˜ãªã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã§ */
 static char Url2Hash (char *url)
 {
 	char c = 0, t, *p = url;
 
 	while (t = *p++) {
-		if (t == '#')	/* anchor ‚Í–³‹ */
+		if (t == '#')	/* anchor ã¯ç„¡è¦– */
 			break;
-		if ((t >= 'A') && (t <= 'Z'))	/* ”O‚Ì‚½‚ß‘å•¶š‰» */
+		if ((t >= 'A') && (t <= 'Z'))	/* å¿µã®ãŸã‚å¤§æ–‡å­—åŒ– */
 			t |= 0x20;
 		c ^= t;		/* xor */
 	}
@@ -77,10 +77,10 @@ static char Url2Hash (char *url)
 
 
 /*
-   “¯ˆê‚Ì URL ‚Ìƒtƒ@ƒCƒ‹‚©‚Ç‚¤‚©’²‚×‚é
-   ƒAƒ“ƒJ[ '#' ˆÈ~‚Í–³‹‚·‚é‚Æ‚±‚ë‚ª strcmp ‚Æˆá‚¤
-   "http://www.mankai.co.jp/index.html" ‚Æ
-   "http://www.mankai.co.jp/index.html#whatsnew" ‚ğ“¯ˆê‚Æ‚İ‚È‚·‚½‚ß
+   åŒä¸€ã® URL ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã©ã†ã‹èª¿ã¹ã‚‹
+   ã‚¢ãƒ³ã‚«ãƒ¼ '#' ä»¥é™ã¯ç„¡è¦–ã™ã‚‹ã¨ã“ã‚ãŒ strcmp ã¨é•ã†
+   "http://www.mankai.co.jp/index.html" ã¨
+   "http://www.mankai.co.jp/index.html#whatsnew" ã‚’åŒä¸€ã¨ã¿ãªã™ãŸã‚
  */
 static int IsSameUrlFile (char *url1, char *url2)
 {
@@ -88,7 +88,7 @@ static int IsSameUrlFile (char *url1, char *url2)
 	char *p1 = url1, *p2 = url2;
 
 	while (c = *p1++) {
-		if (c == '#')	/* url1 ‚ÌƒAƒ“ƒJ[‚É’B‚µ‚½ */
+		if (c == '#')	/* url1 ã®ã‚¢ãƒ³ã‚«ãƒ¼ã«é”ã—ãŸ */
 			return (0);
 		if (c != *p2++) {
 			if (*(p2 - 1) == '#')
@@ -97,26 +97,26 @@ static int IsSameUrlFile (char *url1, char *url2)
 				return (!0);
 		}
 	}
-    /* url1 ‚Ì––”ö‚É’B‚µ‚½ */
+    /* url1 ã®æœ«å°¾ã«é”ã—ãŸ */
 	c2 = *p2++;
 	if ((c2) && (c2 != '#'))
-		return (!0);	/* ‚±‚Ì“_‚Å url2 ‚Ì––”ö‚Å‚È‚­AƒAƒ“ƒJ[‚Å‚à‚È‚¢ê‡ */
+		return (!0);	/* ã“ã®æ™‚ç‚¹ã§ url2 ã®æœ«å°¾ã§ãªãã€ã‚¢ãƒ³ã‚«ãƒ¼ã§ã‚‚ãªã„å ´åˆ */
 	return (0);
 }
 
 
-/* ƒm[ƒh—p‚Ìƒƒ‚ƒŠ‚ğŠm•Û */
+/* ãƒãƒ¼ãƒ‰ç”¨ã®ãƒ¡ãƒ¢ãƒªã‚’ç¢ºä¿ */
 static TEMPTABLE *TTAlloc (char *url)
 {
 	return (malloc (sizeof (TEMPTABLE) + strlen (url) + 1));
 }
 
 
-/* ƒm[ƒh‚ğƒŠƒXƒg‚Ì––”ö‚É‚P‚Â’Ç‰Á */
+/* ãƒãƒ¼ãƒ‰ã‚’ãƒªã‚¹ãƒˆã®æœ«å°¾ã«ï¼‘ã¤è¿½åŠ  */
 static void TTInsert (TEMPTABLE * tt)
 {
 	if (tt_end == NULL) {
-	    /* ƒm[ƒh‚ª‚P‚Â‚à‚È‚¢ê‡ */
+	    /* ãƒãƒ¼ãƒ‰ãŒï¼‘ã¤ã‚‚ãªã„å ´åˆ */
 		tt_top = tt;
 	} else {
 		tt_end->next = tt;
@@ -127,22 +127,22 @@ static void TTInsert (TEMPTABLE * tt)
 }
 
 
-/* ƒm[ƒh‚ğ‚P‚Âíœ */
+/* ãƒãƒ¼ãƒ‰ã‚’ï¼‘ã¤å‰Šé™¤ */
 static void TTDelete (TEMPTABLE * tt, TEMPTABLE * tt_b)
 {
 	if (tt->next == NULL) {
 		if (tt == tt_top) {
-		    /* ‚P‚Â‚µ‚©‚È‚¢ƒm[ƒh‚ğíœ‚·‚éê‡ */
+		    /* ï¼‘ã¤ã—ã‹ãªã„ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ã™ã‚‹å ´åˆ */
 			tt_top = NULL;
 			tt_end = NULL;
 		} else {
-		    /* ––”ö‚Ìƒm[ƒh‚Ìê‡ */
+		    /* æœ«å°¾ã®ãƒãƒ¼ãƒ‰ã®å ´åˆ */
 			tt_end = tt_b;
 			tt_end->next = NULL;
 		}
 	} else {
 		if (tt == tt_top) {
-		    /* æ“ª‚Ìƒm[ƒh‚ğíœ‚·‚éê‡ */
+		    /* å…ˆé ­ã®ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ã™ã‚‹å ´åˆ */
 			tt_top = tt->next;
 		} else {
 			tt_b->next = tt->next;
@@ -178,7 +178,7 @@ int WCInit (void)
 			TEMPTABLE *tt;
 			char c;
 
-		    /* WebCache.env ‚Í³í‚Èƒtƒ@ƒCƒ‹‚¾‚ÆM—p‚µ‚«‚Á‚Ä‚¢‚Ü‚·iŠ¾j */
+		    /* WebCache.env ã¯æ­£å¸¸ãªãƒ•ã‚¡ã‚¤ãƒ«ã ã¨ä¿¡ç”¨ã—ãã£ã¦ã„ã¾ã™ï¼ˆæ±—ï¼‰ */
 			sscanf (temp_str, "C%7d.%s %4d/%2d/%2d %2d:%2d:%2d %d %s %s\n",
 				&number, ext, &year, &mon, &day, &hour, &min, &sec,
 				&length, url, type);
@@ -209,7 +209,7 @@ int WCInit (void)
 				cache_sum++;
 				abs_max++;
 			} else {
-				printf ("WebCache —pƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñ\n");
+				printf ("WebCache ç”¨ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“\n");
 				fclose (fp);
 				return (-1);
 			}
@@ -225,8 +225,8 @@ int WCInit (void)
 
 
 
-/* httpfile->url ‚Åw’è‚µ‚½ƒtƒ@ƒCƒ‹‚ªƒLƒƒƒbƒVƒ…‚É‘¶İ‚·‚é‚© */
-/* ‘¶İ‚·‚é‚È‚ç httpfile ‚ÉŠeíî•ñ‚Æ cache_fnameiƒtƒ‹ƒpƒXj‚ª•Ô‚é */
+/* httpfile->url ã§æŒ‡å®šã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«å­˜åœ¨ã™ã‚‹ã‹ */
+/* å­˜åœ¨ã™ã‚‹ãªã‚‰ httpfile ã«å„ç¨®æƒ…å ±ã¨ cache_fnameï¼ˆãƒ•ãƒ«ãƒ‘ã‚¹ï¼‰ãŒè¿”ã‚‹ */
 int WCExist (HTTPFILE * httpfile, char *cache_fname)
 {
 	TEMPTABLE *tt = tt_top;
@@ -234,7 +234,7 @@ int WCExist (HTTPFILE * httpfile, char *cache_fname)
 	char *scheme_str[] =
 	{"http://", "file://"};
 
-    /* scheme ‚É‚æ‚Á‚Ä•ªŠò */
+    /* scheme ã«ã‚ˆã£ã¦åˆ†å² */
 	for (h = 0; h < sizeof (scheme_str) / sizeof (char *); h++) {
 		if (!strnicmp (httpfile->url, scheme_str[h], strlen (scheme_str[h])))
 			break;
@@ -246,7 +246,7 @@ int WCExist (HTTPFILE * httpfile, char *cache_fname)
 
 			hash = Url2Hash (httpfile->url);
 			while (tt) {
-			    /* ‚Ü‚¸ƒnƒbƒVƒ…’l‚Å‚‘¬‚ÉŒŸõ */
+			    /* ã¾ãšãƒãƒƒã‚·ãƒ¥å€¤ã§é«˜é€Ÿã«æ¤œç´¢ */
 				if ((tt->hash == hash)
 				    && !IsSameUrlFile (tt->url, httpfile->url)) {
 					sprintf (cache_fname, "%sC%07d.%s", cachedir, tt->number, ext_type_str[tt->type]);
@@ -258,7 +258,7 @@ int WCExist (HTTPFILE * httpfile, char *cache_fname)
 					(httpfile->time_stamp).tm_hour = tt->hour;
 					(httpfile->time_stamp).tm_min = tt->min;
 					(httpfile->time_stamp).tm_sec = tt->sec;
-				    /* ‹N“®Œã‚ÉƒAƒNƒZƒX‚µ‚½‚©H */
+				    /* èµ·å‹•å¾Œã«ã‚¢ã‚¯ã‚»ã‚¹ã—ãŸã‹ï¼Ÿ */
 					if (tt->access == 0)
 						return (WC_INCACHE);
 					else
@@ -289,7 +289,7 @@ int WCExist (HTTPFILE * httpfile, char *cache_fname)
 					fseek (fp, 0, SEEK_SET);
 					fclose (fp);
 				}
-			    /* ƒ}ƒ‹ƒ`ƒsƒŠƒIƒh”ñ‘Î‰EEE */
+			    /* ãƒãƒ«ãƒãƒ”ãƒªã‚ªãƒ‰éå¯¾å¿œãƒ»ãƒ»ãƒ» */
 				ext[0] = '\0';
 				p = &httpfile->url[7];
 				while (c = *p++) {
@@ -317,18 +317,18 @@ int WCExist (HTTPFILE * httpfile, char *cache_fname)
 
 
 
-/* ƒAƒNƒZƒXƒtƒ‰ƒO‚ğƒZƒbƒg */
+/* ã‚¢ã‚¯ã‚»ã‚¹ãƒ•ãƒ©ã‚°ã‚’ã‚»ãƒƒãƒˆ */
 int WCSetAccess (HTTPFILE * httpfile)
 {
 	TEMPTABLE *tt = tt_top;
 	char hash;
 
 	if (strcmp (httpfile->scheme, "http://"))
-		return (-1);	/* http:// ‚Å‚È‚¯‚ê‚Î‹A‚é */
+		return (-1);	/* http:// ã§ãªã‘ã‚Œã°å¸°ã‚‹ */
 
 	hash = Url2Hash (httpfile->url);
 	while (tt) {
-		if (tt->hash == hash) {		/* ‚Ü‚¸ƒnƒbƒVƒ…’l‚Å‚‘¬‚ÉŒŸõ */
+		if (tt->hash == hash) {		/* ã¾ãšãƒãƒƒã‚·ãƒ¥å€¤ã§é«˜é€Ÿã«æ¤œç´¢ */
 			if (!IsSameUrlFile (tt->url, httpfile->url)) {
 				tt->access = !0;
 				return (0);
@@ -341,8 +341,8 @@ int WCSetAccess (HTTPFILE * httpfile)
 
 
 
-/* httpfile->url ‚Åw’è‚µ‚½ƒtƒ@ƒCƒ‹‚ğƒLƒƒƒbƒVƒ…‚É“o˜^‚·‚é */
-/* cache_fnameiƒtƒ‹ƒpƒXj‚ª•Ô‚é */
+/* httpfile->url ã§æŒ‡å®šã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«ç™»éŒ²ã™ã‚‹ */
+/* cache_fnameï¼ˆãƒ•ãƒ«ãƒ‘ã‚¹ï¼‰ãŒè¿”ã‚‹ */
 int WCInsertUrl (HTTPFILE * httpfile, char *cache_fname)
 {
 	char c;
@@ -351,7 +351,7 @@ int WCInsertUrl (HTTPFILE * httpfile, char *cache_fname)
 	char *scheme_str[] =
 	{"http://", "file://"};
 
-    /* scheme ‚É‚æ‚Á‚Ä•ªŠò */
+    /* scheme ã«ã‚ˆã£ã¦åˆ†å² */
 	for (h = 0; h < sizeof (scheme_str) / sizeof (char *); h++) {
 		if (!strnicmp (httpfile->url, scheme_str[h], strlen (scheme_str[h])))
 			break;
@@ -365,20 +365,20 @@ int WCInsertUrl (HTTPFILE * httpfile, char *cache_fname)
 
 		tt = TTAlloc (httpfile->url);
 		if (tt == NULL) {
-			McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñiWebCache —p‚Ìƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
-			return (-1);	/* ƒƒ‚ƒŠ•s‘« */
+			McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆWebCache ç”¨ã®ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
+			return (-1);	/* ãƒ¡ãƒ¢ãƒªä¸è¶³ */
 		}
-	    /* ‚à‚µŠù‚ÉƒLƒƒƒbƒVƒ…‚É‘¶İ‚·‚é‚È‚ç‚»‚ê‚ğíœ */
-	    /* iƒtƒ@ƒCƒ‹‚ªXV‚³‚ê‚½j */
+	    /* ã‚‚ã—æ—¢ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«å­˜åœ¨ã™ã‚‹ãªã‚‰ãã‚Œã‚’å‰Šé™¤ */
+	    /* ï¼ˆãƒ•ã‚¡ã‚¤ãƒ«ãŒæ›´æ–°ã•ã‚ŒãŸæ™‚ï¼‰ */
 		{
 			char temp_cache_fname[256];
-			HTTPFILE _t_httpfile, *t_httpfile = &_t_httpfile;	/* ƒwƒbƒ_‚ª•Ô‚é */
+			HTTPFILE _t_httpfile, *t_httpfile = &_t_httpfile;	/* ãƒ˜ãƒƒãƒ€ãŒè¿”ã‚‹ */
 
 			InitHttpfile (t_httpfile);
 			CatHttpfile (t_httpfile, NULL, httpfile->url);
 
 			if (WCExist (t_httpfile, temp_cache_fname)) {
-				McDbPrintf ("%s ‚ğíœ‚µ‚Ü‚·\n", temp_cache_fname);
+				McDbPrintf ("%s ã‚’å‰Šé™¤ã—ã¾ã™\n", temp_cache_fname);
 				WCDeleteUrl (t_httpfile);
 				remove (temp_cache_fname);
 			}
@@ -403,7 +403,7 @@ int WCInsertUrl (HTTPFILE * httpfile, char *cache_fname)
 		break;
 	case 1:		/* file:// */
 	default:
-	    /* file:// ‚Ìê‡‚ÍƒLƒƒƒbƒVƒ…‚É“o˜^‚¹‚¸ cache_fname ‚¾‚¯•Ô‚· */
+	    /* file:// ã®å ´åˆã¯ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«ç™»éŒ²ã›ãš cache_fname ã ã‘è¿”ã™ */
 		{
 			FILE *fp;
 			strcpy (cache_fname, httpfile->url + 7);
@@ -415,7 +415,7 @@ int WCInsertUrl (HTTPFILE * httpfile, char *cache_fname)
 
 				fclose (fp);
 
-			    /* ƒ}ƒ‹ƒ`ƒsƒŠƒIƒh”ñ‘Î‰EEE */
+			    /* ãƒãƒ«ãƒãƒ”ãƒªã‚ªãƒ‰éå¯¾å¿œãƒ»ãƒ»ãƒ» */
 				ext[0] = '\0';
 				p = &httpfile->url[7];
 				while (c = *p++) {
@@ -457,7 +457,7 @@ int WCDeleteUrl (HTTPFILE * httpfile)
 				break;
 			}
 		}
-		tt_b = tt;	/* ‚P‚Â‘O‚Ìƒm[ƒh */
+		tt_b = tt;	/* ï¼‘ã¤å‰ã®ãƒãƒ¼ãƒ‰ */
 		tt = tt->next;
 	}
 	return (r);
@@ -471,10 +471,10 @@ int WCSave (void)
 	char temp_fname[256];
 	TEMPTABLE *tt = tt_top;
 
-	if (!cache_changed)	/* ƒLƒƒƒbƒVƒ…“à—e‚É•ÏX‚ª‚È‚¢ê‡ */
+	if (!cache_changed)	/* ã‚­ãƒ£ãƒƒã‚·ãƒ¥å†…å®¹ã«å¤‰æ›´ãŒãªã„å ´åˆ */
 		return (0);
 
-    /* WebCache.env ‚ğXV */
+    /* WebCache.env ã‚’æ›´æ–° */
 	strcpy (temp_fname, cachedir);
 	strcat (temp_fname, "WebCache.env");
 	if ((fp = fopen (temp_fname, "w")) != NULL) {
@@ -505,7 +505,7 @@ int WCSave (void)
 int WCTini (void)
 {
 #if	0
-	printf ("WebCache.env ‚ğ•Û‘¶‚µ‚Ä‚¢‚Ü‚·\n");
+	printf ("WebCache.env ã‚’ä¿å­˜ã—ã¦ã„ã¾ã™\n");
 #endif
 	return (WCSave ());
 }

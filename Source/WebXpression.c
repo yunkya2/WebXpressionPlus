@@ -9,7 +9,7 @@
 #include <sys/iocs.h>
 #include <sys/xglob.h>
 
-#define GLOBAL_DEFINE		/* ƒOƒ[ƒoƒ‹•Ï”‚ğŠm•Û‚·‚é */
+#define GLOBAL_DEFINE		/* ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã‚’ç¢ºä¿ã™ã‚‹ */
 #include "WebXpression.h"
 #include "Httpfile.h"
 #include "Html2Xpression.h"
@@ -24,7 +24,7 @@
 
 extern int cut_disp (void *, void *, int);
 
-/* ƒXƒ^ƒbƒNƒTƒCƒY‚Æƒq[ƒvƒTƒCƒY‚ğw’è */
+/* ã‚¹ã‚¿ãƒƒã‚¯ã‚µã‚¤ã‚ºã¨ãƒ’ãƒ¼ãƒ—ã‚µã‚¤ã‚ºã‚’æŒ‡å®š */
 int _stacksize = 32 * 1024;
 int _heapsize = 256 * 1024;
 
@@ -32,20 +32,20 @@ static unsigned char t_option = 0;
 
 static int old_screen_mode;
 static int old_fnkmod;
-static char address_book[92 + 7];	/* "file://" ‚İ‚ÌƒAƒhƒŒƒX’ ƒtƒ‹ƒpƒXƒtƒ@ƒCƒ‹–¼ */
+static char address_book[92 + 7];	/* "file://" è¾¼ã¿ã®ã‚¢ãƒ‰ãƒ¬ã‚¹å¸³ãƒ•ãƒ«ãƒ‘ã‚¹ãƒ•ã‚¡ã‚¤ãƒ«å */
 
 static char mouse_repeat = 0;
 static char scbar_drag = 0;
 
 #define TEXTVRAM	0xe00000
 
-#define STR_DISP_COMPLETE	"„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ •\¦Š®—¹ „Ÿ\n"
+#define STR_DISP_COMPLETE	"â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ è¡¨ç¤ºå®Œäº† â”€\n"
 static void Init2 (void);
 static void Tini2 (void);
 
 
-static EVENTREC _eventrec;	/* ‚±‚¿‚ç‚Íg‚í‚¸ */
-EVENTREC *eventrec = &_eventrec;	/* ‚±‚Á‚¿‚ÅƒAƒNƒZƒX */
+static EVENTREC _eventrec;	/* ã“ã¡ã‚‰ã¯ä½¿ã‚ãš */
+EVENTREC *eventrec = &_eventrec;	/* ã“ã£ã¡ã§ã‚¢ã‚¯ã‚»ã‚¹ */
 
 
 enum {
@@ -60,32 +60,32 @@ enum {
 static void usage (void)
 {
 	puts (
-		     "WWW ƒuƒ‰ƒEƒU WebXpression.x ver0.46\n"
+		     "WWW ãƒ–ãƒ©ã‚¦ã‚¶ WebXpression.x ver0.46\n"
 		     "		programmed by Mitsuky <FreeSoftware>\n"
-		     "Hyper Text Transfer Protocol ‚É]‚Á‚Ä HTML ƒtƒ@ƒCƒ‹‚ğ•\¦‚µ‚Ü‚·\n"
-		     "ƒlƒbƒgƒ[ƒNã‚Ìƒtƒ@ƒCƒ‹‚ğ•\¦‚·‚éê‡ATCP/IP ƒhƒ‰ƒCƒo‚ª•K—v‚Å‚·\n"
-		     "g—p–@ : WebXpression [option] [URL]\n"
+		     "Hyper Text Transfer Protocol ã«å¾“ã£ã¦ HTML ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¡¨ç¤ºã—ã¾ã™\n"
+		     "ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ä¸Šã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¡¨ç¤ºã™ã‚‹å ´åˆã€TCP/IP ãƒ‰ãƒ©ã‚¤ãƒãŒå¿…è¦ã§ã™\n"
+		     "ä½¿ç”¨æ³• : WebXpression [option] [URL]\n"
 		     "[option]\n"
-		     "	-Cƒtƒ@ƒCƒ‹–¼ : .cnf ƒtƒ@ƒCƒ‹‚ğw’è\n"
-		     "	-D : ƒfƒoƒbƒOƒ‚[ƒh\n"
-		     "URL –¢w’è‚É‚ÍƒAƒhƒŒƒX’ ‚ğ•\¦‚µ‚Ü‚·\n"
-		     "ƒpƒX–¼‚Íƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚à '/' ‚Å‹æØ‚Á‚Äw’è‚µ‚Ä‰º‚³‚¢\n"
+		     "	-Cãƒ•ã‚¡ã‚¤ãƒ«å : .cnf ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æŒ‡å®š\n"
+		     "	-D : ãƒ‡ãƒãƒƒã‚°ãƒ¢ãƒ¼ãƒ‰\n"
+		     "URL æœªæŒ‡å®šæ™‚ã«ã¯ã‚¢ãƒ‰ãƒ¬ã‚¹å¸³ã‚’è¡¨ç¤ºã—ã¾ã™\n"
+		     "ãƒ‘ã‚¹åã¯ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«æ™‚ã‚‚ '/' ã§åŒºåˆ‡ã£ã¦æŒ‡å®šã—ã¦ä¸‹ã•ã„\n"
 		);
 }
 
 
 
-/* [INTERRUPT] ‚ª‰Ÿ‚³‚ê‚½‚ç‚±‚±‚É”ò‚ñ‚Å‚­‚é */
+/* [INTERRUPT] ãŒæŠ¼ã•ã‚ŒãŸã‚‰ã“ã“ã«é£›ã‚“ã§ãã‚‹ */
 static void InterruptAbort (void)
 {
 	Tini2 ();
 
-	exit (1);		/* I—¹‚µ‚¿‚á‚¤ */
+	exit (1);		/* çµ‚äº†ã—ã¡ã‚ƒã† */
 }
 
 
 
-/* -d ƒIƒvƒVƒ‡ƒ“—p */
+/* -d ã‚ªãƒ—ã‚·ãƒ§ãƒ³ç”¨ */
 static void DumpXptext (XPTEXT * xptext)
 {
 	LINE_PTR *l = xptext->line_ptr;
@@ -94,36 +94,36 @@ static void DumpXptext (XPTEXT * xptext)
 		printf ("%s****%hd\n", l->ptr, l->start_dot);
 		l++;
 	}
-	printf ("ƒŠƒ“ƒNƒe[ƒuƒ‹‚ğ•\¦‚µ‚Ü‚·\n");
+	printf ("ãƒªãƒ³ã‚¯ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’è¡¨ç¤ºã—ã¾ã™\n");
 	for (i = 0; i < xptext->link_table_max; i++) {
-		printf ("ƒŠƒ“ƒN L%04d : %s :", i, (xptext->link_table)[i]);
+		printf ("ãƒªãƒ³ã‚¯ L%04d : %s :", i, (xptext->link_table)[i]);
 		if ((xptext->link_table)[i].in_cache == 0)
-			printf ("‚È‚¢\n");
+			printf ("ãªã„\n");
 		else
-			printf ("‘¶İ\n");
+			printf ("å­˜åœ¨\n");
 	}
 	DispImageList ();
 }
 
 
-/* ƒAƒhƒŒƒX’ ‚É’Ç‰Á */
+/* ã‚¢ãƒ‰ãƒ¬ã‚¹å¸³ã«è¿½åŠ  */
 static void AddAddress (HTTPFILE * httpfile)
 {
 	FILE *fp;
 
-    /* file:// ‚ğ”ò‚Î‚·‚©‚ç [7] */
+    /* file:// ã‚’é£›ã°ã™ã‹ã‚‰ [7] */
 	if ((fp = fopen (&address_book[7], "a+")) != NULL) {
 		fprintf (fp, "<LI><A HREF=\"%s\">%s</A>\n", httpfile->url, httpfile->xptext->title);
 		fclose (fp);
-		McPuts ("ƒAƒhƒŒƒX’ ‚É“o˜^‚µ‚Ü‚µ‚½\n");
+		McPuts ("ã‚¢ãƒ‰ãƒ¬ã‚¹å¸³ã«ç™»éŒ²ã—ã¾ã—ãŸ\n");
 	} else {
-		McPuts ("¦ ƒAƒhƒŒƒX’ ‚É‘‚«‚ß‚Ü‚¹‚ñ\n");
+		McPuts ("â€» ã‚¢ãƒ‰ãƒ¬ã‚¹å¸³ã«æ›¸ãè¾¼ã‚ã¾ã›ã‚“\n");
 	}
 }
 
 
 
-/* ƒL[^ƒ}ƒEƒX‚Ìƒ{ƒ^ƒ“‚ª—£‚³‚ê‚é‚Ü‚Å‘Ò‚Â */
+/* ã‚­ãƒ¼ï¼ãƒã‚¦ã‚¹ã®ãƒœã‚¿ãƒ³ãŒé›¢ã•ã‚Œã‚‹ã¾ã§å¾…ã¤ */
 void WaitReleaseAll (void)
 {
 	int i;
@@ -136,7 +136,7 @@ void WaitReleaseAll (void)
 
 
 
-/* ƒ}ƒCƒNƒƒRƒ“ƒ\[ƒ‹—p printf() i—v stdarg.hj */
+/* ãƒã‚¤ã‚¯ãƒ­ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ç”¨ printf() ï¼ˆè¦ stdarg.hï¼‰ */
 void McPrintf (const char *format,...)
 {
 	char temp_str[1024];
@@ -152,7 +152,7 @@ void McPrintf (const char *format,...)
 
 
 
-/* ƒfƒoƒbƒOƒ‚[ƒh—p‚Ì printf() i—v stdarg.hj */
+/* ãƒ‡ãƒãƒƒã‚°ãƒ¢ãƒ¼ãƒ‰ç”¨ã® printf() ï¼ˆè¦ stdarg.hï¼‰ */
 void McDbPrintf (const char *format,...)
 {
 	char temp_str[1024];
@@ -169,7 +169,7 @@ void McDbPrintf (const char *format,...)
 
 
 
-/* GetFile() ‚Å‚Ì’†’fƒ`ƒFƒbƒN */
+/* GetFile() ã§ã®ä¸­æ–­ãƒã‚§ãƒƒã‚¯ */
 int AbortCheckGetFile (void)
 {
 	int ret = GF_SUCCESS;
@@ -189,12 +189,12 @@ int AbortCheckGetFile (void)
 
 
 
-/* ƒ}ƒEƒX‚ğ“Ç‚ñ‚ÅƒCƒxƒ“ƒg‚ğ•Ô‚· */
+/* ãƒã‚¦ã‚¹ã‚’èª­ã‚“ã§ã‚¤ãƒ™ãƒ³ãƒˆã‚’è¿”ã™ */
 static void CheckMouseOnPanel (EVENTREC * eventrec)
 {
 	char type = EVENT_IDLE;
 	char pat = eventrec->old_mouse_pat;
-	signed short mx = eventrec->mouse_x, my = eventrec->mouse_y;	/* ‚‘¬‰»‚Ì‚½‚ß */
+	signed short mx = eventrec->mouse_x, my = eventrec->mouse_y;	/* é«˜é€ŸåŒ–ã®ãŸã‚ */
 
 	typedef struct {
 		signed short x0, y0, x1, y1;
@@ -208,11 +208,11 @@ static void CheckMouseOnPanel (EVENTREC * eventrec)
 	     256 + 292, 96 + 36, 256 + 292 + 64, 96 + 15 + 36, EVENT_PAGE_TOP, EVENT_PAGE_END,
 	 256 + 448, 96, 256 + 488 + 64, 96 + 15, EVENT_SET_CONFIG_COLOR, EVENT_SET_HTML_COLOR,
 		256 + 448, 312, 256 + 448 + 64, 312 + 15, EVENT_QUIT, EVENT_QUIT,
-		-1, -1, -1, -1, EVENT_IDLE, EVENT_IDLE	/* I—¹ƒR[ƒh */
+		-1, -1, -1, -1, EVENT_IDLE, EVENT_IDLE	/* çµ‚äº†ã‚³ãƒ¼ãƒ‰ */
 	};
 	BUTTON *bp;
 
-    /* ƒ}ƒEƒX‚Ìƒ{ƒ^ƒ“‚Ìó‘Ô‚É‚æ‚Á‚Ä•ªŠò */
+    /* ãƒã‚¦ã‚¹ã®ãƒœã‚¿ãƒ³ã®çŠ¶æ…‹ã«ã‚ˆã£ã¦åˆ†å² */
 	switch (eventrec->mouse_button) {
 	case MSLRUP:
 		pat = PAT_POINTER;
@@ -259,7 +259,7 @@ static void CheckMouseOnPanel (EVENTREC * eventrec)
 
 
 
-/* ƒ}ƒEƒX‚ğ“Ç‚ñ‚ÅƒCƒxƒ“ƒg‚ğ•Ô‚·EƒXƒNƒ[ƒ‹ƒo[ã‚ÅƒNƒŠƒbƒN‚³‚ê‚½ê‡ */
+/* ãƒã‚¦ã‚¹ã‚’èª­ã‚“ã§ã‚¤ãƒ™ãƒ³ãƒˆã‚’è¿”ã™ãƒ»ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ãƒãƒ¼ä¸Šã§ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸå ´åˆ */
 static void CheckMouseOnScbar (EVENTREC * eventrec)
 {
 	char type = EVENT_IDLE;
@@ -279,13 +279,13 @@ static void CheckMouseOnScbar (EVENTREC * eventrec)
 			int scbar_y;
 			scbar_y = CalcScbarY( current_line,line - DISP_Y);
 			if (eventrec->mouse_y < scbar_y) {
-			    /* ƒTƒ€‚æ‚èã‚ÅƒNƒŠƒbƒN‚³‚ê‚½ */
+			    /* ã‚µãƒ ã‚ˆã‚Šä¸Šã§ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸ */
 				if (mouse_repeat == (key_repeat_1st + key_repeat_2nd))
 					mouse_repeat = key_repeat_1st;
 				if ((mouse_repeat == 0) || (mouse_repeat == key_repeat_1st)) {
 					int y;
 					y = CalcScbarLine(eventrec->mouse_y , line - DISP_Y);
-					/* ‚Pƒy[ƒW–ß‚é‚Æƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ğ’Ç‚¢‰z‚µ‚Ä‚µ‚Ü‚¤‚©H */
+					/* ï¼‘ãƒšãƒ¼ã‚¸æˆ»ã‚‹ã¨ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã‚’è¿½ã„è¶Šã—ã¦ã—ã¾ã†ã‹ï¼Ÿ */
 					if (current_line - DISP_Y >= y ){
 						type = EVENT_PAGE_BACKWARD;
 					}else{
@@ -296,13 +296,13 @@ static void CheckMouseOnScbar (EVENTREC * eventrec)
 				mouse_repeat++;
 			} else {
 				if (eventrec->mouse_y >= scbar_y + 16) {
-				    /* ƒTƒ€‚æ‚è‰º‚ÅƒNƒŠƒbƒN‚³‚ê‚½ */
+				    /* ã‚µãƒ ã‚ˆã‚Šä¸‹ã§ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸ */
 					if (mouse_repeat == (key_repeat_1st + key_repeat_2nd))
 						mouse_repeat = key_repeat_1st;
 					if ((mouse_repeat == 0) || (mouse_repeat == key_repeat_1st)) {
 						int y;
 						y = CalcScbarLine(eventrec->mouse_y , line - DISP_Y);
-						/* ‚Pƒy[ƒWi‚Ş‚Æƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ğ’Ç‚¢‰z‚µ‚Ä‚µ‚Ü‚¤‚©H */
+						/* ï¼‘ãƒšãƒ¼ã‚¸é€²ã‚€ã¨ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã‚’è¿½ã„è¶Šã—ã¦ã—ã¾ã†ã‹ï¼Ÿ */
 						if (current_line + DISP_Y < y ){
 							type = EVENT_PAGE_FORWARD;
 						}else{
@@ -312,7 +312,7 @@ static void CheckMouseOnScbar (EVENTREC * eventrec)
 					}
 					mouse_repeat++;
 				} else {
-				    /* ƒTƒ€‚ªƒNƒŠƒbƒN‚³‚ê‚½ */
+				    /* ã‚µãƒ ãŒã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸ */
 					scbar_drag = !0;
 				}
 			}
@@ -333,13 +333,13 @@ static void CheckMouseOnScbar (EVENTREC * eventrec)
 
 
 
-/* ƒ}ƒEƒX‚ğ“Ç‚ñ‚ÅƒCƒxƒ“ƒg‚ğ•Ô‚·EƒeƒLƒXƒgã‚ÅƒNƒŠƒbƒN‚³‚ê‚½ê‡ */
+/* ãƒã‚¦ã‚¹ã‚’èª­ã‚“ã§ã‚¤ãƒ™ãƒ³ãƒˆã‚’è¿”ã™ãƒ»ãƒ†ã‚­ã‚¹ãƒˆä¸Šã§ã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸå ´åˆ */
 static void CheckMouseOnText (EVENTREC * eventrec)
 {
 	char type = EVENT_IDLE;
 	char pat = eventrec->old_mouse_pat;
 
-    /* ƒ}ƒEƒX‚Ìƒ{ƒ^ƒ“‚Ìó‘Ô‚É‚æ‚Á‚Ä•ªŠò */
+    /* ãƒã‚¦ã‚¹ã®ãƒœã‚¿ãƒ³ã®çŠ¶æ…‹ã«ã‚ˆã£ã¦åˆ†å² */
 	switch (eventrec->mouse_button) {
 	case MSLRUP:
 		mouse_repeat = 0;
@@ -354,8 +354,8 @@ static void CheckMouseOnText (EVENTREC * eventrec)
 
 	case MSLDOWN:
 		if (eventrec->shift) {
-		    /* ƒVƒtƒgƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚½‚çƒy[ƒWˆÚ“® */
-		    /* ƒL[ƒŠƒs[ƒgˆ— */
+		    /* ã‚·ãƒ•ãƒˆã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ãŸã‚‰ãƒšãƒ¼ã‚¸ç§»å‹• */
+		    /* ã‚­ãƒ¼ãƒªãƒ”ãƒ¼ãƒˆå‡¦ç† */
 			if (mouse_repeat == (key_repeat_1st + key_repeat_2nd))
 				mouse_repeat = key_repeat_1st;
 			if ((mouse_repeat == 0) || (mouse_repeat == key_repeat_1st)) {
@@ -364,10 +364,10 @@ static void CheckMouseOnText (EVENTREC * eventrec)
 			}
 			mouse_repeat++;
 		} else {
-		    /* ‘O‰ñ‚ÌƒCƒxƒ“ƒg‚É‚æ‚Á‚Ä•ªŠò */
+		    /* å‰å›ã®ã‚¤ãƒ™ãƒ³ãƒˆã«ã‚ˆã£ã¦åˆ†å² */
 			switch (eventrec->type) {
 			case EVENT_SCROLL_FORWARD:
-			    /* ƒ}ƒEƒX‚ª‰º‚Éƒhƒ‰ƒbƒO‚³‚ê‚½H */
+			    /* ãƒã‚¦ã‚¹ãŒä¸‹ã«ãƒ‰ãƒ©ãƒƒã‚°ã•ã‚ŒãŸï¼Ÿ */
 				if (eventrec->mouse_y > eventrec->old_mouse_y) {
 					pat = PAT_SCROLL_FF;
 					type = EVENT_SCROLL_FASTFORWARD;
@@ -377,7 +377,7 @@ static void CheckMouseOnText (EVENTREC * eventrec)
 				}
 				break;
 			case EVENT_SCROLL_FASTFORWARD:
-			    /* ƒ}ƒEƒX‚ªã‚Éƒhƒ‰ƒbƒO‚³‚ê‚½H */
+			    /* ãƒã‚¦ã‚¹ãŒä¸Šã«ãƒ‰ãƒ©ãƒƒã‚°ã•ã‚ŒãŸï¼Ÿ */
 				if (eventrec->mouse_y < eventrec->old_mouse_y) {
 					pat = PAT_SCROLL_F;
 					type = EVENT_SCROLL_FORWARD;
@@ -402,7 +402,7 @@ static void CheckMouseOnText (EVENTREC * eventrec)
 
 	case MSRDOWN:
 		if (eventrec->shift) {
-		    /* ƒL[ƒŠƒs[ƒgˆ— */
+		    /* ã‚­ãƒ¼ãƒªãƒ”ãƒ¼ãƒˆå‡¦ç† */
 			if (mouse_repeat == (key_repeat_1st + key_repeat_2nd))
 				mouse_repeat = key_repeat_1st;
 			if ((mouse_repeat == 0) || (mouse_repeat == key_repeat_1st)) {
@@ -411,10 +411,10 @@ static void CheckMouseOnText (EVENTREC * eventrec)
 			}
 			mouse_repeat++;
 		} else {
-		    /* ‘O‰ñ‚ÌƒCƒxƒ“ƒg‚É‚æ‚Á‚Ä•ªŠò */
+		    /* å‰å›ã®ã‚¤ãƒ™ãƒ³ãƒˆã«ã‚ˆã£ã¦åˆ†å² */
 			switch (eventrec->type) {
 			case EVENT_SCROLL_BACKWARD:
-			    /* ƒ}ƒEƒX‚ªã‚Éƒhƒ‰ƒbƒO‚³‚ê‚½H */
+			    /* ãƒã‚¦ã‚¹ãŒä¸Šã«ãƒ‰ãƒ©ãƒƒã‚°ã•ã‚ŒãŸï¼Ÿ */
 				if (eventrec->mouse_y < eventrec->old_mouse_y) {
 					pat = PAT_SCROLL_FB;
 					type = EVENT_SCROLL_FASTBACKWARD;
@@ -424,7 +424,7 @@ static void CheckMouseOnText (EVENTREC * eventrec)
 				}
 				break;
 			case EVENT_SCROLL_FASTBACKWARD:
-			    /* ƒ}ƒEƒX‚ª‰º‚Éƒhƒ‰ƒbƒO‚³‚ê‚½H */
+			    /* ãƒã‚¦ã‚¹ãŒä¸‹ã«ãƒ‰ãƒ©ãƒƒã‚°ã•ã‚ŒãŸï¼Ÿ */
 				if (eventrec->mouse_y > eventrec->old_mouse_y) {
 					pat = PAT_SCROLL_B;
 					type = EVENT_SCROLL_BACKWARD;
@@ -458,7 +458,7 @@ static void CheckMouseOnText (EVENTREC * eventrec)
 
 
 
-/* ƒL[‚ğ“Ç‚ñ‚ÅƒCƒxƒ“ƒg‚ğ•Ô‚· */
+/* ã‚­ãƒ¼ã‚’èª­ã‚“ã§ã‚¤ãƒ™ãƒ³ãƒˆã‚’è¿”ã™ */
 static void CheckKey (EVENTREC * eventrec)
 {
 	char type = EVENT_IDLE;
@@ -529,7 +529,7 @@ static void CheckKey (EVENTREC * eventrec)
 
 
 
-/* ƒCƒxƒ“ƒg‚ğæ“¾‚·‚é */
+/* ã‚¤ãƒ™ãƒ³ãƒˆã‚’å–å¾—ã™ã‚‹ */
 static void GetEvent (void)
 {
 	unsigned int ms_pos, ms_getdt;
@@ -558,7 +558,7 @@ static void GetEvent (void)
 			b += MSRDOWN;
 		eventrec->mouse_button = b;
 
-	    /* [SHIFT]/[CTRL] ƒL[‚ÉŠÖ‚µ‚Ä‚Íí‚Éƒ`ƒFƒbƒN */
+	    /* [SHIFT]/[CTRL] ã‚­ãƒ¼ã«é–¢ã—ã¦ã¯å¸¸ã«ãƒã‚§ãƒƒã‚¯ */
 #define KEY_SHIFT		0x01
 #define KEY_CTRL		0x02
 		k = _iocs_bitsns (0x0e);
@@ -581,9 +581,9 @@ static void GetEvent (void)
 		}
 	}
 
-    /* ƒ}ƒEƒX‚Ì‚wÀ•W‚É‚æ‚Á‚Ä•ªŠò */
-#define SCBAR_X	(512+16)	/* ƒXƒNƒ[ƒ‹ƒo[‚Ì¶’[‚wÀ•W */
-#define PANEL_X	(512+16+16)	/* ƒpƒlƒ‹‚Ì¶’[‚wÀ•W */
+    /* ãƒã‚¦ã‚¹ã®ï¼¸åº§æ¨™ã«ã‚ˆã£ã¦åˆ†å² */
+#define SCBAR_X	(512+16)	/* ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ãƒãƒ¼ã®å·¦ç«¯ï¼¸åº§æ¨™ */
+#define PANEL_X	(512+16+16)	/* ãƒ‘ãƒãƒ«ã®å·¦ç«¯ï¼¸åº§æ¨™ */
 	if (eventrec->mouse_x < SCBAR_X) {
 		CheckMouseOnText (eventrec);
 	} else {
@@ -594,14 +594,14 @@ static void GetEvent (void)
 	}
 
 	if (eventrec->type == EVENT_IDLE)
-		CheckKey (eventrec);	/* ƒ}ƒEƒX‘€ì‚ª‚È‚©‚Á‚½‚¾‚¯ƒL[‚ğƒ`ƒFƒbƒN */
+		CheckKey (eventrec);	/* ãƒã‚¦ã‚¹æ“ä½œãŒãªã‹ã£ãŸæ™‚ã ã‘ã‚­ãƒ¼ã‚’ãƒã‚§ãƒƒã‚¯ */
 
 	return;
 }
 
 
 
-/* HTTPFILE ‚ğ“ü‚êŠ·‚¦‚é */
+/* HTTPFILE ã‚’å…¥ã‚Œæ›ãˆã‚‹ */
 static void SwapHttpfile (HTTPFILE ** h1, HTTPFILE ** h2)
 {
 	HTTPFILE *ht = *h1;
@@ -612,7 +612,7 @@ static void SwapHttpfile (HTTPFILE ** h1, HTTPFILE ** h2)
 
 
 
-/* ƒƒCƒ“ƒ‹[ƒ`ƒ“ : I—¹‚·‚é‚Ü‚Å‚±‚±‚Åƒ‹[ƒv */
+/* ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒãƒ³ : çµ‚äº†ã™ã‚‹ã¾ã§ã“ã“ã§ãƒ«ãƒ¼ãƒ— */
 static int ShowHtml (char *in_url)
 {
 	HTTPFILE _httpfile[2];
@@ -620,90 +620,90 @@ static int ShowHtml (char *in_url)
 
 	int temp_line = 0;
 	unsigned short save_counter = 0;
-	char quit_all = 0;	/* ”ñ‚O‚ÅƒvƒƒOƒ‰ƒ€I—¹ */
+	char quit_all = 0;	/* éï¼ã§ãƒ—ãƒ­ã‚°ãƒ©ãƒ çµ‚äº† */
 
 	InitHttpfile (httpfile);
 	InitHttpfile (old_httpfile);
 	CatHttpfile (httpfile, NULL, in_url);
 
-    /* httpfile->url ‚ğ‰ğÍ‚µ‚Ä•\¦‚·‚é */
+    /* httpfile->url ã‚’è§£æã—ã¦è¡¨ç¤ºã™ã‚‹ */
 	do {
 		char event_exit = 0;
 		char main_error = MAIN_ERROR_NON;
 		char load_complete;
-		char refresh_counter = 0;	/* refresh_rate ‚ğ‰z‚¦‚é‚²‚Æ‚ÉÄ®Œ` */
-		char idle_rate = 0;	/* IDLE ƒCƒxƒ“ƒg‚ğˆ—‚·‚éŠÔŠu */
+		char refresh_counter = 0;	/* refresh_rate ã‚’è¶Šãˆã‚‹ã”ã¨ã«å†æ•´å½¢ */
+		char idle_rate = 0;	/* IDLE ã‚¤ãƒ™ãƒ³ãƒˆã‚’å‡¦ç†ã™ã‚‹é–“éš” */
 		int lap_time = 0;
-		int gf_ret;	/* GetFile() ‚Ì•Ô‚è’l */
+		int gf_ret;	/* GetFile() ã®è¿”ã‚Šå€¤ */
 
-		McPrintf ("%s ‚ğ“Ç‚İ‚İ‚Ü‚·\n", httpfile->url);
+		McPrintf ("%s ã‚’èª­ã¿è¾¼ã¿ã¾ã™\n", httpfile->url);
 		gf_ret = GetFile (httpfile);
 		if (gf_ret != GF_SUCCESS) {
-			McDbPuts ("ShowHtml() : “Ç‚İ‚ß‚Ü‚¹‚ñ‚Å‚µ‚½\n");
+			McDbPuts ("ShowHtml() : èª­ã¿è¾¼ã‚ã¾ã›ã‚“ã§ã—ãŸ\n");
 			main_error = MAIN_ERROR_GETFILE;
 		} else {
 			char recheck_flag = !0;
 
-			McDbPuts ("œ ‚PƒpƒX–Ú\n");
+			McDbPuts ("â— ï¼‘ãƒ‘ã‚¹ç›®\n");
 			lap_time = _iocs_ontime ();
 			refresh_counter = 0;
 
-			main_error = MAIN_ERROR_XPTEXT;		/* ¬Œ÷‚·‚ê‚Î _SUCCESS ‚É */
+			main_error = MAIN_ERROR_XPTEXT;		/* æˆåŠŸã™ã‚Œã° _SUCCESS ã« */
 
-		    /* <A HREF> ‚Å .GIF/.JPG ‚ªw’è‚³‚ê‚½‚Í */
-		    /* .HTM ƒtƒ@ƒCƒ‹‚ğƒƒ‚ƒŠã‚Éì¬ */
+		    /* <A HREF> ã§ .GIF/.JPG ãŒæŒ‡å®šã•ã‚ŒãŸæ™‚ã¯ */
+		    /* .HTM ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ¡ãƒ¢ãƒªä¸Šã«ä½œæˆ */
 			if ((!strcmp (httpfile->content_type, "image/gif")) ||
 			    (!strcmp (httpfile->content_type, "image/jpeg"))) {
 				char temp_content[1024];
 
 				recheck_flag = 0;
-				_dos_mfree (httpfile->content);		/* “Ç‚ñ‚¾‰æ‘œ‚ÍÌ‚Ä‚é */
+				_dos_mfree (httpfile->content);		/* èª­ã‚“ã ç”»åƒã¯æ¨ã¦ã‚‹ */
 				httpfile->content = NULL;
 				sprintf (temp_content, "<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><BR><CENTER><IMG SRC=\"%s\"></CENTER></BODY></HTML>\r\n\0",
 					 httpfile->fname, httpfile->url);
 				httpfile->content_length = strlen (temp_content);
-			    /* ‚Ü‚¾‚±‚ÌƒGƒ‰[ƒ`ƒFƒbƒN³‚µ‚­‚È‚¢ */
+			    /* ã¾ã ã“ã®ã‚¨ãƒ©ãƒ¼ãƒã‚§ãƒƒã‚¯æ­£ã—ããªã„ */
 				httpfile->content = _dos_malloc (httpfile->content_length);
 				if ((int) httpfile->content < 0) {
-					McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñi HTTPFILE —p‚Ìƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+					McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆ HTTPFILE ç”¨ã®ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 				}
 				strcpy (httpfile->content_type, "text/html");
 				strcpy (httpfile->content, temp_content);
 				main_error = MAIN_ERROR_SUCCESS;
 			}
-		    /* <A HREF> ‚Å .DOC/.TXT ‚ªw’è‚³‚ê‚½ */
+		    /* <A HREF> ã§ .DOC/.TXT ãŒæŒ‡å®šã•ã‚ŒãŸæ™‚ */
 			if (!strcmp (httpfile->content_type, "text/plain")) {
-				McDbPuts ("ƒeƒLƒXƒg®Œ`’†...\n");
+				McDbPuts ("ãƒ†ã‚­ã‚¹ãƒˆæ•´å½¢ä¸­...\n");
 				recheck_flag = 0;
 				if (Html2Sjis (httpfile) < 0) {
-				    /* ƒGƒ‰[ˆ—‚Ü‚¾ */
-					McPuts ("¦ SJIS ‚Ö‚Ì•ÏŠ·‚É¸”s‚µ‚Ü‚µ‚½\n");
+				    /* ã‚¨ãƒ©ãƒ¼å‡¦ç†ã¾ã  */
+					McPuts ("â€» SJIS ã¸ã®å¤‰æ›ã«å¤±æ•—ã—ã¾ã—ãŸ\n");
 				}
 				if ((httpfile->xptext = Plain2Xpression (httpfile, NULL)) == NULL)
-					McPuts ("¦ ƒeƒLƒXƒg‚Ì®Œ`‚É¸”s‚µ‚Ü‚µ‚½\n");
+					McPuts ("â€» ãƒ†ã‚­ã‚¹ãƒˆã®æ•´å½¢ã«å¤±æ•—ã—ã¾ã—ãŸ\n");
 				else
 					main_error = MAIN_ERROR_SUCCESS;
-				McDbPuts ("®Œ`I—¹\n");
+				McDbPuts ("æ•´å½¢çµ‚äº†\n");
 			}
-		    /* <A HREF> ‚Å .HTM ‚ªw’è‚³‚ê‚½ */
+		    /* <A HREF> ã§ .HTM ãŒæŒ‡å®šã•ã‚ŒãŸæ™‚ */
 			if (!strcmp (httpfile->content_type, "text/html")) {
-				McDbPuts ("ƒeƒLƒXƒg®Œ`’†...\n");
+				McDbPuts ("ãƒ†ã‚­ã‚¹ãƒˆæ•´å½¢ä¸­...\n");
 				recheck_flag = 0;
 				if (Html2Sjis (httpfile) < 0) {
-				    /* ƒGƒ‰[ˆ—‚Ü‚¾ */
-					McPuts ("¦ SJIS ‚Ö‚Ì•ÏŠ·‚É¸”s‚µ‚Ü‚µ‚½\n");
+				    /* ã‚¨ãƒ©ãƒ¼å‡¦ç†ã¾ã  */
+					McPuts ("â€» SJIS ã¸ã®å¤‰æ›ã«å¤±æ•—ã—ã¾ã—ãŸ\n");
 				}
 				if ((httpfile->xptext = Html2Xpression (httpfile)) == NULL)
-					McPuts ("¦ ƒeƒLƒXƒg‚Ì®Œ`‚É¸”s‚µ‚Ü‚µ‚½\n");
+					McPuts ("â€» ãƒ†ã‚­ã‚¹ãƒˆã®æ•´å½¢ã«å¤±æ•—ã—ã¾ã—ãŸ\n");
 				else
 					main_error = MAIN_ERROR_SUCCESS;
-				McDbPuts ("®Œ`I—¹\n");
+				McDbPuts ("æ•´å½¢çµ‚äº†\n");
 			}
-		    /* .HTM ‚â .DOC/.TXT ˆÈŠO‚ğ“Ç‚İ‚ñ‚¾ê‡i.Lzh “™j */
+		    /* .HTM ã‚„ .DOC/.TXT ä»¥å¤–ã‚’èª­ã¿è¾¼ã‚“ã å ´åˆï¼ˆ.Lzh ç­‰ï¼‰ */
 			if ((main_error == MAIN_ERROR_XPTEXT) && (recheck_flag)
 			    && (old_httpfile->xptext != NULL)) {
 				ReCheckLinkTable (old_httpfile);
-				McDbPuts ("‚±‚±‚Ü‚Å‚à‚n‚j\n");
+				McDbPuts ("ã“ã“ã¾ã§ã‚‚ï¼¯ï¼«\n");
 				main_error = MAIN_ERROR_RECHECK;
 			}
 		}
@@ -713,10 +713,10 @@ static int ShowHtml (char *in_url)
 		switch (main_error) {
 		case MAIN_ERROR_GETFILE:
 			if (old_httpfile->xptext == NULL) {
-				return (-1);	/* •\¦‚Å‚«‚éƒeƒLƒXƒg‚ª‘S‚­‚È‚¢ */
+				return (-1);	/* è¡¨ç¤ºã§ãã‚‹ãƒ†ã‚­ã‚¹ãƒˆãŒå…¨ããªã„ */
 			} else {
 				SwapHttpfile (&httpfile, &old_httpfile);
-				temp_line = httpfile->xptext->current_line;	/* •\¦‚·‚és” */
+				temp_line = httpfile->xptext->current_line;	/* è¡¨ç¤ºã™ã‚‹è¡Œæ•° */
 			}
 			break;
 		case MAIN_ERROR_XPTEXT:
@@ -724,11 +724,11 @@ static int ShowHtml (char *in_url)
 			_dos_mfree (httpfile->content);
 			httpfile->content = NULL;
 			if (old_httpfile->xptext == NULL) {
-				return (-1);	/* •\¦‚Å‚«‚éƒeƒLƒXƒg‚ª‘S‚­‚È‚¢ */
+				return (-1);	/* è¡¨ç¤ºã§ãã‚‹ãƒ†ã‚­ã‚¹ãƒˆãŒå…¨ããªã„ */
 			} else {
 				InitHttpfile (httpfile);
 				SwapHttpfile (&httpfile, &old_httpfile);
-				temp_line = httpfile->xptext->current_line;	/* •\¦‚·‚és” */
+				temp_line = httpfile->xptext->current_line;	/* è¡¨ç¤ºã™ã‚‹è¡Œæ•° */
 			}
 			break;
 		case MAIN_ERROR_SUCCESS:
@@ -736,8 +736,8 @@ static int ShowHtml (char *in_url)
 			break;
 		}
 
-	    /* old_httpfile ‚ğÌ‚Ä‚é */
-	    /* ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚Ì‰º‚ÉƒŠƒ“ƒN‚ª‚ ‚é‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN‚·‚é‚Ì‚ğˆêu‹Ö~ */
+	    /* old_httpfile ã‚’æ¨ã¦ã‚‹ */
+	    /* ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã®ä¸‹ã«ãƒªãƒ³ã‚¯ãŒã‚ã‚‹ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹ã®ã‚’ä¸€ç¬ç¦æ­¢ */
 		if (old_httpfile->xptext) {
 			FreeXptext2 (old_httpfile->xptext);
 			FreeXptext (old_httpfile->xptext);
@@ -754,34 +754,34 @@ static int ShowHtml (char *in_url)
 			WCSave ();
 			save_counter = 0;
 		}
-		httpfile->xptext->current_line = temp_line;	/* •\¦‚·‚és” */
+		httpfile->xptext->current_line = temp_line;	/* è¡¨ç¤ºã™ã‚‹è¡Œæ•° */
 		DrawTextAll (httpfile->xptext);
 		load_complete = LI_CONTINUE_NOT_LOAD;
 
 		_dos_c_locate (0, 30);
 
-	    /* ƒCƒxƒ“ƒgƒ‹[ƒv */
+	    /* ã‚¤ãƒ™ãƒ³ãƒˆãƒ«ãƒ¼ãƒ— */
 		do {
-			GetEvent ();	/* ƒCƒxƒ“ƒg‚ğæ“¾ */
+			GetEvent ();	/* ã‚¤ãƒ™ãƒ³ãƒˆã‚’å–å¾— */
 
 			switch (eventrec->type) {
-			case EVENT_IDLE:	/* ‘€ì‚È‚µ */
+			case EVENT_IDLE:	/* æ“ä½œãªã— */
 #define IDLE_RATE_MAX	10
 				if ((load_complete >= LI_CONTINUE_NOT_LOAD) && (idle_rate++ > IDLE_RATE_MAX)) {
-					McDbPuts ("œ ‚QƒpƒX–Ú\n");
+					McDbPuts ("â— ï¼’ãƒ‘ã‚¹ç›®\n");
 					idle_rate = 0;
 					load_complete = LoadImage (httpfile);
 					switch (load_complete) {
 					case LI_COMPLETE_NOT_LOAD:
 						if (t_option)
-							McPrintf ("•`‰æŠÔ = %d\n", _iocs_ontime () - lap_time);
+							McPrintf ("æç”»æ™‚é–“ = %d\n", _iocs_ontime () - lap_time);
 						McPuts (STR_DISP_COMPLETE);
 						break;
 					case LI_COMPLETE_LOAD:
 						if (t_option)
-							McPrintf ("•`‰æŠÔ = %d\n", _iocs_ontime () - lap_time);
+							McPrintf ("æç”»æ™‚é–“ = %d\n", _iocs_ontime () - lap_time);
 						McPuts (STR_DISP_COMPLETE);
-						refresh_counter++;	/* ‹­§“I‚ÉÄ®Œ` */
+						refresh_counter++;	/* å¼·åˆ¶çš„ã«å†æ•´å½¢ */
 						save_counter++;
 						break;
 					case LI_CONTINUE_NOT_LOAD:
@@ -796,13 +796,13 @@ static int ShowHtml (char *in_url)
 					    || ((load_complete <= LI_COMPLETE_LOAD) && (refresh_counter > 0))) {
 						XPTEXT *old_xptext = httpfile->xptext;
 
-						McDbPuts ("ƒeƒLƒXƒgÄ®Œ`’†...\n");
+						McDbPuts ("ãƒ†ã‚­ã‚¹ãƒˆå†æ•´å½¢ä¸­...\n");
 						refresh_counter = 0;
 						if ((httpfile->xptext = Html2Xpression (httpfile)) == NULL) {
-						    /* ƒGƒ‰[ˆ—‚Ü‚¾ */
-							McPuts ("Ä®Œ`¸”s\n");
+						    /* ã‚¨ãƒ©ãƒ¼å‡¦ç†ã¾ã  */
+							McPuts ("å†æ•´å½¢å¤±æ•—\n");
 						} else {
-							McDbPuts ("Ä®Œ`I—¹\n");
+							McDbPuts ("å†æ•´å½¢çµ‚äº†\n");
 						}
 						FreeXptext (old_xptext);
 						DrawTextAll (httpfile->xptext);
@@ -854,7 +854,7 @@ static int ShowHtml (char *in_url)
 
 			case EVENT_LINK:
 				{
-				    /* w’è‚³‚ê‚½ URLiƒtƒ‹ƒpƒX‚Å‚È‚¢‚©‚à‚µ‚ê‚È‚¢j */
+				    /* æŒ‡å®šã•ã‚ŒãŸ URLï¼ˆãƒ•ãƒ«ãƒ‘ã‚¹ã§ãªã„ã‹ã‚‚ã—ã‚Œãªã„ï¼‰ */
 					char *new_url = (httpfile->xptext->link_table)[eventrec->link_num].url;
 #if	0
 					if (!load_complete) {
@@ -862,14 +862,14 @@ static int ShowHtml (char *in_url)
 						load_complete = !0;
 					}
 #endif
-				    /* ˆÈ‰º httpfile->url ‚ÉV‚µ‚¢ URL ‚ğİ’è‚·‚éˆ— */
-				    /* URL ‚ª "#foo" iƒtƒ@ƒCƒ‹–¼‚È‚µj‚©H */
+				    /* ä»¥ä¸‹ httpfile->url ã«æ–°ã—ã„ URL ã‚’è¨­å®šã™ã‚‹å‡¦ç† */
+				    /* URL ãŒ "#foo" ï¼ˆãƒ•ã‚¡ã‚¤ãƒ«åãªã—ï¼‰ã‹ï¼Ÿ */
 					if (*new_url == '#') {
-						McDbPuts ("#foo ‚Å‚·\n");
-						httpfile->xptext->current_line = SearchAnchor (httpfile->xptext, new_url);	/* •\¦‚·‚és” */
+						McDbPuts ("#foo ã§ã™\n");
+						httpfile->xptext->current_line = SearchAnchor (httpfile->xptext, new_url);	/* è¡¨ç¤ºã™ã‚‹è¡Œæ•° */
 						DrawTextAll (httpfile->xptext);
 					} else {
-					    /* Œ»İ•\¦’†‚Ì httpfile ‚Í old_httpfile ‚Ö */
+					    /* ç¾åœ¨è¡¨ç¤ºä¸­ã® httpfile ã¯ old_httpfile ã¸ */
 						SwapHttpfile (&httpfile, &old_httpfile);
 
 						InitHttpfile (httpfile);
@@ -889,7 +889,7 @@ static int ShowHtml (char *in_url)
 
 					if ((t = BeforeHistory (httpfile->url, &temp_line)) != NULL) {
 						event_exit = !0;
-					    /* Œ»İ•\¦’†‚Ì httpfile ‚Í old_httpfile ‚Ö */
+					    /* ç¾åœ¨è¡¨ç¤ºä¸­ã® httpfile ã¯ old_httpfile ã¸ */
 						SwapHttpfile (&httpfile, &old_httpfile);
 						CatHttpfile (httpfile, NULL, t);
 					}
@@ -906,13 +906,13 @@ static int ShowHtml (char *in_url)
 				WaitReleaseAll ();
 				break;
 
-			case EVENT_TOUROKU:	/* [“o˜^] ‚ÅƒAƒhƒŒƒX’ ‚É“o˜^ */
+			case EVENT_TOUROKU:	/* [ç™»éŒ²] ã§ã‚¢ãƒ‰ãƒ¬ã‚¹å¸³ã«ç™»éŒ² */
 				AddAddress (httpfile);
 				WaitReleaseAll ();
 				break;
 
-			case EVENT_ADDRESSBOOK:	/* ƒAƒhƒŒƒX’ ‚ÖƒWƒƒƒ“ƒv */
-			    /* Œ»İ•\¦’†‚Ì httpfile ‚Í old_httpfile ‚Ö */
+			case EVENT_ADDRESSBOOK:	/* ã‚¢ãƒ‰ãƒ¬ã‚¹å¸³ã¸ã‚¸ãƒ£ãƒ³ãƒ— */
+			    /* ç¾åœ¨è¡¨ç¤ºä¸­ã® httpfile ã¯ old_httpfile ã¸ */
 				SwapHttpfile (&httpfile, &old_httpfile);
 
 				InitHttpfile (httpfile);
@@ -934,7 +934,7 @@ static int ShowHtml (char *in_url)
 				WaitReleaseAll ();
 				break;
 
-			case EVENT_EDIT:	/* [SHIFT]+[F1] ‚ÅƒGƒfƒBƒ^‚ğ‹N“® */
+			case EVENT_EDIT:	/* [SHIFT]+[F1] ã§ã‚¨ãƒ‡ã‚£ã‚¿ã‚’èµ·å‹• */
 				temp_line = 0;
 				WaitReleaseAll ();
 				Tini2 ();
@@ -944,28 +944,28 @@ static int ShowHtml (char *in_url)
 						 ((httpfile->xptext->line_ptr)[httpfile->xptext->current_line]).org_line);
 					strcat (temp_str, " ");
 					if (!strnicmp (httpfile->scheme, "file://", 7))
-						strcat (temp_str, (httpfile->url + 7));		/* file:// ‚ğ”ò‚Î‚· */
+						strcat (temp_str, (httpfile->url + 7));		/* file:// ã‚’é£›ã°ã™ */
 					else
 						strcat (temp_str, httpfile->url);
 					_toslash (temp_str);
-					system (temp_str);	/* ƒeƒLƒXƒgƒGƒfƒBƒ^‹N“® */
+					system (temp_str);	/* ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒ‡ã‚£ã‚¿èµ·å‹• */
 				}
 				Init2 ();
 				WaitReleaseAll ();
 				event_exit = !0;
 				break;
 
-			case EVENT_SHELL:	/* [SHIFT]+[1] ‚ÅƒVƒFƒ‹‚ğ‹N“® */
+			case EVENT_SHELL:	/* [SHIFT]+[1] ã§ã‚·ã‚§ãƒ«ã‚’èµ·å‹• */
 				Tini2 ();
-				system ("");	/* ƒVƒFƒ‹‹N“® */
+				system ("");	/* ã‚·ã‚§ãƒ«èµ·å‹• */
 				Init2 ();
 				DrawTextAll (httpfile->xptext);
 				WaitReleaseAll ();
 				break;
 
 			default:
-				McDbPuts ("ShowHtml() : eventrec->type ‚ª•Ï‚Å‚·\n");
-			    /* ‚±‚±‚É break ‚ª‚È‚¢‚Ì‚É’ˆÓ */
+				McDbPuts ("ShowHtml() : eventrec->type ãŒå¤‰ã§ã™\n");
+			    /* ã“ã“ã« break ãŒãªã„ã®ã«æ³¨æ„ */
 
 			case EVENT_QUIT:
 				event_exit = !0;
@@ -990,7 +990,7 @@ static int ShowHtml (char *in_url)
 
 
 
-/* ‹N“®‹y‚ÑqƒvƒƒZƒX‹N“®Œã‚ÉŒÄ‚Î‚ê‚é‰Šú‰»ƒ‹[ƒ`ƒ“ */
+/* èµ·å‹•æ™‚åŠã³å­ãƒ—ãƒ­ã‚»ã‚¹èµ·å‹•å¾Œã«å‘¼ã°ã‚Œã‚‹åˆæœŸåŒ–ãƒ«ãƒ¼ãƒãƒ³ */
 static void Init2 (void)
 {
 	int i;
@@ -1016,7 +1016,7 @@ static void Init2 (void)
 		&mouse_pat4, &mouse_pat5, &mouse_pat6, &mouse_pat7
 	};
 
-	_dos_c_width (5);	/* DOS ƒŒƒxƒ‹‚Å‚Í 512x512 65536 Fƒ‚[ƒh */
+	_dos_c_width (5);	/* DOS ãƒ¬ãƒ™ãƒ«ã§ã¯ 512x512 65536 è‰²ãƒ¢ãƒ¼ãƒ‰ */
 	_iocs_g_clr_on ();
 	_dos_c_curoff ();
 	_dos_c_locate (0, 30);
@@ -1035,9 +1035,9 @@ static void Init2 (void)
 	sp = _iocs_b_super (0);
 	for (i = 0, p = crtc_r0; i < 8; i++)
 		*p++ = crtc_data[i];
-	*crtc_r20 = 0x0316;	/* 768x512 65536 F³•ûŒ`ƒ‚[ƒh‚É */
+	*crtc_r20 = 0x0316;	/* 768x512 65536 è‰²æ­£æ–¹å½¢ãƒ¢ãƒ¼ãƒ‰ã« */
 	*vctrl_r1 = 0x0003;
-	*vctrl_r2 = 0x32e4;	/* 0x31e4 ‚¾‚Æƒ_ƒH */
+	*vctrl_r2 = 0x32e4;	/* 0x31e4 ã ã¨ãƒ€ãƒ¡ï¼Ÿ */
 	*vctrl_r3 = 0x002f;
 	_iocs_b_super (sp);
 
@@ -1056,14 +1056,14 @@ static void Init2 (void)
 
 
 
-/* ‹N“®‚É‚P“x‚¾‚¯ŒÄ‚Î‚ê‚é‰Šú‰»ƒ‹[ƒ`ƒ“ */
+/* èµ·å‹•æ™‚ã«ï¼‘åº¦ã ã‘å‘¼ã°ã‚Œã‚‹åˆæœŸåŒ–ãƒ«ãƒ¼ãƒãƒ³ */
 static int Init (void)
 {
 	old_screen_mode = _dos_c_width (-1);
-    //printf ("WebXpression ‹N“®’†...\n");
+    //printf ("WebXpression èµ·å‹•ä¸­...\n");
 	GetFileInit ();
 	McInit ();
-    //printf ("WebCache.env ‚ğ“Ç‚İ‚ñ‚Å‚¢‚Ü‚·\n");
+    //printf ("WebCache.env ã‚’èª­ã¿è¾¼ã‚“ã§ã„ã¾ã™\n");
 	if (WCInit () < 0)
 		return (-1);
 	InitHtml2Xpression ();
@@ -1076,7 +1076,7 @@ static int Init (void)
 
 
 
-/* I—¹‹y‚ÑqƒvƒƒZƒX‹N“®‘O‚ÉŒÄ‚Î‚ê‚éI—¹ƒ‹[ƒ`ƒ“ */
+/* çµ‚äº†æ™‚åŠã³å­ãƒ—ãƒ­ã‚»ã‚¹èµ·å‹•å‰ã«å‘¼ã°ã‚Œã‚‹çµ‚äº†ãƒ«ãƒ¼ãƒãƒ³ */
 static void Tini2 (void)
 {
 	ClearText ();
@@ -1086,14 +1086,14 @@ static void Tini2 (void)
 	_iocs_ms_init ();
 	_iocs_ms_curof ();
 	_dos_c_width (old_screen_mode);
-	_dos_kflushio (0xff);	/* ƒL[ƒoƒbƒtƒ@‚ğƒNƒŠƒA */
+	_dos_kflushio (0xff);	/* ã‚­ãƒ¼ãƒãƒƒãƒ•ã‚¡ã‚’ã‚¯ãƒªã‚¢ */
 	_dos_c_fnkmod (old_fnkmod);
 	_dos_c_curon ();
 }
 
 
 
-/* I—¹‚É‚P“x‚¾‚¯ŒÄ‚Î‚ê‚éI—¹ƒ‹[ƒ`ƒ“ */
+/* çµ‚äº†æ™‚ã«ï¼‘åº¦ã ã‘å‘¼ã°ã‚Œã‚‹çµ‚äº†ãƒ«ãƒ¼ãƒãƒ³ */
 static int Tini (void)
 {
 	Tini2 ();
@@ -1163,12 +1163,12 @@ int main (int argc, char *argv[])
 		fname = address_book;
 	} else {
 		if (strnicmp (fname, "http://", 7)) {
-		    /* ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚È‚ç */
+		    /* ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ãªã‚‰ */
 			strcpy (temp_fname, "file://");
 			if (!strnicmp (fname, "file://", 7))
-				_fullpath (temp_fname + 7, fname + 7, 92);	/* ƒtƒ‹ƒpƒX‚É */
+				_fullpath (temp_fname + 7, fname + 7, 92);	/* ãƒ•ãƒ«ãƒ‘ã‚¹ã« */
 			else
-				_fullpath (temp_fname + 7, fname, 92);	/* ƒtƒ‹ƒpƒX‚É */
+				_fullpath (temp_fname + 7, fname, 92);	/* ãƒ•ãƒ«ãƒ‘ã‚¹ã« */
 			fname = temp_fname;
 			_toslash (fname + 7);
 			puts (fname);
@@ -1178,18 +1178,18 @@ int main (int argc, char *argv[])
 		return (-1);
 
 	if (!Init ()) {
-		McPuts ("„Ÿ„Ÿ- Welcome to WebXpression „Ÿ„Ÿ„Ÿ\n");
+		McPuts ("â”€â”€- Welcome to WebXpression â”€â”€â”€\n");
 		if (inetd_version < 0) {
-			McPuts ("¥ TCP/IP ƒhƒ‰ƒCƒo‚ªí’“‚µ‚Ä‚¢‚Ü‚¹‚ñ\n"
-				"ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹^WebCache ƒtƒ@ƒCƒ‹‚Ì‚İ‰{——‚ª‰Â”\‚Å‚·\n"
-				"„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ\n");
+			McPuts ("â–¼ TCP/IP ãƒ‰ãƒ©ã‚¤ãƒãŒå¸¸é§ã—ã¦ã„ã¾ã›ã‚“\n"
+				"ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ï¼WebCache ãƒ•ã‚¡ã‚¤ãƒ«ã®ã¿é–²è¦§ãŒå¯èƒ½ã§ã™\n"
+				"â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n");
 		}
 		exit_code = ShowHtml (fname);
 	}
 	Tini ();
 
 	if (exit_code < 0) {
-		printf ("\n%s ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ\n", fname);
+		printf ("\n%s ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“\n", fname);
 		return (-1);
 	}
 	return (0);

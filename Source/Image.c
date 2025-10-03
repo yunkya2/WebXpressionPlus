@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>		/* spawnlp() ‚Ì‚½‚ß‚É•K—v */
+#include <unistd.h>		/* spawnlp() ã®ãŸã‚ã«å¿…è¦ */
 #include <sys/dos.h>
 #include <sys/iocs.h>
 #include "WebXpression.h"
@@ -22,9 +22,9 @@ extern void new_B_KEYINP (void), new_B_KEYSNS (void), new_BITSNS (void);
 extern void new_CONCTRL (void), new_MS_INIT (void), new_MS_CUROF (void), new_MS_CURST (void),
   new_SKEY_MOD (void);
 
-static short node = 0;		/* ƒm[ƒh” */
+static short node = 0;		/* ãƒãƒ¼ãƒ‰æ•° */
 static IMAGE_LIST *image_list_top, *image_list_end;
-static IMAGE_LIST *image_list_ptr;	/* Ÿ‚É•\¦‚·‚éƒCƒ[ƒW */
+static IMAGE_LIST *image_list_ptr;	/* æ¬¡ã«è¡¨ç¤ºã™ã‚‹ã‚¤ãƒ¡ãƒ¼ã‚¸ */
 
 
 
@@ -43,16 +43,16 @@ void DispImageList (void)
 {
 	IMAGE_LIST *t_ptr = image_list_top;
 
-	printf ("ƒCƒ[ƒWƒŠƒXƒg‚ğ•\¦‚µ‚Ü‚·\n");
+	printf ("ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒªã‚¹ãƒˆã‚’è¡¨ç¤ºã—ã¾ã™\n");
 	while (t_ptr != NULL) {
-		printf ("ƒCƒ[ƒW : %s\n", t_ptr->url);
+		printf ("ã‚¤ãƒ¡ãƒ¼ã‚¸ : %s\n", t_ptr->url);
 		t_ptr = t_ptr->next_ptr;
 	}
 }
 
 
 
-/* w’è‚³‚ê‚½ƒm[ƒh‚ğíœ‚·‚é */
+/* æŒ‡å®šã•ã‚ŒãŸãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ã™ã‚‹ */
 static void DeleteImageNode (IMAGE_LIST * t_ptr)
 {
 	if (image_list_top != NULL) {
@@ -61,25 +61,25 @@ static void DeleteImageNode (IMAGE_LIST * t_ptr)
 
 		if (t_ptr->before_ptr == NULL) {
 			if (t_ptr->next_ptr == NULL) {
-			    /* ‚P‚Â‚µ‚©‚È‚¢ƒm[ƒh‚ğíœ */
+			    /* ï¼‘ã¤ã—ã‹ãªã„ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ */
 				image_list_top = NULL;
 				image_list_end = NULL;
 				image_list_ptr = NULL;
 				free (t_ptr);
 			} else {
-			    /* æ“ª‚Ìƒm[ƒh‚ğíœ */
+			    /* å…ˆé ­ã®ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ */
 				image_list_top = t_ptr->next_ptr;
 				(t_ptr->next_ptr)->before_ptr = NULL;
 				free (t_ptr);
 			}
 		} else {
 			if (t_ptr->next_ptr == NULL) {
-			    /* ––”ö‚Ìƒm[ƒh‚ğíœ */
+			    /* æœ«å°¾ã®ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ */
 				image_list_end = t_ptr->before_ptr;
 				(t_ptr->before_ptr)->next_ptr = NULL;
 				free (t_ptr);
 			} else {
-			    /* ’†ŠÔ‚Ìƒm[ƒh‚ğíœ */
+			    /* ä¸­é–“ã®ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ */
 				(t_ptr->before_ptr)->next_ptr = t_ptr->next_ptr;
 				(t_ptr->next_ptr)->before_ptr = t_ptr->before_ptr;
 				free (t_ptr);
@@ -90,33 +90,33 @@ static void DeleteImageNode (IMAGE_LIST * t_ptr)
 
 
 
-/* æ“ª‚Éƒm[ƒh‚ğ‚P‚Â’Ç‰Á‚·‚é */
-/* Html2Xpression() ‚Å <IMG SRC> ‚ğŒ©‚Â‚¯Ÿ‘æŒÄ‚Î‚ê‚éƒ‹[ƒ`ƒ“ */
+/* å…ˆé ­ã«ãƒãƒ¼ãƒ‰ã‚’ï¼‘ã¤è¿½åŠ ã™ã‚‹ */
+/* Html2Xpression() ã§ <IMG SRC> ã‚’è¦‹ã¤ã‘æ¬¡ç¬¬å‘¼ã°ã‚Œã‚‹ãƒ«ãƒ¼ãƒãƒ³ */
 IMAGE_LIST *InsertImageNode (HTTPFILE * httpfile)
 {
 	IMAGE_LIST *t_ptr;
 
-    /* query, anchor ‚ğíœ‚·‚éˆ—‚ª•K—v‚©H */
+    /* query, anchor ã‚’å‰Šé™¤ã™ã‚‹å‡¦ç†ãŒå¿…è¦ã‹ï¼Ÿ */
 
 	if ((t_ptr = malloc (sizeof (IMAGE_LIST))) == NULL) {
 		McDbPuts ("InsertImageNode() : ");
-		McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
+		McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
 		return (NULL);
 	} else {
 		if (image_list_top == NULL) {
-		    /* ƒm[ƒh‚OŒÂ‚ÌŠ‚É’Ç‰Á */
+		    /* ãƒãƒ¼ãƒ‰ï¼å€‹ã®æ‰€ã«è¿½åŠ  */
 			image_list_top = t_ptr;
 			image_list_end = t_ptr;
 			image_list_ptr = t_ptr;
 			t_ptr->before_ptr = NULL;
 			t_ptr->next_ptr = NULL;
 		} else {
-		    /* æ“ª‚Éƒm[ƒh‚ğ’Ç‰Á */
+		    /* å…ˆé ­ã«ãƒãƒ¼ãƒ‰ã‚’è¿½åŠ  */
 			image_list_top->before_ptr = t_ptr;
 			t_ptr->before_ptr = NULL;
 			t_ptr->next_ptr = image_list_top;
 			image_list_top = t_ptr;
-			if (image_list_ptr == NULL)	/* “Ç‚İ‚İƒ|ƒCƒ“ƒ^‚ªæ“ª‚È‚ç‚Î */
+			if (image_list_ptr == NULL)	/* èª­ã¿è¾¼ã¿ãƒã‚¤ãƒ³ã‚¿ãŒå…ˆé ­ãªã‚‰ã° */
 				image_list_ptr = t_ptr;
 		}
 		t_ptr->x = 0;
@@ -128,7 +128,7 @@ IMAGE_LIST *InsertImageNode (HTTPFILE * httpfile)
 
 	node++;
 
-    /* ƒLƒƒƒbƒVƒ…‚µ‚Ä‚¢‚éƒm[ƒh‚ª cache_image ‚ğ‰z‚¦‚½‚ç–¢QÆ‚Ìƒm[ƒh‚ğíœ */
+    /* ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã—ã¦ã„ã‚‹ãƒãƒ¼ãƒ‰ãŒ cache_image ã‚’è¶ŠãˆãŸã‚‰æœªå‚ç…§ã®ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ */
 	if (node > cache_image) {
 		IMAGE_LIST *t2_ptr;
 		t2_ptr = image_list_end;
@@ -146,16 +146,16 @@ IMAGE_LIST *InsertImageNode (HTTPFILE * httpfile)
 
 
 
-/* url ‚Åw’è‚µ‚½ƒm[ƒh‚ğŒŸõ‚·‚é */
+/* url ã§æŒ‡å®šã—ãŸãƒãƒ¼ãƒ‰ã‚’æ¤œç´¢ã™ã‚‹ */
 IMAGE_LIST *SearchImageNode (HTTPFILE * httpfile)
 {
 	IMAGE_LIST *t_ptr = image_list_top;
 
-    /* query, anchor ‚ğíœ‚·‚éˆ—‚ª•K—v‚©H */
+    /* query, anchor ã‚’å‰Šé™¤ã™ã‚‹å‡¦ç†ãŒå¿…è¦ã‹ï¼Ÿ */
 	while (t_ptr != NULL) {
 		if (!strcmp (t_ptr->url, httpfile->url)) {
 			t_ptr->count++;
-			return (t_ptr);		/* Œ©‚Â‚©‚Á‚½‚Ì‚Åƒ|ƒCƒ“ƒ^‚ğ•Ô‚· */
+			return (t_ptr);		/* è¦‹ã¤ã‹ã£ãŸã®ã§ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™ */
 		}
 		t_ptr = t_ptr->next_ptr;
 	}
@@ -168,13 +168,13 @@ IMAGE_LIST *SearchImageNode (HTTPFILE * httpfile)
 static int LoadGif (HTTPFILE * httpfile)
 {
 	unsigned char *h = httpfile->content;
-	unsigned short xs, ys;	/* Œ³‰æ‘œ‚Ì‘å‚«‚³(Source) */
-	unsigned short xd, yd;	/* “WŠJŒã‰æ‘œ‚Ì‘å‚«‚³(Dest) */
+	unsigned short xs, ys;	/* å…ƒç”»åƒã®å¤§ãã•(Source) */
+	unsigned short xd, yd;	/* å±•é–‹å¾Œç”»åƒã®å¤§ãã•(Dest) */
 	GIFLOAD *g,*g_ret;
 	char temp_fname[256];
 	int mpu_cache;
 
-    /* .GIF ‚Ìƒwƒbƒ_‚©‚ç‰æ‘œ‚Ì‘å‚«‚³‚ğ“¾‚é */
+    /* .GIF ã®ãƒ˜ãƒƒãƒ€ã‹ã‚‰ç”»åƒã®å¤§ãã•ã‚’å¾—ã‚‹ */
 	xs = ((unsigned short) (*(h + 7))) * 256 + (unsigned short) (*(h + 6));
 	ys = ((unsigned short) (*(h + 9))) * 256 + (unsigned short) (*(h + 8));
 	if (image_compress) {
@@ -185,36 +185,36 @@ static int LoadGif (HTTPFILE * httpfile)
 		yd = ys;
 	}
 
-    /* temp_fname ‚ğ“¾‚é‚¾‚¯ */
+    /* temp_fname ã‚’å¾—ã‚‹ã ã‘ */
 	WCExist (httpfile, temp_fname);
 
 	if ((int) (image_list_ptr->data = _dos_malloc (xd * yd * 2)) < 0) {
 		McDbPuts ("LoadGif() : ");
-		McPuts ("¦ .GIF data —pƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
+		McPuts ("â€» .GIF data ç”¨ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
 		image_list_ptr->data = NULL;
 		return (-1);
 	}
 	if ((int) (g = _dos_malloc (sizeof (GIFLOAD))) < 0) {
 		McDbPuts ("LoadGif() : ");
-		McPuts ("¦ .GIF ƒ[ƒN—pƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
+		McPuts ("â€» .GIF ãƒ¯ãƒ¼ã‚¯ç”¨ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
 		_dos_mfree (image_list_ptr->data);
 		image_list_ptr->data = NULL;
 		return (-1);
 	}
-    /* ƒ[ƒN‚ğƒNƒŠƒA */
-	memset ((char *) g, 0, sizeof (GIFLOAD));	/* 0 ‚Å–„‚ß‚é */
+    /* ãƒ¯ãƒ¼ã‚¯ã‚’ã‚¯ãƒªã‚¢ */
+	memset ((char *) g, 0, sizeof (GIFLOAD));	/* 0 ã§åŸ‹ã‚ã‚‹ */
 	g->tpcolor = -1;
 	g->addr = (void *) -1;
 
-	McPuts (".GIF ‚ğ“WŠJ‚µ‚Ä‚¢‚Ü‚·...\n");
-    /* g->addr ‚É“WŠJŒã‚ÌƒCƒ[ƒW‚ªi_dos_malloc2() ‚ÅŠm•Û‚³‚ê‚Äj•Ô‚Á‚Ä‚­‚é */
-    mpu_cache = SetMpuCacheMode (0);	/* ƒLƒƒƒbƒVƒ…ƒIƒt */
-	g_ret = gifdecodemain (g, temp_fname);	/* .gif ƒfƒR[ƒh */
-	SetMpuCacheMode (mpu_cache);		/* ƒLƒƒƒbƒVƒ…‚ğŒ³‚Ìó‘Ô‚É */
+	McPuts (".GIF ã‚’å±•é–‹ã—ã¦ã„ã¾ã™...\n");
+    /* g->addr ã«å±•é–‹å¾Œã®ã‚¤ãƒ¡ãƒ¼ã‚¸ãŒï¼ˆ_dos_malloc2() ã§ç¢ºä¿ã•ã‚Œã¦ï¼‰è¿”ã£ã¦ãã‚‹ */
+    mpu_cache = SetMpuCacheMode (0);	/* ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚ªãƒ• */
+	g_ret = gifdecodemain (g, temp_fname);	/* .gif ãƒ‡ã‚³ãƒ¼ãƒ‰ */
+	SetMpuCacheMode (mpu_cache);		/* ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’å…ƒã®çŠ¶æ…‹ã« */
 
 	if ((int) g_ret < 0) {
 		McDbPuts ("LoadGif() : ");
-		McPuts ("¦ .GIF ‚ÌƒfƒR[ƒh‚ª‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½\n");
+		McPuts ("â€» .GIF ã®ãƒ‡ã‚³ãƒ¼ãƒ‰ãŒã§ãã¾ã›ã‚“ã§ã—ãŸ\n");
 		if ((int) g->addr > 0)
 			_dos_mfree (g->addr);
 		_dos_mfree (g);
@@ -224,7 +224,7 @@ static int LoadGif (HTTPFILE * httpfile)
 	}
 	if ((int) g->addr < 0) {
 		McDbPuts ("LoadGif() : ");
-		McPuts ("¦ .GIF “WŠJ—pƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
+		McPuts ("â€» .GIF å±•é–‹ç”¨ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
 		_dos_mfree (g);
 		_dos_mfree (image_list_ptr->data);
 		image_list_ptr->data = NULL;
@@ -254,19 +254,19 @@ static int LoadJpeg (HTTPFILE * httpfile)
 {
 	char cmdline[256];
 	FILE *fp;
-	unsigned short xs = 0, ys = 0;	/* Œ³‰æ‘œ‚Ì‘å‚«‚³(Source) */
-	unsigned short xd, yd;	/* “WŠJŒã‰æ‘œ‚Ì‘å‚«‚³(Dest) */
+	unsigned short xs = 0, ys = 0;	/* å…ƒç”»åƒã®å¤§ãã•(Source) */
+	unsigned short xd, yd;	/* å±•é–‹å¾Œç”»åƒã®å¤§ãã•(Dest) */
 	char temp_fname[256];
 	unsigned short *temp_image;
 	void *old_CONCTRL, *old_MS_INIT, *old_MS_CUROF, *old_MS_CURST, *old_SKEY_MOD;
 	char progressive = 0;
 	int jpeg_error_code = 0;
 
-    /* temp_fname ‚ğ“¾‚é‚¾‚¯ */
+    /* temp_fname ã‚’å¾—ã‚‹ã ã‘ */
 	WCExist (httpfile, temp_fname);
 
-    /* JPEG ƒtƒ@ƒCƒ‹‚Ì‚‚³^‰¡•‚ğ“¾‚é */
-    /* vwx ‚Ìƒ\[ƒX‚Ì file.c ‚ğQl‚É‚µ‚Ü‚µ‚½i‘½Ój */
+    /* JPEG ãƒ•ã‚¡ã‚¤ãƒ«ã®é«˜ã•ï¼æ¨ªå¹…ã‚’å¾—ã‚‹ */
+    /* vwx ã®ã‚½ãƒ¼ã‚¹ã® file.c ã‚’å‚è€ƒã«ã—ã¾ã—ãŸï¼ˆå¤šè¬ï¼‰ */
 	if ((fp = fopen (temp_fname, "rb")) != NULL) {
 		fseek (fp, 2, SEEK_SET);
 		while (!feof (fp)) {
@@ -281,7 +281,7 @@ static int LoadJpeg (HTTPFILE * httpfile)
 				fseek (fp, c - 2, 1);
 				continue;
 			}
-			if (c == 0xc2) {	/* ƒvƒƒOƒŒƒbƒVƒu JPEG H */
+			if (c == 0xc2) {	/* ãƒ—ãƒ­ã‚°ãƒ¬ãƒƒã‚·ãƒ– JPEG ï¼Ÿ */
 				progressive = !0;
 			}
 			fread (buf + 1, 7, sizeof (char), fp);
@@ -301,13 +301,13 @@ static int LoadJpeg (HTTPFILE * httpfile)
 
 	if ((int) (temp_image = _dos_malloc (xs * ys * 2)) < 0) {
 		McDbPuts ("LoadJpeg() : ");
-		McPuts ("¦ .JPG “WŠJ—pƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
+		McPuts ("â€» .JPG å±•é–‹ç”¨ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
 		image_list_ptr->data = NULL;
 		return (-1);
 	}
 	if (!progressive) {
-	    /* Baseline JPEGi•’Ê‚Ì JPEGj‚Ìê‡ */
-	    /* JPEGED.R ‚ª‰æ–Ê‚âƒ}ƒEƒX‚ğ‰Šú‰»‚µ‚È‚¢‚æ‚¤‚É */
+	    /* Baseline JPEGï¼ˆæ™®é€šã® JPEGï¼‰ã®å ´åˆ */
+	    /* JPEGED.R ãŒç”»é¢ã‚„ãƒã‚¦ã‚¹ã‚’åˆæœŸåŒ–ã—ãªã„ã‚ˆã†ã« */
 		old_CONCTRL = _dos_intvcs (0xff23, new_CONCTRL);
 		old_MS_INIT = _dos_intvcs (0x170, new_MS_INIT);
 		old_MS_CUROF = _dos_intvcs (0x172, new_MS_CUROF);
@@ -315,7 +315,7 @@ static int LoadJpeg (HTTPFILE * httpfile)
 		old_SKEY_MOD = _dos_intvcs (0x17d, new_SKEY_MOD);
 
 		sprintf (cmdline, "-VS%d,%d,$%p", xs, ys, temp_image);
-		McPuts (".JPG ‚ğ“WŠJ‚µ‚Ä‚¢‚Ü‚·...\n");
+		McPuts (".JPG ã‚’å±•é–‹ã—ã¦ã„ã¾ã™...\n");
 		jpeg_error_code = spawnlp (P_WAIT, "JPEGED.R", "JPEGED.R", cmdline, temp_fname, NULL);
 
 		_dos_intvcs (0x17d, old_SKEY_MOD);
@@ -324,14 +324,14 @@ static int LoadJpeg (HTTPFILE * httpfile)
 		_dos_intvcs (0x170, old_MS_INIT);
 		_dos_intvcs (0xff23, old_CONCTRL);
 	} else {
-	    /* Progressive JPEG ‚Ìê‡ */
+	    /* Progressive JPEG ã®å ´åˆ */
 		sprintf (cmdline, "-VS$%p", temp_image);
-		McPuts ("Progressive .JPG ‚ğ“WŠJ‚µ‚Ä‚¢‚Ü‚·...\n");
+		McPuts ("Progressive .JPG ã‚’å±•é–‹ã—ã¦ã„ã¾ã™...\n");
 		jpeg_error_code = spawnlp (P_WAIT, "VSJPEG.X", "VSJPEG.X", cmdline, temp_fname, NULL);
 	}
 	if (jpeg_error_code) {
 		McDbPuts ("LoadJpeg() : ");
-		McPuts ("¦ JPEG “WŠJ‚ÉƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½\n");
+		McPuts ("â€» JPEG å±•é–‹æ™‚ã«ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ\n");
 		_dos_mfree (temp_image);
 		image_list_ptr->data = NULL;
 		return (-1);
@@ -344,7 +344,7 @@ static int LoadJpeg (HTTPFILE * httpfile)
 				CompressImageHQ (image_list_ptr->data, temp_image, xs, ys);
 		} else {
 			McDbPuts ("LoadJpeg() : ");
-			McPuts ("¦ .JPG data —pƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
+			McPuts ("â€» .JPG data ç”¨ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
 			image_list_ptr->data = NULL;
 		}
 		_dos_mfree (temp_image);
@@ -364,32 +364,32 @@ static int LoadPNG (HTTPFILE * httpfile)
 {
 	char cmdline[256];
 	FILE *fp;
-	unsigned short xs = 0, ys = 0;	/* Œ³‰æ‘œ‚Ì‘å‚«‚³(Source) */
-	unsigned short xd, yd;	/* “WŠJŒã‰æ‘œ‚Ì‘å‚«‚³(Dest) */
+	unsigned short xs = 0, ys = 0;	/* å…ƒç”»åƒã®å¤§ãã•(Source) */
+	unsigned short xd, yd;	/* å±•é–‹å¾Œç”»åƒã®å¤§ãã•(Dest) */
 	char temp_fname[256];
 	unsigned short *temp_image;
 	int png_error_code = 0;
 
-    /* temp_fname ‚ğ“¾‚é‚¾‚¯ */
+    /* temp_fname ã‚’å¾—ã‚‹ã ã‘ */
 	WCExist (httpfile, temp_fname);
 
-    /* PNG ƒtƒ@ƒCƒ‹‚Ì‚‚³^‰¡•‚ğ“¾‚é */
+    /* PNG ãƒ•ã‚¡ã‚¤ãƒ«ã®é«˜ã•ï¼æ¨ªå¹…ã‚’å¾—ã‚‹ */
 	if ((fp = fopen (temp_fname, "rb")) != NULL) {
 		char header_work[9];
-		char *header = "\x89PNG\x0d\x0a\x1a\x0a";	/* .PNG ƒtƒ@ƒCƒ‹‚Ìƒwƒbƒ_ */
+		char *header = "\x89PNG\x0d\x0a\x1a\x0a";	/* .PNG ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ˜ãƒƒãƒ€ */
 		fread (header_work, sizeof (char), 8, fp);
 		if (strncmp (header_work, header, 8)) {
-			McPuts ("¦ .PNG ƒtƒ@ƒCƒ‹‚Å‚Í‚ ‚è‚Ü‚¹‚ñ\n");
+			McPuts ("â€» .PNG ãƒ•ã‚¡ã‚¤ãƒ«ã§ã¯ã‚ã‚Šã¾ã›ã‚“\n");
 			fclose (fp);
 			return (-1);
 		}
 		while (!feof (fp)) {
-			unsigned char type[5];	/* ƒ`ƒƒƒ“ƒNƒ^ƒCƒv */
+			unsigned char type[5];	/* ãƒãƒ£ãƒ³ã‚¯ã‚¿ã‚¤ãƒ— */
 			unsigned char *t = type;
-			int length;	/* ƒ`ƒƒƒ“ƒN’· */
-			unsigned char *l = (unsigned char *) (&length);		/* •Ï‚ÈƒLƒƒƒXƒg */
+			int length;	/* ãƒãƒ£ãƒ³ã‚¯é•· */
+			unsigned char *l = (unsigned char *) (&length);		/* å¤‰ãªã‚­ãƒ£ã‚¹ãƒˆ */
 
-			*l++ = fgetc (fp);	/* ‚±‚ê‚Å length ‚ğ“¾‚é */
+			*l++ = fgetc (fp);	/* ã“ã‚Œã§ length ã‚’å¾—ã‚‹ */
 			*l++ = fgetc (fp);
 			*l++ = fgetc (fp);
 			*l++ = fgetc (fp);
@@ -411,7 +411,7 @@ static int LoadPNG (HTTPFILE * httpfile)
 			if (!strnicmp (type, "IEND", 4))
 				break;
 			fseek (fp, length, SEEK_CUR);
-			fseek (fp, 4, SEEK_CUR);	/* CRC ‚Ì‚Ô‚ñ */
+			fseek (fp, 4, SEEK_CUR);	/* CRC ã®ã¶ã‚“ */
 		}
 		fclose (fp);
 	}
@@ -425,17 +425,17 @@ static int LoadPNG (HTTPFILE * httpfile)
 
 	if ((int) (temp_image = _dos_malloc (xs * ys * 2)) < 0) {
 		McDbPuts ("LoadPNG() : ");
-		McPuts ("¦ .PNG “WŠJ—pƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
+		McPuts ("â€» .PNG å±•é–‹ç”¨ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
 		image_list_ptr->data = NULL;
 		return (-1);
 	}
 	sprintf (cmdline, "-VS$%p", temp_image);
-	McPuts (".PNG ‚ğ“WŠJ‚µ‚Ä‚¢‚Ü‚·...\n");
+	McPuts (".PNG ã‚’å±•é–‹ã—ã¦ã„ã¾ã™...\n");
 	png_error_code = spawnlp (P_WAIT, "PNGL.X", "PNGL.X", cmdline, temp_fname, NULL);
 
 	if (png_error_code) {
 		McDbPuts ("LoadPNG() : ");
-		McPuts ("¦ PNG “WŠJ‚ÉƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½\n");
+		McPuts ("â€» PNG å±•é–‹æ™‚ã«ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ\n");
 		_dos_mfree (temp_image);
 		image_list_ptr->data = NULL;
 		return (-1);
@@ -450,7 +450,7 @@ static int LoadPNG (HTTPFILE * httpfile)
 			image_list_ptr->y = yd;
 		} else {
 			McDbPuts ("LoadPNG() : ");
-			McPuts ("¦ .PNG data —pƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
+			McPuts ("â€» .PNG data ç”¨ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
 			image_list_ptr->data = NULL;
 		}
 		_dos_mfree (temp_image);
@@ -466,16 +466,16 @@ static int LoadPNG (HTTPFILE * httpfile)
 
 
 
-/* ƒCƒ[ƒWƒŠƒXƒg“Ç‚İ‚İ */
-/* EVENT_IDLE ŒÄ‚Ño‚³‚ê‚éƒ‹[ƒ`ƒ“ */
+/* ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒªã‚¹ãƒˆèª­ã¿è¾¼ã¿ */
+/* EVENT_IDLE æ™‚å‘¼ã³å‡ºã•ã‚Œã‚‹ãƒ«ãƒ¼ãƒãƒ³ */
 int LoadImage (HTTPFILE * httpfile)
 {
 	HTTPFILE _t_httpfile, *t_httpfile = &_t_httpfile;
-	int gf_ret;		/* GetFile() ‚Ì•Ô‚è’l */
+	int gf_ret;		/* GetFile() ã®è¿”ã‚Šå€¤ */
 	int ret = LI_COMPLETE_NOT_LOAD;
 
 
-    /* “Ç‚İ‚Ş‚×‚«ƒCƒ[ƒW‚ª‚ ‚é‚©H */
+    /* èª­ã¿è¾¼ã‚€ã¹ãã‚¤ãƒ¡ãƒ¼ã‚¸ãŒã‚ã‚‹ã‹ï¼Ÿ */
 	if (image_list_ptr == NULL)
 		return (LI_COMPLETE_NOT_LOAD);
 
@@ -491,8 +491,8 @@ int LoadImage (HTTPFILE * httpfile)
 	gf_ret = GetFile (t_httpfile);
 	switch (gf_ret) {
 	case GF_SUCCESS:
-	    /* “Ç‚İ‚ß‚½ê‡ */
-		McDbPrintf ("LoadImage() : %s ‚ğˆ—‚µ‚Ü‚·\n", t_httpfile->url);
+	    /* èª­ã¿è¾¼ã‚ãŸå ´åˆ */
+		McDbPrintf ("LoadImage() : %s ã‚’å‡¦ç†ã—ã¾ã™\n", t_httpfile->url);
 
 		if (!strcmp (t_httpfile->content_type, "image/gif"))
 			LoadGif (t_httpfile);
@@ -504,27 +504,27 @@ int LoadImage (HTTPFILE * httpfile)
 
 		image_list_ptr = image_list_ptr->before_ptr;
 		if (image_list_ptr == NULL)
-			ret = LI_COMPLETE_LOAD;	/* ‚à‚¤“Ç‚İ‚Ş•K—v‚ª‚È‚¢ */
+			ret = LI_COMPLETE_LOAD;	/* ã‚‚ã†èª­ã¿è¾¼ã‚€å¿…è¦ãŒãªã„ */
 		else
-			ret = LI_CONTINUE_LOAD;	/* ‚Ü‚¾“Ç‚İ‚Ş•K—v‚ª‚ ‚é */
+			ret = LI_CONTINUE_LOAD;	/* ã¾ã èª­ã¿è¾¼ã‚€å¿…è¦ãŒã‚ã‚‹ */
 		break;
 
 	case GF_ABORT_BREAK:
 		image_list_ptr = NULL;
-		ret = LI_COMPLETE_NOT_LOAD;	/* ‚à‚¤“Ç‚İ‚Ş•K—v‚ª‚È‚¢ */
+		ret = LI_COMPLETE_NOT_LOAD;	/* ã‚‚ã†èª­ã¿è¾¼ã‚€å¿…è¦ãŒãªã„ */
 		break;
 
 	case GF_ABORT_ESC:
 	case GF_ERROR:
-	    /* “Ç‚İ‚ß‚È‚©‚Á‚½ê‡ */
+	    /* èª­ã¿è¾¼ã‚ãªã‹ã£ãŸå ´åˆ */
 		McDbPuts ("LoadImage() : ");
-		McPrintf ("%s ‚ª“Ç‚İ‚ß‚Ü‚¹‚ñ‚Å‚µ‚½\n", image_list_ptr->url);
+		McPrintf ("%s ãŒèª­ã¿è¾¼ã‚ã¾ã›ã‚“ã§ã—ãŸ\n", image_list_ptr->url);
 
 		image_list_ptr = image_list_ptr->before_ptr;
 		if (image_list_ptr == NULL)
-			ret = LI_COMPLETE_NOT_LOAD;	/* ‚à‚¤“Ç‚İ‚Ş•K—v‚ª‚È‚¢ */
+			ret = LI_COMPLETE_NOT_LOAD;	/* ã‚‚ã†èª­ã¿è¾¼ã‚€å¿…è¦ãŒãªã„ */
 		else
-			ret = LI_CONTINUE_NOT_LOAD;	/* ‚Ü‚¾“Ç‚İ‚Ş•K—v‚ª‚ ‚é */
+			ret = LI_CONTINUE_NOT_LOAD;	/* ã¾ã èª­ã¿è¾¼ã‚€å¿…è¦ãŒã‚ã‚‹ */
 		break;
 	}
 

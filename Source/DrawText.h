@@ -1,7 +1,7 @@
 /* DrawText.h */
 
 
-/* ŠÖ”ƒvƒƒgƒ^ƒCƒvéŒ¾ */
+/* é–¢æ•°ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ */
 int DrawTextAll (XPTEXT *);
 void ScrollForward (XPTEXT *);
 void ScrollBackward (XPTEXT *);

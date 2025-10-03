@@ -8,7 +8,7 @@
 
 
 
-/* HTTPFILE ‚ğ‰Šú‰»‚·‚é */
+/* HTTPFILE ã‚’åˆæœŸåŒ–ã™ã‚‹ */
 void InitHttpfile (HTTPFILE * h1)
 {
 	h1->url[0] = '\0';
@@ -28,7 +28,7 @@ void InitHttpfile (HTTPFILE * h1)
 
 
 #if	0
-/* HTTPFILE ‚ğƒRƒs[‚·‚é */
+/* HTTPFILE ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹ */
 void CopyHttpfile (HTTPFILE * h1, HTTPFILE * h2)
 {
 	strcpy (h1->url, h2->url);
@@ -49,29 +49,29 @@ void CopyHttpfile (HTTPFILE * h1, HTTPFILE * h2)
 
 
 /*
-   URL ‚ğŒ‹‡‚·‚é
-   h2 ‚ªŒ»İ‚Ì URL, h3 ‚ªƒNƒŠƒbƒN‚³‚ê‚½ URL, h1 ‚É’l‚ª•Ô‚é
-   h1 ‚Í InitHttpfile() ‚Å‰Šú‰»‚µ‚Ä‚¨‚­‚±‚Æ
-   "./" ‚â "../" ‚à‚µ‚Á‚©‚èˆ—‚·‚é
-   —á‚Pj
+   URL ã‚’çµåˆã™ã‚‹
+   h2 ãŒç¾åœ¨ã® URL, h3 ãŒã‚¯ãƒªãƒƒã‚¯ã•ã‚ŒãŸ URL, h1 ã«å€¤ãŒè¿”ã‚‹
+   h1 ã¯ InitHttpfile() ã§åˆæœŸåŒ–ã—ã¦ãŠãã“ã¨
+   "./" ã‚„ "../" ã‚‚ã—ã£ã‹ã‚Šå‡¦ç†ã™ã‚‹
+   ä¾‹ï¼‘ï¼‰
    h2->url = http://www.mankai.co.jp/index.htm
-   h3->url = mitsuky/index.htm ‚Ì
-   h1->url = http://www.mankai.co.jp/mitsuky/index.htm ‚ª•Ô‚é
-   —á‚Qj
+   h3->url = mitsuky/index.htm ã®æ™‚
+   h1->url = http://www.mankai.co.jp/mitsuky/index.htm ãŒè¿”ã‚‹
+   ä¾‹ï¼’ï¼‰
    h2->url = http://www.mankai.co.jp/mitsuky/index.htm
-   h3->url = ../index.htm ‚Ì
-   h1->url = http://www.mankai.co.jp/index.htm ‚ª•Ô‚é
-   —á‚Rj
+   h3->url = ../index.htm ã®æ™‚
+   h1->url = http://www.mankai.co.jp/index.htm ãŒè¿”ã‚‹
+   ä¾‹ï¼“ï¼‰
    h2->url = http://www.mankai.co.jp/index.htm
-   h3->url = http://www.softbank.co.jp/dosvstart/netx.htm ‚Ì
-   h1->url = http://www.softbank.co.jp/dosvstart/netx.htm ‚ª•Ô‚é
+   h3->url = http://www.softbank.co.jp/dosvstart/netx.htm ã®æ™‚
+   h1->url = http://www.softbank.co.jp/dosvstart/netx.htm ãŒè¿”ã‚‹
  */
 void CatHttpfile (HTTPFILE * h1, HTTPFILE * h2, char *url)
 {
 	char c, *s, *d;
-	signed short slash = 0;	/* path ’†‚Ì '/' ‚Ì” */
-	char *fname_start_s;	/* fname ‚ÌÅ‰‚ÌƒRƒs[Œ³ */
-	char *path_end_d;	/* path ‚ÌÅŒã‚ÌƒRƒs[æ */
+	signed short slash = 0;	/* path ä¸­ã® '/' ã®æ•° */
+	char *fname_start_s;	/* fname ã®æœ€åˆã®ã‚³ãƒ”ãƒ¼å…ƒ */
+	char *path_end_d;	/* path ã®æœ€å¾Œã®ã‚³ãƒ”ãƒ¼å…ˆ */
 	char exit_flag = 0;
 	char *scheme_str[] =
 	{"http://", "file://"};
@@ -82,17 +82,17 @@ void CatHttpfile (HTTPFILE * h1, HTTPFILE * h2, char *url)
 	short scheme_type;
 
 
-	/* scheme ‚É‚æ‚Á‚Ä•ªŠò */
+	/* scheme ã«ã‚ˆã£ã¦åˆ†å² */
 	for (scheme_type = 0; scheme_type < sizeof (scheme_str) / sizeof (char *); scheme_type++) {
 		if (!strnicmp (url, scheme_str[scheme_type], strlen (scheme_str[scheme_type])))
 			break;
 	}
 	switch (scheme_type) {
 	case SCHEME_HTTP:
-		/* â‘ÎƒpƒXw’è‚¾‚Á‚½ê‡ */
+		/* çµ¶å¯¾ãƒ‘ã‚¹æŒ‡å®šã ã£ãŸå ´åˆ */
 		strcpy (h1->scheme, "http://");
 		h1->port = 80;
-		/* hostname ‚ğƒRƒs[ */
+		/* hostname ã‚’ã‚³ãƒ”ãƒ¼ */
 		s = url + 7;
 		d = h1->hostname;
 		exit_flag = 0;
@@ -125,17 +125,17 @@ void CatHttpfile (HTTPFILE * h1, HTTPFILE * h2, char *url)
 		d = h1->path;
 		break;
 
-	default:		/* ƒpƒXˆÈ~‚Ì‚İ */
+	default:		/* ãƒ‘ã‚¹ä»¥é™ã®ã¿ */
 #if	1
 		if (h2 == NULL) {
-			McPuts ("CatHttpfile() : url ‚ªƒtƒ‹ƒpƒX‚Å‚È‚¢‚Ì‚É h2 ‚ª NULL ‚Å‚·"
-				"iWebXpression ‚ÌƒoƒO‚Å‚·\n");
+			McPuts ("CatHttpfile() : url ãŒãƒ•ãƒ«ãƒ‘ã‚¹ã§ãªã„ã®ã« h2 ãŒ NULL ã§ã™"
+				"ï¼ˆWebXpression ã®ãƒã‚°ã§ã™\n");
 		}
 #endif
 		strcpy (h1->scheme, h2->scheme);
 		strcpy (h1->hostname, h2->hostname);
 		h1->port = h2->port;
-		/* ‚Ü‚¸ h2->path ‚ğ h1->path ‚ÉƒRƒs[ */
+		/* ã¾ãš h2->path ã‚’ h1->path ã«ã‚³ãƒ”ãƒ¼ */
 		s = h2->path;
 		d = h1->path;
 		for (;;) {
@@ -143,18 +143,18 @@ void CatHttpfile (HTTPFILE * h1, HTTPFILE * h2, char *url)
 			if (c == '\0')
 				break;
 			if (c == '/')
-				slash++;	/* '/' ‚Ì”‚ğ”‚¦‚é */
+				slash++;	/* '/' ã®æ•°ã‚’æ•°ãˆã‚‹ */
 		}
 		--d;
 		s = url;
 		break;
 	}
 
-	/* Ÿ‚É url ‚ğƒRƒs[ */
+	/* æ¬¡ã« url ã‚’ã‚³ãƒ”ãƒ¼ */
 	fname_start_s = s;
 	path_end_d = d;
 
-	/* '/' ‚Ån‚Ü‚é URL ‚Ìê‡ */
+	/* '/' ã§å§‹ã¾ã‚‹ URL ã®å ´åˆ */
 	if (*s == '/') {
 		slash = 0;
 		path_end_d = d = h1->path;
@@ -176,33 +176,33 @@ void CatHttpfile (HTTPFILE * h1, HTTPFILE * h2, char *url)
 			break;
 
 		case '.':
-			if (*s == '/') {	/* "./" ‚Ìê‡ */
+			if (*s == '/') {	/* "./" ã®å ´åˆ */
 				s++;
 				fname_start_s = s;
 				--d;
 				path_end_d = d;
 			}
-			if ((*s == '.') && (*(s + 1) == '/')) {		/* "../" ‚Ìê‡ */
+			if ((*s == '.') && (*(s + 1) == '/')) {		/* "../" ã®å ´åˆ */
 				s += 2;
 				fname_start_s = s;
 				if (slash >= 2) {
 					int i;
 					d = h1->path;
-					/* ƒpƒX‚ğ‹t¸‚é */
+					/* ãƒ‘ã‚¹ã‚’é€†æ˜‡ã‚‹ */
 					for (i = 0; i < slash - 1; i++)
 						while (*d++ != '/');
 					path_end_d = d;
 					--slash;
 				} else {
-					/* ‚±‚±‚É—ˆ‚é‚ÍƒpƒX‚ª‚¨‚©‚µ‚¢ */
-					/*iƒ‹[ƒgƒfƒBƒŒƒNƒgƒŠ‚æ‚èã‚És‚±‚¤‚Æ‚µ‚Ä‚¢‚éj */
-					path_end_d = d = h1->path + 1;	/* ˆê‰ƒ‹[ƒg‚Éİ’è */
+					/* ã“ã“ã«æ¥ã‚‹æ™‚ã¯ãƒ‘ã‚¹ãŒãŠã‹ã—ã„ */
+					/*ï¼ˆãƒ«ãƒ¼ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚ˆã‚Šä¸Šã«è¡Œã“ã†ã¨ã—ã¦ã„ã‚‹ï¼‰ */
+					path_end_d = d = h1->path + 1;	/* ä¸€å¿œãƒ«ãƒ¼ãƒˆã«è¨­å®š */
 				}
 			}
 			break;
 
 		case '?':
-			/* strncpy() ‚Í––”ö‚É 0 ‚ğ•t‚¯‚Ä‚­‚ê‚È‚¢–‚É’ˆÓ */
+			/* strncpy() ã¯æœ«å°¾ã« 0 ã‚’ä»˜ã‘ã¦ãã‚Œãªã„äº‹ã«æ³¨æ„ */
 			strncpy (h1->fname, fname_start_s, (int) (s - fname_start_s - 1));
 			h1->fname[s - fname_start_s - 1] = '\0';
 			*path_end_d = '\0';
@@ -219,7 +219,7 @@ void CatHttpfile (HTTPFILE * h1, HTTPFILE * h2, char *url)
 			break;
 
 		case '#':
-			/* strncpy() ‚Í––”ö‚É 0 ‚ğ•t‚¯‚Ä‚­‚ê‚È‚¢–‚É’ˆÓ */
+			/* strncpy() ã¯æœ«å°¾ã« 0 ã‚’ä»˜ã‘ã¦ãã‚Œãªã„äº‹ã«æ³¨æ„ */
 			strncpy (h1->fname, fname_start_s, (int) (s - fname_start_s));
 			h1->fname[s - fname_start_s - 1] = '\0';
 			*path_end_d = '\0';

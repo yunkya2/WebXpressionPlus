@@ -1,4 +1,4 @@
-/* HTML ƒtƒ@ƒCƒ‹‚ğ Xpression Œ`®‚É•ÏŠ· */
+/* HTML ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ Xpression å½¢å¼ã«å¤‰æ› */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,7 +14,7 @@
 #include "Entity.h"
 #include "WebCache.h"
 
-/* Ü‚è•Ô‚·ƒhƒbƒg” */
+/* æŠ˜ã‚Šè¿”ã™ãƒ‰ãƒƒãƒˆæ•° */
 #define WRAP_DOT	((short)512)
 #define LINE_Y	16
 
@@ -26,13 +26,13 @@
 
 
 
-/* ‘Os\‘¢‘Ì (Before Line Buffer) */
+/* å‰è¡Œæ§‹é€ ä½“ (Before Line Buffer) */
 typedef struct _blb {
-	struct _blb *before_ptr;	/* ‘O‚Ì\‘¢‘Ì‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
-	struct _blb *next_ptr;	/* Ÿ‚Ì\‘¢‘Ì‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
-	unsigned char text[1024];	/* ƒeƒLƒXƒg–{‘Ì */
-	unsigned char *ptr;	/* ƒeƒLƒXƒg‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
-	unsigned short start_dot;	/* ¶’[‚©‚ç‰½ƒhƒbƒg–Ú‚©‚ç•\¦ŠJn‚·‚é‚© */
+	struct _blb *before_ptr;	/* å‰ã®æ§‹é€ ä½“ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
+	struct _blb *next_ptr;	/* æ¬¡ã®æ§‹é€ ä½“ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
+	unsigned char text[1024];	/* ãƒ†ã‚­ã‚¹ãƒˆæœ¬ä½“ */
+	unsigned char *ptr;	/* ãƒ†ã‚­ã‚¹ãƒˆã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
+	unsigned short start_dot;	/* å·¦ç«¯ã‹ã‚‰ä½•ãƒ‰ãƒƒãƒˆç›®ã‹ã‚‰è¡¨ç¤ºé–‹å§‹ã™ã‚‹ã‹ */
 	unsigned short font_size;
 	unsigned short width;
 } BLB;
@@ -42,15 +42,15 @@ typedef struct _work {
 	unsigned char *_t1;
 	unsigned char *_t2;
 
-	unsigned char *t1e, *t2e;	/* t1,t2 ‚Ì––”ö */
-	unsigned char *t1_old;	/* uˆ—‚µ‚½•¶š‚ğ“Ç‚Ü‚È‚©‚Á‚½–‚É‚·‚év—p */
-	unsigned char *t2t;	/* ‚»‚Ìs‚Ìæ“ª‚Ì t2 */
-	unsigned int t2_size;	/* t2 ‚ÌƒTƒCƒY */
+	unsigned char *t1e, *t2e;	/* t1,t2 ã®æœ«å°¾ */
+	unsigned char *t1_old;	/* ã€Œå‡¦ç†ã—ãŸæ–‡å­—ã‚’èª­ã¾ãªã‹ã£ãŸäº‹ã«ã™ã‚‹ã€ç”¨ */
+	unsigned char *t2t;	/* ãã®è¡Œã®å…ˆé ­ã® t2 */
+	unsigned int t2_size;	/* t2 ã®ã‚µã‚¤ã‚º */
 
-	unsigned short width;	/* ƒhƒbƒg” */
-	unsigned char space_flag;	/* ’¼‘O‚ª”¼ŠpƒXƒy[ƒX‚¾‚Á‚½‚© */
+	unsigned short width;	/* ãƒ‰ãƒƒãƒˆæ•° */
+	unsigned char space_flag;	/* ç›´å‰ãŒåŠè§’ã‚¹ãƒšãƒ¼ã‚¹ã ã£ãŸã‹ */
 
-	unsigned char align;	/* s‘µ‚¦ƒ‚[ƒh */
+	unsigned char align;	/* è¡Œæƒãˆãƒ¢ãƒ¼ãƒ‰ */
 	unsigned char tag_center;
 	unsigned char tag_href;
 	unsigned char tag_pre;
@@ -66,15 +66,15 @@ typedef struct _work {
 	char reset_align;
 	unsigned char tag_p_align;
 	unsigned short tag_list_no;
-	unsigned short font_size;	/* ”¼Šp•¶š‚Ì‘å‚«‚³ */
-	unsigned char *tag_head;	/* <head>‚ÌŸ‚ÌƒAƒhƒŒƒX */
-	unsigned char *tag_title;	/* <title>‚ÌŸ‚ÌƒAƒhƒŒƒX */
+	unsigned short font_size;	/* åŠè§’æ–‡å­—ã®å¤§ãã• */
+	unsigned char *tag_head;	/* <head>ã®æ¬¡ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ */
+	unsigned char *tag_title;	/* <title>ã®æ¬¡ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ */
 
-	char nl_flag;		/* ‰üs‚·‚é‚È‚ç = !0 */
-	char not_read_flag;	/* •¶š‚ğ“Ç‚Ü‚È‚©‚Á‚½–‚É‚·‚é‚È‚ç= !0 */
-	char reset_line_ptr;	/* =!0:sƒ|ƒCƒ“ƒ^‚ğ‰Šú‰»‚·‚é */
+	char nl_flag;		/* æ”¹è¡Œã™ã‚‹ãªã‚‰ = !0 */
+	char not_read_flag;	/* æ–‡å­—ã‚’èª­ã¾ãªã‹ã£ãŸäº‹ã«ã™ã‚‹ãªã‚‰= !0 */
+	char reset_line_ptr;	/* =!0:è¡Œãƒã‚¤ãƒ³ã‚¿ã‚’åˆæœŸåŒ–ã™ã‚‹ */
 
-	unsigned char pass;	/* =0:‚PƒpƒX–Ú =1:‚QƒpƒX–Ú */
+	unsigned char pass;	/* =0:ï¼‘ãƒ‘ã‚¹ç›® =1:ï¼’ãƒ‘ã‚¹ç›® */
 
 	unsigned char font_size_stack[256];
 	unsigned char font_size_stackptr;
@@ -85,8 +85,8 @@ typedef struct _work {
 	char ffifo[256];
 
 #define WORK_STR_SIZE	256
-    /* ”Ä—p•¶š—ñƒoƒbƒtƒ@ */
-    /* ‚QƒoƒCƒgƒR[ƒh‚ğl—¶‚µ‚Ä‚QƒoƒCƒg—]•ª‚Éæ‚é */
+    /* æ±ç”¨æ–‡å­—åˆ—ãƒãƒƒãƒ•ã‚¡ */
+    /* ï¼’ãƒã‚¤ãƒˆã‚³ãƒ¼ãƒ‰ã‚’è€ƒæ…®ã—ã¦ï¼’ãƒã‚¤ãƒˆä½™åˆ†ã«å–ã‚‹ */
 	char str[WORK_STR_SIZE + 2];
 
 #define WORK_ATTR_STR_SIZE	256
@@ -104,7 +104,7 @@ enum {
 	QUOTE_NON = 0, QUOTE_SINGLE, QUOTE_DOUBLE
 };
 
-/* “ú–{Œê•¶šƒR[ƒh */
+/* æ—¥æœ¬èªæ–‡å­—ã‚³ãƒ¼ãƒ‰ */
 enum {
 	K_JIS = 0, K_SJIS, K_EUC,
 };
@@ -125,163 +125,163 @@ void InitHtml2Xpression (void)
 
 
 
-/* •¶šƒR[ƒh‚ğ”»’è‚·‚é */
+/* æ–‡å­—ã‚³ãƒ¼ãƒ‰ã‚’åˆ¤å®šã™ã‚‹ */
 int GetCharset (HTTPFILE * httpfile)
 {
-	register unsigned char *t1 asm ("a4");	/* Œ»İˆ—‚µ‚Ä‚¢‚é•¶ši“]‘—Œ³j */
-	unsigned char *t1e;	/* t1 ‚Ì––”ö */
-	register unsigned char c asm ("d7");	/* ˆ—‚·‚é•¶š */
+	register unsigned char *t1 asm ("a4");	/* ç¾åœ¨å‡¦ç†ã—ã¦ã„ã‚‹æ–‡å­—ï¼ˆè»¢é€å…ƒï¼‰ */
+	unsigned char *t1e;	/* t1 ã®æœ«å°¾ */
+	register unsigned char c asm ("d7");	/* å‡¦ç†ã™ã‚‹æ–‡å­— */
 	int is_jis = 0;
 	int is_sjis = 0;
 	int is_euc = 0;
-#define WINNERS_POINT	8	/* is_xxx ‚ª‚±‚Ì“¾“_‚ğ‰z‚¦‚½‚ç‘Å‚¿Ø‚è */
-	unsigned char temp_charset = K_SJIS;	/* •¶šƒR[ƒh */
-	unsigned char jis_kanji = 0;	/* JIS —p ASCII(=0) or KANJI(=!0) */
-	int ret;		/* •Ô‚è’l */
+#define WINNERS_POINT	8	/* is_xxx ãŒã“ã®å¾—ç‚¹ã‚’è¶ŠãˆãŸã‚‰æ‰“ã¡åˆ‡ã‚Š */
+	unsigned char temp_charset = K_SJIS;	/* æ–‡å­—ã‚³ãƒ¼ãƒ‰ */
+	unsigned char jis_kanji = 0;	/* JIS ç”¨ ASCII(=0) or KANJI(=!0) */
+	int ret;		/* è¿”ã‚Šå€¤ */
 
-	t1 = httpfile->content;	/* html ƒtƒ@ƒCƒ‹–{‘Ì‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
-	t1e = t1 + httpfile->content_length;	/* t1 ‚ª t1e ‚É’B‚µ‚½‚çI—¹ */
+	t1 = httpfile->content;	/* html ãƒ•ã‚¡ã‚¤ãƒ«æœ¬ä½“ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
+	t1e = t1 + httpfile->content_length;	/* t1 ãŒ t1e ã«é”ã—ãŸã‚‰çµ‚äº† */
 
-    /* Œ…ƒ‹[ƒv */
+    /* æ¡ãƒ«ãƒ¼ãƒ— */
 	do {
 		c = *t1++;
 
-	    /* 0x1b ‚ğŒ©‚Â‚¯‚½‚ç JIS ‚Æ„‘ª */
+	    /* 0x1b ã‚’è¦‹ã¤ã‘ãŸã‚‰ JIS ã¨æ¨æ¸¬ */
 		if (c == 0x1b) {	/* ESC */
 			unsigned char c1 = *(t1 + 1);
 
 			if (*t1 == '(') {
-				if ((c1 == 'B') || (c1 == 'J')) {	/* Š¿š OUT */
+				if ((c1 == 'B') || (c1 == 'J')) {	/* æ¼¢å­— OUT */
 					jis_kanji = 0;
 					t1 += 2;
 					temp_charset = K_JIS;
 					if (++is_jis > WINNERS_POINT)
-						break;	/* ”»’èI—¹ */
+						break;	/* åˆ¤å®šçµ‚äº† */
 				}
 			}
 			if (*t1 == '$') {
-				if ((c1 == '@') || (c1 == 'B')) {	/* Š¿š IN */
+				if ((c1 == '@') || (c1 == 'B')) {	/* æ¼¢å­— IN */
 					jis_kanji = !0;
 					t1 += 2;
 					temp_charset = K_JIS;
 					if (++is_jis > WINNERS_POINT)
-						break;	/* ”»’èI—¹ */
+						break;	/* åˆ¤å®šçµ‚äº† */
 				}
 			}
-			continue;	/* Ÿ‚Ì•¶š‚Ö */
+			continue;	/* æ¬¡ã®æ–‡å­—ã¸ */
 		}
-	    /* 0x81~0x9f ‚ğŒ©‚Â‚¯‚½‚ç SJIS ‚Æ„‘ª */
+	    /* 0x81~0x9f ã‚’è¦‹ã¤ã‘ãŸã‚‰ SJIS ã¨æ¨æ¸¬ */
 		if ((c >= 0x81) && (c <= 0x9f)) {
 			temp_charset = K_SJIS;
 			if (++is_sjis > WINNERS_POINT)
-				break;	/* ”»’èI—¹ */
+				break;	/* åˆ¤å®šçµ‚äº† */
 		}
-	    /* 0xa1~0xcf ‚ğŒ©‚Â‚¯‚½‚ç EUC ‚Æ„‘ª */
+	    /* 0xa1~0xcf ã‚’è¦‹ã¤ã‘ãŸã‚‰ EUC ã¨æ¨æ¸¬ */
 		if ((c >= 0xa1) && (c <= 0xfe)) {
 			unsigned char c1 = *(t1 + 1);
 			if ((c1 >= 0xa1) && (c1 <= 0xfe)) {
 				temp_charset = K_EUC;
 				if (++is_euc > WINNERS_POINT)
-					break;	/* ”»’èI—¹ */
+					break;	/* åˆ¤å®šçµ‚äº† */
 			}
 		}
 		if ((c == 0x0d) || (c == 0x0a)) {
 			jis_kanji = 0;
-			continue;	/* Ÿ‚Ì•¶š‚Ö */
+			continue;	/* æ¬¡ã®æ–‡å­—ã¸ */
 		}
 		switch (temp_charset) {
 		case K_SJIS:
 			if ((c >= 0x80) && ((c < 0xa0) || (c > 0xdf)))
-				t1++;	/* Š¿š‚Ì‚QƒoƒCƒg–Ú‚ğƒXƒLƒbƒv */
+				t1++;	/* æ¼¢å­—ã®ï¼’ãƒã‚¤ãƒˆç›®ã‚’ã‚¹ã‚­ãƒƒãƒ— */
 			break;
 		case K_EUC:
 			if (c >= 0x80)
-				t1++;	/* Š¿š‚Ì‚QƒoƒCƒg–Ú‚ğƒXƒLƒbƒv */
+				t1++;	/* æ¼¢å­—ã®ï¼’ãƒã‚¤ãƒˆç›®ã‚’ã‚¹ã‚­ãƒƒãƒ— */
 			break;
 		case K_JIS:
 			if (jis_kanji)
-				t1++;	/* Š¿š‚Ì‚QƒoƒCƒg–Ú‚ğƒXƒLƒbƒv */
+				t1++;	/* æ¼¢å­—ã®ï¼’ãƒã‚¤ãƒˆç›®ã‚’ã‚¹ã‚­ãƒƒãƒ— */
 			break;
 		}
 	} while (t1 < t1e);
 
-    /* is_sjis, is_jis, is_euc ‚Ì’†‚Åˆê”Ô‘å‚«‚È‚à‚Ì‚ğ•¶šƒR[ƒh‚Æ‚·‚é */
+    /* is_sjis, is_jis, is_euc ã®ä¸­ã§ä¸€ç•ªå¤§ããªã‚‚ã®ã‚’æ–‡å­—ã‚³ãƒ¼ãƒ‰ã¨ã™ã‚‹ */
 	if (is_sjis > is_jis) {
-	    /* SJIS ‚© EUC */
+	    /* SJIS ã‹ EUC */
 		if (is_sjis > is_euc)
 			ret = K_SJIS;
 		else
 			ret = K_EUC;
 	} else {
-	    /* JIS ‚© EUC */
+	    /* JIS ã‹ EUC */
 		if (is_jis > is_euc)
 			ret = K_JIS;
 		else
 			ret = K_EUC;
 	}
 #if	0
-	printf ("•¶šƒR[ƒh:%d,%d,%d\n", is_sjis, is_jis, is_euc);
+	printf ("æ–‡å­—ã‚³ãƒ¼ãƒ‰:%d,%d,%d\n", is_sjis, is_jis, is_euc);
 #endif
 	return (ret);
 }
 
 
 
-/* httpfile->content ‚ğ SJIS ‚É•ÏŠ· */
-/* httpfile->content_length ‚à‘‚«‘Ö‚¦‚é */
+/* httpfile->content ã‚’ SJIS ã«å¤‰æ› */
+/* httpfile->content_length ã‚‚æ›¸ãæ›¿ãˆã‚‹ */
 int Html2Sjis (HTTPFILE * httpfile)
 {
 	unsigned char *new_html;
 
-	register unsigned char *t1 asm ("a4");	/* Œ»İˆ—‚µ‚Ä‚¢‚é•¶ši“]‘—Œ³j */
-	register unsigned char *t2 asm ("a5");	/* V              i“]‘—æj */
-	register unsigned char c asm ("d7");	/* ˆ—‚·‚é•¶š */
-	unsigned char *t1e, *t2e;	/* t1,t2 ‚Ì––”ö */
-	unsigned int t2_size;	/* t2 ‚ÌƒTƒCƒY */
+	register unsigned char *t1 asm ("a4");	/* ç¾åœ¨å‡¦ç†ã—ã¦ã„ã‚‹æ–‡å­—ï¼ˆè»¢é€å…ƒï¼‰ */
+	register unsigned char *t2 asm ("a5");	/* ã€ƒ              ï¼ˆè»¢é€å…ˆï¼‰ */
+	register unsigned char c asm ("d7");	/* å‡¦ç†ã™ã‚‹æ–‡å­— */
+	unsigned char *t1e, *t2e;	/* t1,t2 ã®æœ«å°¾ */
+	unsigned int t2_size;	/* t2 ã®ã‚µã‚¤ã‚º */
 
-	unsigned char temp_charset;	/* •¶šƒR[ƒh */
+	unsigned char temp_charset;	/* æ–‡å­—ã‚³ãƒ¼ãƒ‰ */
 
 
 	temp_charset = GetCharset (httpfile);
 	if (temp_charset == K_SJIS) {
-		McDbPuts ("SJIS ‚Æ”»’è\n");
+		McDbPuts ("SJIS ã¨åˆ¤å®š\n");
 		return (0);
 	}
 #define SJIS_TEXT_BUFFER_YOYUU 32768
 	t2_size = httpfile->content_length + SJIS_TEXT_BUFFER_YOYUU;
 
-    /* ‚Æ‚è‚ ‚¦‚¸ŒÅ’èƒTƒCƒY‚ÅŠm•Û */
+    /* ã¨ã‚Šã‚ãˆãšå›ºå®šã‚µã‚¤ã‚ºã§ç¢ºä¿ */
 	new_html = _dos_malloc (t2_size);
 	if ((int) new_html < 0) {
-		McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñiSJIS •ÏŠ·ƒoƒbƒtƒ@—p‚Ìƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+		McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆSJIS å¤‰æ›ãƒãƒƒãƒ•ã‚¡ç”¨ã®ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 		return (-1);
 	}
-	t1 = httpfile->content;	/* html ƒtƒ@ƒCƒ‹–{‘Ì‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
-	t1e = t1 + httpfile->content_length;	/* t1 ‚ª t1e ‚É’B‚µ‚½‚çI—¹ */
-	t2 = new_html;		/* SJIS ƒeƒLƒXƒgƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
+	t1 = httpfile->content;	/* html ãƒ•ã‚¡ã‚¤ãƒ«æœ¬ä½“ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
+	t1e = t1 + httpfile->content_length;	/* t1 ãŒ t1e ã«é”ã—ãŸã‚‰çµ‚äº† */
+	t2 = new_html;		/* SJIS ãƒ†ã‚­ã‚¹ãƒˆãƒãƒƒãƒ•ã‚¡ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
 	t2e = t2 + t2_size - YOYUU;
-    /* t2 ‚ª t2e ‚É’B‚µ‚½‚çI—¹iƒoƒbƒtƒ@•s‘«j */
+    /* t2 ãŒ t2e ã«é”ã—ãŸã‚‰çµ‚äº†ï¼ˆãƒãƒƒãƒ•ã‚¡ä¸è¶³ï¼‰ */
 
 	if (temp_charset == K_JIS) {
-	    /* JIS ‚Ì */
-		unsigned char jis_kanji = 0;	/* JIS —p ASCII(=0) or KANJI(=!0) */
-		McDbPuts ("JIS ‚Æ”»’è\n");
-	    /* Œ…ƒ‹[ƒv */
+	    /* JIS ã®æ™‚ */
+		unsigned char jis_kanji = 0;	/* JIS ç”¨ ASCII(=0) or KANJI(=!0) */
+		McDbPuts ("JIS ã¨åˆ¤å®š\n");
+	    /* æ¡ãƒ«ãƒ¼ãƒ— */
 		do {
 			c = *t1++;
 
-		    /* Š¿š IN/OUT ƒtƒ‰ƒO‚Ìˆ— */
+		    /* æ¼¢å­— IN/OUT ãƒ•ãƒ©ã‚°ã®å‡¦ç† */
 			if (c == 0x1b) {	/* ESC */
 				unsigned char c1 = *(t1 + 1);
 				switch (*t1) {
 				case '(':
-					if ((c1 == 'B') || (c1 == 'J')) {	/* Š¿š OUT */
+					if ((c1 == 'B') || (c1 == 'J')) {	/* æ¼¢å­— OUT */
 						jis_kanji = 0;
 						t1 += 2;
 					}
 					break;
 				case '$':
-					if ((c1 == '@') || (c1 == 'B')) {	/* Š¿š IN */
+					if ((c1 == '@') || (c1 == 'B')) {	/* æ¼¢å­— IN */
 						jis_kanji = !0;
 						t1 += 2;
 					}
@@ -289,12 +289,12 @@ int Html2Sjis (HTTPFILE * httpfile)
 				default:
 					break;
 				}
-				continue;	/* Ÿ‚Ì•¶š‚Ö */
+				continue;	/* æ¬¡ã®æ–‡å­—ã¸ */
 			}
 			if (!jis_kanji) {
 				*t2++ = c;
 			} else {
-			    /* Š¿š‚Ìê‡ */
+			    /* æ¼¢å­—ã®å ´åˆ */
 				if ((c == 0x0d) || (c == 0x0a)) {
 					jis_kanji = 0;
 					continue;
@@ -303,25 +303,25 @@ int Html2Sjis (HTTPFILE * httpfile)
 			}
 		} while ((t1 < t1e) && (t2 < t2e));
 	} else {
-	    /* EUC ‚Ì */
-		McDbPuts ("EUC ‚Æ”»’è\n");
-	    /* Œ…ƒ‹[ƒv */
+	    /* EUC ã®æ™‚ */
+		McDbPuts ("EUC ã¨åˆ¤å®š\n");
+	    /* æ¡ãƒ«ãƒ¼ãƒ— */
 		do {
 			c = *t1++;
 
 			if (c < 0x80) {
 				*t2++ = c;
 			} else {
-			    /* Š¿š‚Ìê‡ */
+			    /* æ¼¢å­—ã®å ´åˆ */
 				Jis2sjis (((c & 0x7f)), (*t1++ & 0x7f), t2);
 			}
 		} while ((t1 < t1e) && (t2 < t2e));
 	}
 
-	_dos_mfree (httpfile->content);		/* •ÏŠ·‘O‚Ì HTML ‚ÍÌ‚Ä‚é */
+	_dos_mfree (httpfile->content);		/* å¤‰æ›å‰ã® HTML ã¯æ¨ã¦ã‚‹ */
 	httpfile->content = new_html;
 	httpfile->content_length = (int) (t2 - new_html);
-    /* —]•ª‚ÉŠm•Û‚µ‚½ƒƒ‚ƒŠƒuƒƒbƒN‚ğØ‚èÌ‚Ä‚é */
+    /* ä½™åˆ†ã«ç¢ºä¿ã—ãŸãƒ¡ãƒ¢ãƒªãƒ–ãƒ­ãƒƒã‚¯ã‚’åˆ‡ã‚Šæ¨ã¦ã‚‹ */
 	_dos_setblock (new_html, httpfile->content_length);
 
 #if	0
@@ -339,8 +339,8 @@ int Html2Sjis (HTTPFILE * httpfile)
 
 
 
-/* ‚»‚Ì•¶š‚ª HTML ã‚Å‚ÌuƒXƒy[ƒXv‚© */
-/* iƒ^ƒu‚â‰üs‚àƒXƒy[ƒX‚Æ‚µ‚Äˆµ‚¤j */
+/* ãã®æ–‡å­—ãŒ HTML ä¸Šã§ã®ã€Œã‚¹ãƒšãƒ¼ã‚¹ã€ã‹ */
+/* ï¼ˆã‚¿ãƒ–ã‚„æ”¹è¡Œã‚‚ã‚¹ãƒšãƒ¼ã‚¹ã¨ã—ã¦æ‰±ã†ï¼‰ */
 static inline char IsHtmlSpace (unsigned char c)
 {
 	if ((c == ' ') || (c == 0x09) || (c == 0x0a) || (c == 0x0d))
@@ -351,9 +351,9 @@ static inline char IsHtmlSpace (unsigned char c)
 
 
 
-/* ƒXƒy[ƒXEƒ^ƒuE‰üs‚ğ“Ç‚İ”ò‚Î‚· */
-/* •Ô‚è’l =0:³íI—¹ / =!0:ˆÙíI—¹ */
-/* w->_t1 : Ÿ‚Ì•¶š */
+/* ã‚¹ãƒšãƒ¼ã‚¹ãƒ»ã‚¿ãƒ–ãƒ»æ”¹è¡Œã‚’èª­ã¿é£›ã°ã™ */
+/* è¿”ã‚Šå€¤ =0:æ­£å¸¸çµ‚äº† / =!0:ç•°å¸¸çµ‚äº† */
+/* w->_t1 : æ¬¡ã®æ–‡å­— */
 static char SkipSpace (WORK * w)
 {
 	unsigned char c;
@@ -362,8 +362,8 @@ static char SkipSpace (WORK * w)
 	do {
 		c = *w->_t1++;
 		if (w->_t1 > t1e) {
-			McDbPuts ("SkipSpace():ƒeƒLƒXƒg‚Ì––”ö‚É’B‚µ‚Ü‚µ‚½\n");
-			return (!0);	/* ƒeƒLƒXƒg‚Ì––”ö‚É’B‚µ‚½ */
+			McDbPuts ("SkipSpace():ãƒ†ã‚­ã‚¹ãƒˆã®æœ«å°¾ã«é”ã—ã¾ã—ãŸ\n");
+			return (!0);	/* ãƒ†ã‚­ã‚¹ãƒˆã®æœ«å°¾ã«é”ã—ãŸ */
 		}
 	} while (IsHtmlSpace (c));
 
@@ -373,9 +373,9 @@ static char SkipSpace (WORK * w)
 
 
 
-/* '>' ‚ÌŸ‚Ü‚Å“Ç‚İ”ò‚Î‚· */
-/* •Ô‚è’l =0:³íI—¹ / =!0:ˆÙíI—¹ */
-/* w->_t1 : Ÿ‚Ì•¶š */
+/* '>' ã®æ¬¡ã¾ã§èª­ã¿é£›ã°ã™ */
+/* è¿”ã‚Šå€¤ =0:æ­£å¸¸çµ‚äº† / =!0:ç•°å¸¸çµ‚äº† */
+/* w->_t1 : æ¬¡ã®æ–‡å­— */
 static char SkipLt (WORK * w)
 {
 	unsigned char c;
@@ -386,7 +386,7 @@ static char SkipLt (WORK * w)
 		c = *t1++;
 		if (t1 > t1e) {
 			w->_t1 = t1;
-			return (!0);	/* ƒeƒLƒXƒg‚Ì––”ö‚É’B‚µ‚½ */
+			return (!0);	/* ãƒ†ã‚­ã‚¹ãƒˆã®æœ«å°¾ã«é”ã—ãŸ */
 		}
 		if (c == '>')
 			break;
@@ -399,9 +399,9 @@ static char SkipLt (WORK * w)
 
 
 /*
-   w->t1 ‚©‚ç t2 ‚Ö•¶š—ñ‚ğƒRƒs[‚·‚éE•¶š”§ŒÀ•t‚«
-   ƒNƒI[ƒeƒBƒ“ƒO‚³‚ê‚Ä‚¢‚Ä‚à‚n‚j
-   •Ô‚è’l =0:³íI—¹ / =!0:ˆÙíI—¹
+   w->t1 ã‹ã‚‰ t2 ã¸æ–‡å­—åˆ—ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹ãƒ»æ–‡å­—æ•°åˆ¶é™ä»˜ã
+   ã‚¯ã‚ªãƒ¼ãƒ†ã‚£ãƒ³ã‚°ã•ã‚Œã¦ã„ã¦ã‚‚ï¼¯ï¼«
+   è¿”ã‚Šå€¤ =0:æ­£å¸¸çµ‚äº† / =!0:ç•°å¸¸çµ‚äº†
  */
 static char StrncpyQuoted (char *d, WORK * w, int n)
 {
@@ -429,7 +429,7 @@ static char StrncpyQuoted (char *d, WORK * w, int n)
 	while (1) {
 		c = *t1++;
 		if (c < 0x80) {
-		    /* ‚PƒoƒCƒg•¶š‚Ìê‡ */
+		    /* ï¼‘ãƒã‚¤ãƒˆæ–‡å­—ã®å ´åˆ */
 			switch (quote_flag) {
 			case QUOTE_NON:
 				if (IsHtmlSpace (c)) {
@@ -442,7 +442,7 @@ static char StrncpyQuoted (char *d, WORK * w, int n)
 				}
 				if (c == '>') {
 					*t2 = '\0';
-					w->_t1 = t1 - 1;	/* '>' ‚Ìã‚ğw‚·‚æ‚¤‚É */
+					w->_t1 = t1 - 1;	/* '>' ã®ä¸Šã‚’æŒ‡ã™ã‚ˆã†ã« */
 					return (0);
 				}
 				break;
@@ -470,27 +470,27 @@ static char StrncpyQuoted (char *d, WORK * w, int n)
 			*t2++ = c;
 		} else {
 			if ((c >= 0xa0) && (c <= 0xdf)) {
-			    /* ”¼ŠpƒJƒi */
+			    /* åŠè§’ã‚«ãƒŠ */
 				*t2++ = c;
 			} else {
-			    /* Š¿š */
+			    /* æ¼¢å­— */
 				*t2++ = c;
 				*t2++ = *t1++;
 			}
 		}
 
-	    /* •¶š—ñƒoƒbƒtƒ@‚ª‚ ‚Ó‚ê‚½‚©HiƒNƒI[ƒeƒBƒ“ƒO‚ª•Â‚¶‚Ä‚È‚¢‚Æ‚©j */
+	    /* æ–‡å­—åˆ—ãƒãƒƒãƒ•ã‚¡ãŒã‚ãµã‚ŒãŸã‹ï¼Ÿï¼ˆã‚¯ã‚ªãƒ¼ãƒ†ã‚£ãƒ³ã‚°ãŒé–‰ã˜ã¦ãªã„ã¨ã‹ï¼‰ */
 		if (t2 >= t2e) {
-		    /* ƒeƒLƒXƒg‚ğ“Ç‚İ”ò‚Î‚·ˆ— */
-		    /* ƒeƒLƒXƒg‚Ì––”ö‚É’B‚µ‚È‚¢ŒÀ‚è³íI—¹‚Æ‚µ‚Äˆµ‚¤ */
-		    /* i“–‘R•¶š—ñ‚Í“r’†‚Ü‚Å‚µ‚©ƒRƒs[‚³‚ê‚Ä‚¢‚È‚¢‚¯‚Çj */
+		    /* ãƒ†ã‚­ã‚¹ãƒˆã‚’èª­ã¿é£›ã°ã™å‡¦ç† */
+		    /* ãƒ†ã‚­ã‚¹ãƒˆã®æœ«å°¾ã«é”ã—ãªã„é™ã‚Šæ­£å¸¸çµ‚äº†ã¨ã—ã¦æ‰±ã† */
+		    /* ï¼ˆå½“ç„¶æ–‡å­—åˆ—ã¯é€”ä¸­ã¾ã§ã—ã‹ã‚³ãƒ”ãƒ¼ã•ã‚Œã¦ã„ãªã„ã‘ã©ï¼‰ */
 			while (1) {
 				unsigned char *t1e = w->t1e;
 				c = *t1++;
 
 				if (t1 > t1e) {
 					w->_t1 = t1;
-					return (!0);	/* ƒeƒLƒXƒg‚Ì––”ö‚É’B‚µ‚½ */
+					return (!0);	/* ãƒ†ã‚­ã‚¹ãƒˆã®æœ«å°¾ã«é”ã—ãŸ */
 				}
 				switch (quote_flag) {
 				case QUOTE_NON:
@@ -531,15 +531,15 @@ static char StrncpyQuoted (char *d, WORK * w, int n)
 			}
 		}
 	}
-	return (0);		/* ‚±‚±‚É‚Í—ˆ‚È‚¢ƒnƒY */
+	return (0);		/* ã“ã“ã«ã¯æ¥ãªã„ãƒã‚º */
 }
 
 
 
 /*
-   •¶š—ñ‚ğ“Ç‚İ”ò‚Î‚·
-   ƒNƒI[ƒeƒBƒ“ƒO‚³‚ê‚Ä‚¢‚Ä‚à‚n‚j
-   •Ô‚è’l =0:³íI—¹ / =!0:ˆÙíI—¹
+   æ–‡å­—åˆ—ã‚’èª­ã¿é£›ã°ã™
+   ã‚¯ã‚ªãƒ¼ãƒ†ã‚£ãƒ³ã‚°ã•ã‚Œã¦ã„ã¦ã‚‚ï¼¯ï¼«
+   è¿”ã‚Šå€¤ =0:æ­£å¸¸çµ‚äº† / =!0:ç•°å¸¸çµ‚äº†
  */
 static char SkipQuoted (WORK * w, int n)
 {
@@ -568,7 +568,7 @@ static char SkipQuoted (WORK * w, int n)
 	while (1) {
 		c = *t1++;
 		if (c < 0x80) {
-		    /* ‚PƒoƒCƒg•¶š‚Ìê‡ */
+		    /* ï¼‘ãƒã‚¤ãƒˆæ–‡å­—ã®å ´åˆ */
 			switch (quote_flag) {
 			case QUOTE_NON:
 				if (IsHtmlSpace (c)) {
@@ -579,7 +579,7 @@ static char SkipQuoted (WORK * w, int n)
 						return (0);
 				}
 				if (c == '>') {
-					w->_t1 = t1 - 1;	/* '>' ‚Ìã‚ğw‚·‚æ‚¤‚É */
+					w->_t1 = t1 - 1;	/* '>' ã®ä¸Šã‚’æŒ‡ã™ã‚ˆã†ã« */
 					return (0);
 				}
 				break;
@@ -604,25 +604,25 @@ static char SkipQuoted (WORK * w, int n)
 			}
 		} else {
 			if ((c >= 0xa0) && (c <= 0xdf)) {
-			    /* ”¼ŠpƒJƒi */
+			    /* åŠè§’ã‚«ãƒŠ */
 			} else {
-			    /* Š¿š */
+			    /* æ¼¢å­— */
 				t1++;
 			}
 		}
-	    /* •¶š—ñƒoƒbƒtƒ@‚ª‚ ‚Ó‚ê‚½‚©HiƒNƒI[ƒeƒBƒ“ƒO‚ª•Â‚¶‚Ä‚È‚¢‚Æ‚©j */
+	    /* æ–‡å­—åˆ—ãƒãƒƒãƒ•ã‚¡ãŒã‚ãµã‚ŒãŸã‹ï¼Ÿï¼ˆã‚¯ã‚ªãƒ¼ãƒ†ã‚£ãƒ³ã‚°ãŒé–‰ã˜ã¦ãªã„ã¨ã‹ï¼‰ */
 		counter++;
 		if (counter >= n) {
-		    /* ƒeƒLƒXƒg‚ğ“Ç‚İ”ò‚Î‚·ˆ— */
-		    /* ƒeƒLƒXƒg‚Ì––”ö‚É’B‚µ‚È‚¢ŒÀ‚è³íI—¹‚Æ‚µ‚Äˆµ‚¤ */
-		    /* i“–‘R•¶š—ñ‚Í“r’†‚Ü‚Å‚µ‚©ƒRƒs[‚³‚ê‚Ä‚¢‚È‚¢‚¯‚Çj */
+		    /* ãƒ†ã‚­ã‚¹ãƒˆã‚’èª­ã¿é£›ã°ã™å‡¦ç† */
+		    /* ãƒ†ã‚­ã‚¹ãƒˆã®æœ«å°¾ã«é”ã—ãªã„é™ã‚Šæ­£å¸¸çµ‚äº†ã¨ã—ã¦æ‰±ã† */
+		    /* ï¼ˆå½“ç„¶æ–‡å­—åˆ—ã¯é€”ä¸­ã¾ã§ã—ã‹ã‚³ãƒ”ãƒ¼ã•ã‚Œã¦ã„ãªã„ã‘ã©ï¼‰ */
 			while (1) {
 				unsigned char *t1e = w->t1e;
 				c = *t1++;
 
 				if (t1 > t1e) {
 					w->_t1 = t1;
-					return (!0);	/* ƒeƒLƒXƒg‚Ì––”ö‚É’B‚µ‚½ */
+					return (!0);	/* ãƒ†ã‚­ã‚¹ãƒˆã®æœ«å°¾ã«é”ã—ãŸ */
 				}
 				switch (quote_flag) {
 				case QUOTE_NON:
@@ -663,18 +663,18 @@ static char SkipQuoted (WORK * w, int n)
 			}
 		}
 	}
-	return (!0);		/* ‚±‚±‚É‚Í—ˆ‚È‚¢ƒnƒY */
+	return (!0);		/* ã“ã“ã«ã¯æ¥ãªã„ãƒã‚º */
 }
 
 
 
 /*
-   t1 ‚Ìw‚·ƒAƒgƒŠƒrƒ…[ƒg‚ğ“Ç‚İ”ò‚Î‚·
-   w->_t1 ‚Íƒ^ƒO‚Ìæ“ª‚ğw‚µ‚Ä‚¢‚é‚±‚ÆiƒXƒy[ƒX•s‰Âj
+   t1 ã®æŒ‡ã™ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã‚’èª­ã¿é£›ã°ã™
+   w->_t1 ã¯ã‚¿ã‚°ã®å…ˆé ­ã‚’æŒ‡ã—ã¦ã„ã‚‹ã“ã¨ï¼ˆã‚¹ãƒšãƒ¼ã‚¹ä¸å¯ï¼‰
    <A HREF="foo" NAME="aaa">
-   _@La         Lb   w->_t1 ‚ª a ‚ÌAw->_t1 = b ‚Æ‚È‚é
-   •Ô‚è’l =0:³íI—¹ / =!0:ˆÙíI—¹
-   w->_t1 ‚Í '>'A‚à‚µ‚­‚ÍŸ‚ÌƒAƒgƒŠƒrƒ…[ƒg‚Ìã‚ğw‚µ‚Ä‚¢‚éiƒXƒy[ƒX“Ç‚İ”ò‚Î‚µÏ‚İj
+   _ã€€La         Lb   w->_t1 ãŒ a ã®æ™‚ã€w->_t1 = b ã¨ãªã‚‹
+   è¿”ã‚Šå€¤ =0:æ­£å¸¸çµ‚äº† / =!0:ç•°å¸¸çµ‚äº†
+   w->_t1 ã¯ '>'ã€ã‚‚ã—ãã¯æ¬¡ã®ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã®ä¸Šã‚’æŒ‡ã—ã¦ã„ã‚‹ï¼ˆã‚¹ãƒšãƒ¼ã‚¹èª­ã¿é£›ã°ã—æ¸ˆã¿ï¼‰
  */
 static unsigned char SkipAttrNo (WORK * w)
 {
@@ -687,22 +687,22 @@ static unsigned char SkipAttrNo (WORK * w)
 		c1 = *t1++;
 		if (t1 > t1e) {
 			w->_t1 = t1;
-			return (!0);	/* ƒeƒLƒXƒg‚Ì––”ö‚É’B‚µ‚½ */
+			return (!0);	/* ãƒ†ã‚­ã‚¹ãƒˆã®æœ«å°¾ã«é”ã—ãŸ */
 		}
-	    /* ”äŠr‘ÎÛ‚Ì––”ö‚É’B‚µ‚½ */
+	    /* æ¯”è¼ƒå¯¾è±¡ã®æœ«å°¾ã«é”ã—ãŸ */
 		if (IsHtmlSpace (c1)) {
-		    /* ’l‚È‚µ‚Ìê‡i<BR ALL> “™j */
+		    /* å€¤ãªã—ã®å ´åˆï¼ˆ<BR ALL> ç­‰ï¼‰ */
 			w->_t1 = t1;
 			SkipSpace (w);
 			return (0);
 		}
 		if (c1 == '>') {
-		    /* ’l‚È‚µ‚Ìê‡i<BR> “™j */
+		    /* å€¤ãªã—ã®å ´åˆï¼ˆ<BR> ç­‰ï¼‰ */
 			w->_t1 = t1 - 1;
 			return (0);
 		}
 		if (c1 == '=') {
-		    /* ’l‚ ‚è‚Ìê‡i<A HREF="foo"> “™j */
+		    /* å€¤ã‚ã‚Šã®å ´åˆï¼ˆ<A HREF="foo"> ç­‰ï¼‰ */
 			w->_t1 = t1;
 			if (SkipQuoted (w, 256))
 				return (-1);
@@ -711,25 +711,25 @@ static unsigned char SkipAttrNo (WORK * w)
 		}
 	}
 
-	return (!0);		/* ‚±‚±‚É‚Í—ˆ‚È‚¢ƒnƒY */
+	return (!0);		/* ã“ã“ã«ã¯æ¥ãªã„ãƒã‚º */
 }
 
 
 
 /*
-   t1 ‚Ìw‚·ƒAƒgƒŠƒrƒ…[ƒg‚ğ w->attr_no ‚É•Ô‚·
-   ƒAƒgƒŠƒrƒ…[ƒg‚É’l‚ª‚ ‚ê‚Î w->attr_str ‚Éİ’è‚·‚é
-   t1 ‚Ìw‚·•¶š—ñ = ‘å•¶š^¬•¶š‰Â ^ str ‚Ìw‚·•¶š—ñ = ‘å•¶š‚Ì‚İ
-   w->_t1 ‚Íƒ^ƒO‚Ìæ“ª‚ğw‚µ‚Ä‚¢‚é‚±‚ÆiƒXƒy[ƒX•s‰Âj
+   t1 ã®æŒ‡ã™ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã‚’ w->attr_no ã«è¿”ã™
+   ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã«å€¤ãŒã‚ã‚Œã° w->attr_str ã«è¨­å®šã™ã‚‹
+   t1 ã®æŒ‡ã™æ–‡å­—åˆ— = å¤§æ–‡å­—ï¼å°æ–‡å­—å¯ ï¼ str ã®æŒ‡ã™æ–‡å­—åˆ— = å¤§æ–‡å­—ã®ã¿
+   w->_t1 ã¯ã‚¿ã‚°ã®å…ˆé ­ã‚’æŒ‡ã—ã¦ã„ã‚‹ã“ã¨ï¼ˆã‚¹ãƒšãƒ¼ã‚¹ä¸å¯ï¼‰
    <A HREF="foo" NAME="aaa">
-   _@La         Lb   w->_t1 ‚ª a ‚ÌAw->attr = ATTR_A_HREFA
-   w->attr_str = fooiƒNƒI[ƒe[ƒVƒ‡ƒ“‚Ííœ‚³‚ê‚ÄƒRƒs[jAw->_t1 = b ‚Æ‚È‚é
-   •Ô‚è’l =0:³íI—¹ / =!0:ˆÙíI—¹
-   w->_t1 ‚Í '>'A‚à‚µ‚­‚ÍŸ‚ÌƒAƒgƒŠƒrƒ…[ƒg‚Ìã‚ğw‚µ‚Ä‚¢‚éiƒXƒy[ƒX“Ç‚İ”ò‚Î‚µÏ‚İj
+   _ã€€La         Lb   w->_t1 ãŒ a ã®æ™‚ã€w->attr = ATTR_A_HREFã€
+   w->attr_str = fooï¼ˆã‚¯ã‚ªãƒ¼ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ã¯å‰Šé™¤ã•ã‚Œã¦ã‚³ãƒ”ãƒ¼ï¼‰ã€w->_t1 = b ã¨ãªã‚‹
+   è¿”ã‚Šå€¤ =0:æ­£å¸¸çµ‚äº† / =!0:ç•°å¸¸çµ‚äº†
+   w->_t1 ã¯ '>'ã€ã‚‚ã—ãã¯æ¬¡ã®ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã®ä¸Šã‚’æŒ‡ã—ã¦ã„ã‚‹ï¼ˆã‚¹ãƒšãƒ¼ã‚¹èª­ã¿é£›ã°ã—æ¸ˆã¿ï¼‰
  */
 static unsigned char GetAttrNo (WORK * w, unsigned char **str)
 {
-	unsigned char **s = str;	/* ”äŠr‘ÎÛ‚Ì•¶š—ñ‚Ìƒ|ƒCƒ“ƒ^ƒe[ƒuƒ‹ */
+	unsigned char **s = str;	/* æ¯”è¼ƒå¯¾è±¡ã®æ–‡å­—åˆ—ã®ãƒã‚¤ãƒ³ã‚¿ãƒ†ãƒ¼ãƒ–ãƒ« */
 	signed short no = 0;
 
 	w->attr_no = -1;
@@ -745,29 +745,29 @@ static unsigned char GetAttrNo (WORK * w, unsigned char **str)
 			c1 = *t1++;
 			if (t1 > t1e) {
 				w->_t1 = t1;
-				return (!0);	/* ƒeƒLƒXƒg‚Ì––”ö‚É’B‚µ‚½ */
+				return (!0);	/* ãƒ†ã‚­ã‚¹ãƒˆã®æœ«å°¾ã«é”ã—ãŸ */
 			}
 			c2 = *t2++;
 			if (c2) {
 				if ((c1 != c2) && ((c1 & 0xdf) != c2))
-					break;	/* ˆá‚Á‚½‚çŸ‚Ì”äŠr‘ÎÛ‚Ö */
+					break;	/* é•ã£ãŸã‚‰æ¬¡ã®æ¯”è¼ƒå¯¾è±¡ã¸ */
 			} else {
-			    /* ”äŠr‘ÎÛ‚Ì––”ö‚É’B‚µ‚½ */
+			    /* æ¯”è¼ƒå¯¾è±¡ã®æœ«å°¾ã«é”ã—ãŸ */
 				if (IsHtmlSpace (c1)) {
-				    /* ’l‚È‚µ‚Ìê‡i<BR ALL> “™j */
+				    /* å€¤ãªã—ã®å ´åˆï¼ˆ<BR ALL> ç­‰ï¼‰ */
 					w->attr_no = no;
 					w->_t1 = t1;
 					SkipSpace (w);
 					return (0);
 				}
 				if (c1 == '>') {
-				    /* ’l‚È‚µ‚Ìê‡i<BR> “™j */
+				    /* å€¤ãªã—ã®å ´åˆï¼ˆ<BR> ç­‰ï¼‰ */
 					w->attr_no = no;
 					w->_t1 = t1 - 1;
 					return (0);
 				}
 				if (c1 == '=') {
-				    /* ’l‚ ‚è‚Ìê‡i<A HREF="foo"> “™j */
+				    /* å€¤ã‚ã‚Šã®å ´åˆï¼ˆ<A HREF="foo"> ç­‰ï¼‰ */
 					w->attr_no = no;
 					w->_t1 = t1;
 					if (StrncpyQuoted (w->attr_str, w, 256))
@@ -790,15 +790,15 @@ static unsigned char GetAttrNo (WORK * w, unsigned char **str)
 
 
 /*
-   t1 ‚Ìw‚·ƒ^ƒO‚ğ w->tag_no ‚É•Ô‚·
-   t1 ‚Ìw‚·•¶š—ñ = ‘å•¶š^¬•¶š‰Â ^ str ‚Ìw‚·•¶š—ñ = ‘å•¶š‚Ì‚İ
-   w->_t1 ‚Íƒ^ƒO‚Ìæ“ª‚ğw‚µ‚Ä‚¢‚é‚±‚ÆiƒXƒy[ƒX•s‰Âj
-   •Ô‚è’l =0:³íI—¹ / =!0:ˆÙíI—¹
-   w->_t1 ‚Í '>'A‚à‚µ‚­‚ÍƒAƒgƒŠƒrƒ…[ƒg‚Ìã‚ğw‚µ‚Ä‚¢‚éiƒXƒy[ƒX“Ç‚İ”ò‚Î‚µÏ‚İj
+   t1 ã®æŒ‡ã™ã‚¿ã‚°ã‚’ w->tag_no ã«è¿”ã™
+   t1 ã®æŒ‡ã™æ–‡å­—åˆ— = å¤§æ–‡å­—ï¼å°æ–‡å­—å¯ ï¼ str ã®æŒ‡ã™æ–‡å­—åˆ— = å¤§æ–‡å­—ã®ã¿
+   w->_t1 ã¯ã‚¿ã‚°ã®å…ˆé ­ã‚’æŒ‡ã—ã¦ã„ã‚‹ã“ã¨ï¼ˆã‚¹ãƒšãƒ¼ã‚¹ä¸å¯ï¼‰
+   è¿”ã‚Šå€¤ =0:æ­£å¸¸çµ‚äº† / =!0:ç•°å¸¸çµ‚äº†
+   w->_t1 ã¯ '>'ã€ã‚‚ã—ãã¯ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã®ä¸Šã‚’æŒ‡ã—ã¦ã„ã‚‹ï¼ˆã‚¹ãƒšãƒ¼ã‚¹èª­ã¿é£›ã°ã—æ¸ˆã¿ï¼‰
  */
 static unsigned char GetTagNo (WORK * w)
 {
-	unsigned char **s = tag_str;	/* ”äŠr‘ÎÛ‚Ì•¶š—ñ‚Ìƒ|ƒCƒ“ƒ^ƒe[ƒuƒ‹ */
+	unsigned char **s = tag_str;	/* æ¯”è¼ƒå¯¾è±¡ã®æ–‡å­—åˆ—ã®ãƒã‚¤ãƒ³ã‚¿ãƒ†ãƒ¼ãƒ–ãƒ« */
 	signed short no = 0;
 
 	w->tag_no = -1;
@@ -813,25 +813,25 @@ static unsigned char GetTagNo (WORK * w)
 			c1 = *t1++;
 			if (t1 > t1e) {
 				w->_t1 = t1;
-				return (!0);	/* ƒeƒLƒXƒg‚Ì––”ö‚É’B‚µ‚½ */
+				return (!0);	/* ãƒ†ã‚­ã‚¹ãƒˆã®æœ«å°¾ã«é”ã—ãŸ */
 			}
 			c2 = *t2++;
 			if (c2) {
 				if ((c1 != c2) && ((c1 & 0xdf) != c2))
-					break;	/* ˆá‚Á‚½‚çŸ‚Ì”äŠr‘ÎÛ‚Ö */
+					break;	/* é•ã£ãŸã‚‰æ¬¡ã®æ¯”è¼ƒå¯¾è±¡ã¸ */
 			} else {
-			    /* ”äŠr‘ÎÛ‚Ì––”ö‚É’B‚µ‚½ */
+			    /* æ¯”è¼ƒå¯¾è±¡ã®æœ«å°¾ã«é”ã—ãŸ */
 				if (IsHtmlSpace (c1)) {
 					w->tag_no = no;
 					w->_t1 = t1;
 					if (SkipSpace (w))
-						return (!0);	/* ƒeƒLƒXƒg‚Ì––”ö‚É’B‚µ‚½ */
+						return (!0);	/* ãƒ†ã‚­ã‚¹ãƒˆã®æœ«å°¾ã«é”ã—ãŸ */
 					else
 						return (0);
 				}
 				if (c1 == '>') {
 					w->tag_no = no;
-					w->_t1 = t1 - 1;	/* t1 ‚ª '>' ‚Ìã‚ğw‚·‚æ‚¤‚É */
+					w->_t1 = t1 - 1;	/* t1 ãŒ '>' ã®ä¸Šã‚’æŒ‡ã™ã‚ˆã†ã« */
 					return (0);
 				}
 				break;
@@ -840,26 +840,26 @@ static unsigned char GetTagNo (WORK * w)
 		no++;
 	} while (*(++s) != NULL);
 
-    /* –¢‘Î‰ƒ^ƒO‚Ì‚Ì“Ç‚İ”ò‚Î‚µˆ— */
+    /* æœªå¯¾å¿œã‚¿ã‚°ã®æ™‚ã®èª­ã¿é£›ã°ã—å‡¦ç† */
 	{
 		unsigned char c1;
 
 		while (1) {
 			c1 = *w->_t1++;
 			if (w->_t1 > w->t1e) {
-				return (!0);	/* ƒeƒLƒXƒg‚Ì––”ö‚É’B‚µ‚½ */
+				return (!0);	/* ãƒ†ã‚­ã‚¹ãƒˆã®æœ«å°¾ã«é”ã—ãŸ */
 			}
 			if (c1 < 0x80) {
-			    /* ‚PƒoƒCƒg•¶š‚Ìê‡ */
+			    /* ï¼‘ãƒã‚¤ãƒˆæ–‡å­—ã®å ´åˆ */
 				if (c1 == '>') {
-					w->_t1--;	/* t1 ‚ª '>' ‚Ìã‚ğw‚·‚æ‚¤‚É */
+					w->_t1--;	/* t1 ãŒ '>' ã®ä¸Šã‚’æŒ‡ã™ã‚ˆã†ã« */
 					break;
 				}
 			} else {
 				if ((c1 >= 0xa0) && (c1 <= 0xdf)) {
-				    /* ”¼ŠpƒJƒi */
+				    /* åŠè§’ã‚«ãƒŠ */
 				} else {
-				    /* Š¿š */
+				    /* æ¼¢å­— */
 					w->_t1++;
 				}
 			}
@@ -871,7 +871,7 @@ static unsigned char GetTagNo (WORK * w)
 
 
 
-/* "#ffffff" ‚Ì‚æ‚¤‚ÈFw’è‚ğ 16bit F‚É */
+/* "#ffffff" ã®ã‚ˆã†ãªè‰²æŒ‡å®šã‚’ 16bit è‰²ã« */
 static unsigned short Str2Color (char *p)
 {
 	unsigned short col = 0;
@@ -899,14 +899,14 @@ static unsigned short Str2Color (char *p)
 			col |= (((t1 * 2)) << shift_rgb[h]);
 	}
 	if (col == 0)
-		col = 1;	/* 0x0000 ‚¾‚Æ‚Ü‚¸‚¢‚Ì‚Å */
+		col = 1;	/* 0x0000 ã ã¨ã¾ãšã„ã®ã§ */
 
 	return (col);
 }
 
 
 
-/* ––”ö‚Éƒm[ƒh(BLB)‚ğ‚P‚Â’Ç‰Á‚·‚é */
+/* æœ«å°¾ã«ãƒãƒ¼ãƒ‰(BLB)ã‚’ï¼‘ã¤è¿½åŠ ã™ã‚‹ */
 static BLB *InsertBLB (signed short nest,
 	    unsigned char c, unsigned char c1, unsigned short font_size, unsigned short width,
 		       short image_table_max, int hh, int y_offset)
@@ -914,25 +914,25 @@ static BLB *InsertBLB (signed short nest,
 	BLB *t_ptr = blb_top;
 	signed short h = nest;
 
-    /* ƒŠƒXƒg‚ğŒŸõ‚µ‚Ä‚ ‚ê‚Î‚»‚Ìƒ|ƒCƒ“ƒ^A‚È‚¯‚ê‚Îì¬‚µ‚Ä‚»‚Ìƒ|ƒCƒ“ƒ^‚ğ•Ô‚· */
+    /* ãƒªã‚¹ãƒˆã‚’æ¤œç´¢ã—ã¦ã‚ã‚Œã°ãã®ãƒã‚¤ãƒ³ã‚¿ã€ãªã‘ã‚Œã°ä½œæˆã—ã¦ãã®ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™ */
 	while (--h != 0)
 		t_ptr = t_ptr->next_ptr;
 
 	if (t_ptr == NULL) {
-	    /* ‚È‚©‚Á‚½‚Ì‚Åì¬ */
+	    /* ãªã‹ã£ãŸã®ã§ä½œæˆ */
 		t_ptr = malloc (sizeof (BLB));
 		if (t_ptr == NULL) {
-			McPuts ("InsertBLB() : ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
+			McPuts ("InsertBLB() : ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
 			return (NULL);
 		} else {
 			if (blb_top == NULL) {
-			    /* ƒm[ƒh‚OŒÂ‚ÌŠ‚É’Ç‰Á */
+			    /* ãƒãƒ¼ãƒ‰ï¼å€‹ã®æ‰€ã«è¿½åŠ  */
 				blb_top = t_ptr;
 				blb_end = t_ptr;
 				t_ptr->before_ptr = NULL;
 				t_ptr->next_ptr = NULL;
 			} else {
-			    /* ––”ö‚Éƒm[ƒh‚ğ’Ç‰Á */
+			    /* æœ«å°¾ã«ãƒãƒ¼ãƒ‰ã‚’è¿½åŠ  */
 				(blb_end)->next_ptr = t_ptr;
 				t_ptr->before_ptr = blb_end;
 				t_ptr->next_ptr = NULL;
@@ -946,11 +946,11 @@ static BLB *InsertBLB (signed short nest,
 		}
 	}
 	if ((c) || (c1)) {
-	    /* ‘å‚«‚¢•¶š‚Ì‘Osˆ— */
+	    /* å¤§ãã„æ–‡å­—ã®å‰è¡Œå‡¦ç† */
 		if (!c1) {
-		    /* ‚PƒoƒCƒg•¶š */
+		    /* ï¼‘ãƒã‚¤ãƒˆæ–‡å­— */
 			if ((t_ptr->font_size == font_size) && (t_ptr->width + t_ptr->font_size == width)) {
-			    /* ‘O‰ñ‚Æ“¯‚¶ƒtƒHƒ“ƒgƒTƒCƒY‚Ì˜A‘±‚·‚é•¶š‚È‚ç */
+			    /* å‰å›ã¨åŒã˜ãƒ•ã‚©ãƒ³ãƒˆã‚µã‚¤ã‚ºã®é€£ç¶šã™ã‚‹æ–‡å­—ãªã‚‰ */
 				*t_ptr->ptr++ = c;
 				t_ptr->width = width;
 			} else {
@@ -960,9 +960,9 @@ static BLB *InsertBLB (signed short nest,
 				*t_ptr->ptr++ = c;
 			}
 		} else {
-		    /* ‚QƒoƒCƒg•¶š */
+		    /* ï¼’ãƒã‚¤ãƒˆæ–‡å­— */
 			if ((t_ptr->font_size == font_size) && (t_ptr->width + t_ptr->font_size * 2 == width)) {
-			    /* ‘O‰ñ‚Æ“¯‚¶ƒtƒHƒ“ƒgƒTƒCƒY‚Ì˜A‘±‚·‚é•¶š‚È‚ç */
+			    /* å‰å›ã¨åŒã˜ãƒ•ã‚©ãƒ³ãƒˆã‚µã‚¤ã‚ºã®é€£ç¶šã™ã‚‹æ–‡å­—ãªã‚‰ */
 				*t_ptr->ptr++ = c;
 				*t_ptr->ptr++ = c1;
 				t_ptr->width = width;
@@ -975,9 +975,9 @@ static BLB *InsertBLB (signed short nest,
 			}
 		}
 	} else {
-	    /* ‘å‚«‚¢ƒCƒ[ƒW‚Ì‘Osˆ— */
+	    /* å¤§ãã„ã‚¤ãƒ¡ãƒ¼ã‚¸ã®å‰è¡Œå‡¦ç† */
 		t_ptr->width = width;
-		if (*tag_href_str) {	/* ƒŠƒ“ƒN‚ª‚ ‚é‚©H */
+		if (*tag_href_str) {	/* ãƒªãƒ³ã‚¯ãŒã‚ã‚‹ã‹ï¼Ÿ */
 			t_ptr->ptr += sprintf (t_ptr->ptr, "`D%d`%s`G%d,%d,%x``lu`",
 					  width, tag_href_str, image_table_max, hh, y_offset);
 		} else {
@@ -992,7 +992,7 @@ static BLB *InsertBLB (signed short nest,
 
 
 
-/* ––”ö‚Ìƒm[ƒh(BLB)‚ğíœ‚·‚éiÀÛ‚É‚Ííœ‚¹‚¸AØ‚èo‚µ‚Ä•Ô‚è’l‚Æ‚·‚éj */
+/* æœ«å°¾ã®ãƒãƒ¼ãƒ‰(BLB)ã‚’å‰Šé™¤ã™ã‚‹ï¼ˆå®Ÿéš›ã«ã¯å‰Šé™¤ã›ãšã€åˆ‡ã‚Šå‡ºã—ã¦è¿”ã‚Šå€¤ã¨ã™ã‚‹ï¼‰ */
 static BLB *DeleteBLB (void)
 {
 	BLB *t_ptr = blb_end;
@@ -1001,7 +1001,7 @@ static BLB *DeleteBLB (void)
 		return (NULL);
 
 	if (blb_end->before_ptr == NULL) {
-	    /* ‚P‚Â‚µ‚©‚È‚¢ƒm[ƒh‚ğíœ‚·‚é */
+	    /* ï¼‘ã¤ã—ã‹ãªã„ãƒãƒ¼ãƒ‰ã‚’å‰Šé™¤ã™ã‚‹ */
 		blb_top = NULL;
 		blb_end = NULL;
 	} else {
@@ -1015,7 +1015,7 @@ static BLB *DeleteBLB (void)
 
 static void TagBr (WORK * w)
 {
-	w->nl_flag = !0;	/* Œ…ƒ‹[ƒv‚ğ”²‚¯‚é */
+	w->nl_flag = !0;	/* æ¡ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹ */
 }
 
 static void TagA (WORK * w)
@@ -1026,15 +1026,15 @@ static void TagA (WORK * w)
 		switch (w->attr_no) {
 		case ATTR_A_HREF:
 			if (w->pass == 0) {
-			    /* ‰‰ñ‚Ì‰ğÍ‚È‚ç */
+			    /* åˆå›ã®è§£æãªã‚‰ */
 				char temp_fname[256];
 
 				((w->xptext->link_table)[w->xptext->link_table_max]).url = w->link_table_buffer_ptr;
 				strcpy (w->link_table_buffer_ptr, w->attr_str);
 
-			    /* "#foo"iƒtƒ@ƒCƒ‹–¼‚È‚µj‚©H */
+			    /* "#foo"ï¼ˆãƒ•ã‚¡ã‚¤ãƒ«åãªã—ï¼‰ã‹ï¼Ÿ */
 				if (w->attr_str[0] == '#') {
-				    /* •K‚¸ƒLƒƒƒbƒVƒ…‚É‘¶İ‚·‚éi‚¾‚Á‚Ä“¯ˆêƒtƒ@ƒCƒ‹’†j */
+				    /* å¿…ãšã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«å­˜åœ¨ã™ã‚‹ï¼ˆã ã£ã¦åŒä¸€ãƒ•ã‚¡ã‚¤ãƒ«ä¸­ï¼‰ */
 					(w->xptext->link_table)[w->xptext->link_table_max].in_cache = !0;
 				} else {
 					HTTPFILE _t_httpfile, *t_httpfile = &_t_httpfile;
@@ -1049,9 +1049,9 @@ static void TagA (WORK * w)
 #if 0
 					McDbPrintf ("url = %s", t_httpfile->url);
 					if ((w->xptext->link_table)[w->xptext->link_table_max].in_cache == 0)
-						McDbPrintf ("‚È‚¢\n");
+						McDbPrintf ("ãªã„\n");
 					else
-						McDbPrintf ("‘¶İ\n");
+						McDbPrintf ("å­˜åœ¨\n");
 #endif
 				}
 				while (*w->link_table_buffer_ptr++);
@@ -1088,7 +1088,7 @@ static void TagImg (WORK * w)
 	XPTEXT *xptext = w->xptext;
 
 	unsigned short temp_x = 0, temp_y = 0;
-	char insert_now = 0;	/* ¡‰ñƒm[ƒh‚ğ’Ç‰Á‚µ‚½‚©H */
+	char insert_now = 0;	/* ä»Šå›ãƒãƒ¼ãƒ‰ã‚’è¿½åŠ ã—ãŸã‹ï¼Ÿ */
 	IMAGE_LIST *t_ptr;
 
 	if (w->pass == 0)
@@ -1105,7 +1105,7 @@ static void TagImg (WORK * w)
 			img_src_flag = !0;
 
 			if (w->pass == 0) {
-			    /* ‰‰ñ‚Ì‰ğÍ‚È‚ç */
+			    /* åˆå›ã®è§£æãªã‚‰ */
 				char temp_fname[256];
 				IMAGE_LIST *t_ptr;
 				HTTPFILE _t_httpfile, *t_httpfile = &_t_httpfile;
@@ -1113,14 +1113,14 @@ static void TagImg (WORK * w)
 				InitHttpfile (t_httpfile);
 				CatHttpfile (t_httpfile, httpfile, w->attr_str);
 
-			    /* ƒCƒ[ƒWƒŠƒXƒg‚É‘¶İ‚·‚é‚© */
-			    /* debug ‚Ü‚¾ query ‚ğíœ‚µ‚ÄŒŸõ‚µ‚È‚¢ */
+			    /* ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒªã‚¹ãƒˆã«å­˜åœ¨ã™ã‚‹ã‹ */
+			    /* debug ã¾ã  query ã‚’å‰Šé™¤ã—ã¦æ¤œç´¢ã—ãªã„ */
 				if ((t_ptr = SearchImageNode (t_httpfile)) == NULL) {
-				    /* ‘¶İ‚µ‚È‚¢ê‡ */
+				    /* å­˜åœ¨ã—ãªã„å ´åˆ */
 					insert_now = !0;
-				    /* debug ƒGƒ‰[ƒ`ƒFƒbƒN‚Ü‚¾ */
+				    /* debug ã‚¨ãƒ©ãƒ¼ãƒã‚§ãƒƒã‚¯ã¾ã  */
 					if ((t_ptr = InsertImageNode (t_httpfile)) == NULL) {
-						McDbPrintf ("IMG_SRC:ƒCƒ[ƒWƒm[ƒh‚ª’Ç‰Á‚Å‚«‚Ü‚¹‚ñ\n");
+						McDbPrintf ("IMG_SRC:ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒãƒ¼ãƒ‰ãŒè¿½åŠ ã§ãã¾ã›ã‚“\n");
 					}
 				}
 				(xptext->image_table)[xptext->image_table_max].image_list = t_ptr;
@@ -1135,7 +1135,7 @@ static void TagImg (WORK * w)
 			break;
 
 		case ATTR_IMG_HEIGHT:
-		    /* ‰‰ñ‚Ì‰ğÍ‚È‚ç */
+		    /* åˆå›ã®è§£æãªã‚‰ */
 			if (w->pass == 0) {
 				if (image_compress)
 					temp_y = (atoi (w->attr_str) + 1) / 2;
@@ -1146,7 +1146,7 @@ static void TagImg (WORK * w)
 
 		case ATTR_IMG_WIDTH:
 			if (w->pass == 0) {
-			    /* ‰‰ñ‚Ì‰ğÍ‚È‚ç */
+			    /* åˆå›ã®è§£æãªã‚‰ */
 				if (image_compress)
 					temp_x = (atoi (w->attr_str) + 1) / 2;
 				else
@@ -1161,27 +1161,27 @@ static void TagImg (WORK * w)
 	t_ptr = (xptext->image_table)[xptext->image_table_max].image_list;
 #if	1
 	if (t_ptr == NULL) {
-	    /* ƒAƒgƒŠƒrƒ…[ƒg SRC ‚ª–³‚¢ */
-		McPuts ("ƒAƒgƒŠƒrƒ…[ƒg SRC ‚Ì–³‚¢ <IMG> ƒ^ƒO‚Å‚·\n");
-		McDbPuts ("t_ptr ‚ª NULL ‚Å‚·\n");
+	    /* ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆ SRC ãŒç„¡ã„ */
+		McPuts ("ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆ SRC ã®ç„¡ã„ <IMG> ã‚¿ã‚°ã§ã™\n");
+		McDbPuts ("t_ptr ãŒ NULL ã§ã™\n");
 	}
 #endif
 
 	if ((insert_now) && (temp_x != 0) && (temp_y != 0)) {
-	    /* ¡‰ñƒm[ƒh‚ğ’Ç‰Á‚µ‚½‚Ì‚È‚ç */
+	    /* ä»Šå›ãƒãƒ¼ãƒ‰ã‚’è¿½åŠ ã—ãŸã®ãªã‚‰ */
 		t_ptr->x = temp_x;
 		t_ptr->y = temp_y;
 	}
 	if ((t_ptr->data == NULL) && ((t_ptr->x == 0) && (t_ptr->y == 0))) {
-	    /* ƒf[ƒ^ƒƒ‚ƒŠã‚É‚È‚­A‚©‚ÂƒTƒCƒY‚ª•s–¾‚Ìê‡ */
+	    /* ãƒ‡ãƒ¼ã‚¿ãƒ¡ãƒ¢ãƒªä¸Šã«ãªãã€ã‹ã¤ã‚µã‚¤ã‚ºãŒä¸æ˜ã®å ´åˆ */
 		if ((short) (w->width + w->font_size * 4) > WRAP_DOT) {
-		    /* “Ç‚Ü‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é */
+		    /* èª­ã¾ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹ */
 			w->not_read_flag = !0;
 			t_ptr->count--;
 			w->nl_flag = !0;
 			return;
 		} else {
-			strcpy (w->_t2, "[ŠG]");
+			strcpy (w->_t2, "[çµµ]");
 			w->_t2 += 4;
 			w->width += w->font_size * 4;
 		}
@@ -1190,16 +1190,16 @@ static void TagImg (WORK * w)
 		int h = 1, hh, y_offset;
 
 		(xptext->image_table)[xptext->image_table_max].disp_x = t_ptr->x;
-	    /* ‰æ‘œ‚ª‰E’[‚©‚ç‚Í‚İo‚Ä‚µ‚Ü‚¤‚©H */
+	    /* ç”»åƒãŒå³ç«¯ã‹ã‚‰ã¯ã¿å‡ºã¦ã—ã¾ã†ã‹ï¼Ÿ */
 		if ((w->width + t_ptr->x) > WRAP_DOT) {
 			if (w->width > 0) {
-			    /* ‘—‚è‹Ö‘¥‚µ‚Ä‰ğŒˆ */
+			    /* é€ã‚Šç¦å‰‡ã—ã¦è§£æ±º */
 				w->not_read_flag = !0;
 				t_ptr->count--;
-				w->nl_flag = !0;	/* Ÿ‚Ìs‚Ö */
+				w->nl_flag = !0;	/* æ¬¡ã®è¡Œã¸ */
 				return;
 			} else {
-			    /* ‚Ç‚¤‚µ‚Ä‚à‰æ–Ê‚Éû‚Ü‚ç‚È‚¢ */
+			    /* ã©ã†ã—ã¦ã‚‚ç”»é¢ã«åã¾ã‚‰ãªã„ */
 				if (t_ptr->x > WRAP_DOT)
 					(xptext->image_table)[xptext->image_table_max].disp_x = WRAP_DOT;
 			}
@@ -1233,8 +1233,8 @@ static void TagImg (WORK * w)
 
 static void TagFrameset (WORK * w)
 {
-	w->_t2 += sprintf (w->_t2, "¦ ‚±‚Ìƒy[ƒW‚ÍƒtƒŒ[ƒ€‚ªg‚í‚ê‚Ä‚¢‚Ü‚·");
-	w->nl_flag = !0;	/* Œ…ƒ‹[ƒv‚ğ”²‚¯‚é */
+	w->_t2 += sprintf (w->_t2, "â€» ã“ã®ãƒšãƒ¼ã‚¸ã¯ãƒ•ãƒ¬ãƒ¼ãƒ ãŒä½¿ã‚ã‚Œã¦ã„ã¾ã™");
+	w->nl_flag = !0;	/* æ¡ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹ */
 }
 
 static void TagFrame (WORK * w)
@@ -1248,7 +1248,7 @@ static void TagFrame (WORK * w)
 		switch (w->attr_no) {
 		case ATTR_FRAME_SRC:
 			if (w->pass == 0) {
-			    /* ‰‰ñ‚Ì‰ğÍ‚È‚ç */
+			    /* åˆå›ã®è§£æãªã‚‰ */
 				char temp_fname[256];
 				HTTPFILE _t_httpfile, *t_httpfile = &_t_httpfile;
 
@@ -1275,13 +1275,13 @@ static void TagFrame (WORK * w)
 		}
 	}
 	xptext->link_table_max++;
-	w->nl_flag = !0;	/* Œ…ƒ‹[ƒv‚ğ”²‚¯‚é */
+	w->nl_flag = !0;	/* æ¡ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹ */
 }
 
 static void TagHr (WORK * w)
 {
 	w->ffifo[w->ffifo_ptr++] = 'h';
-	w->nl_flag = !0;	/* Œ…ƒ‹[ƒv‚ğ”²‚¯‚é */
+	w->nl_flag = !0;	/* æ¡ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹ */
 }
 
 static void TagP (WORK * w)
@@ -1305,13 +1305,13 @@ static void TagP (WORK * w)
 			break;
 		}
 	}
-	w->nl_flag = !0;	/* Œ…ƒ‹[ƒv‚ğ”²‚¯‚é */
+	w->nl_flag = !0;	/* æ¡ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹ */
 }
 
 static void Tag_P (WORK * w)
 {
 	w->tag_p_align = 0;
-	w->nl_flag = !0;	/* Œ…ƒ‹[ƒv‚ğ”²‚¯‚é */
+	w->nl_flag = !0;	/* æ¡ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹ */
 	if (!w->tag_center)
 		w->reset_align = !0;
 }
@@ -1332,7 +1332,7 @@ static void Tag_H1 (WORK * w)
 {
 	char *t2 = w->_t2;
 
-	if (w->font_size_stackptr)	/* ƒlƒXƒg‚ª³‚µ‚¯‚ê‚Î */
+	if (w->font_size_stackptr)	/* ãƒã‚¹ãƒˆãŒæ­£ã—ã‘ã‚Œã° */
 		w->font_size = w->font_size_stack[--w->font_size_stackptr];
 	t2 += sprintf (t2, "`S%d`", w->font_size);
 	w->nl_flag = !0;
@@ -1356,7 +1356,7 @@ static void Tag_H3 (WORK * w)
 {
 	char *t2 = w->_t2;
 
-	if (w->font_size_stackptr)	/* ƒlƒXƒg‚ª³‚µ‚¯‚ê‚Î */
+	if (w->font_size_stackptr)	/* ãƒã‚¹ãƒˆãŒæ­£ã—ã‘ã‚Œã° */
 		w->font_size = w->font_size_stack[--w->font_size_stackptr];
 	t2 += sprintf (t2, "`S%d`", w->font_size);
 	w->nl_flag = !0;
@@ -1374,21 +1374,21 @@ static void Tag_Title (WORK * w)
 	XPTEXT *xptext = w->xptext;
 
 	if (w->tag_title != NULL) {
-	    /* <title></title> ŠÔ‚ğƒRƒs[ */
+	    /* <title></title> é–“ã‚’ã‚³ãƒ”ãƒ¼ */
 		int title_size = (size_t) (w->t1_old - w->tag_title);
 
 		if (title_size > 64)
 			title_size = 64;
-	    /* strncpy() ‚Í––”ö‚É '\0' ‚ğ•t‚¯‚Ä‚­‚ê‚È‚¢–‚É’ˆÓ */
+	    /* strncpy() ã¯æœ«å°¾ã« '\0' ã‚’ä»˜ã‘ã¦ãã‚Œãªã„äº‹ã«æ³¨æ„ */
 		strncpy (w->xptext->title, w->tag_title, title_size);
 		w->xptext->title[title_size] = '\0';
 
-	    /* ƒ|ƒCƒ“ƒ^‚ğƒŠƒZƒbƒg */
+	    /* ãƒã‚¤ãƒ³ã‚¿ã‚’ãƒªã‚»ãƒƒãƒˆ */
 		t2 = xptext->text;
 		w->t2e = t2 + w->t2_size - YOYUU;
 		w->width = 0;
 	} else {
-		McDbPuts ("<title> ‚ª‚È‚¢‚Ì‚É </title> ‚ª‚ ‚è‚Ü‚·\n");
+		McDbPuts ("<title> ãŒãªã„ã®ã« </title> ãŒã‚ã‚Šã¾ã™\n");
 	}
 	w->_t2 = t2;
 }
@@ -1405,7 +1405,7 @@ static void Tag_Head (WORK * w)
 	char *t2 = w->_t2;
 	XPTEXT *xptext = w->xptext;
 
-    /* </head> ‚ğŒŸo‚µ‚½‚Íƒ|ƒCƒ“ƒ^‚ğƒŠƒZƒbƒg */
+    /* </head> ã‚’æ¤œå‡ºã—ãŸæ™‚ã¯ãƒã‚¤ãƒ³ã‚¿ã‚’ãƒªã‚»ãƒƒãƒˆ */
 	if (w->tag_head != NULL) {
 		t2 = w->t2t = xptext->text;
 		w->t2e = t2 + w->t2_size - YOYUU;
@@ -1470,7 +1470,7 @@ static void TagOl (WORK * w)
 static void Tag_Ol (WORK * w)
 {
 	w->tag_ol = 0;
-	w->nl_flag = !0;	/* Œ…ƒ‹[ƒv‚ğ”²‚¯‚é */
+	w->nl_flag = !0;	/* æ¡ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹ */
 }
 
 static void TagUl (WORK * w)
@@ -1482,7 +1482,7 @@ static void TagUl (WORK * w)
 static void Tag_Ul (WORK * w)
 {
 	w->tag_ul = 0;
-	w->nl_flag = !0;	/* Œ…ƒ‹[ƒv‚ğ”²‚¯‚é */
+	w->nl_flag = !0;	/* æ¡ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹ */
 }
 
 static void TagLi (WORK * w)
@@ -1599,29 +1599,29 @@ static void TagComment (WORK * w)
 
 /*
 
-   httpfile->content ‚Ìw‚· HTML ‚ğ‰ğÍ‚·‚é
-   •Ô‚è’l‚ÍV‚µ‚­Šm•Û‚µ‚½ XPTEXT \‘¢‘Ì‚Ö‚Ìƒ|ƒCƒ“ƒ^
-   iŒ³‚©‚ç“ü‚Á‚Ä‚¢‚½ httpfile->xptext ‚ÍQÆ‚Ì‚İ‚Å•ÏX‚µ‚È‚¢j
+   httpfile->content ã®æŒ‡ã™ HTML ã‚’è§£æã™ã‚‹
+   è¿”ã‚Šå€¤ã¯æ–°ã—ãç¢ºä¿ã—ãŸ XPTEXT æ§‹é€ ä½“ã¸ã®ãƒã‚¤ãƒ³ã‚¿
+   ï¼ˆå…ƒã‹ã‚‰å…¥ã£ã¦ã„ãŸ httpfile->xptext ã¯å‚ç…§ã®ã¿ã§å¤‰æ›´ã—ãªã„ï¼‰
  */
 XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 {
-	XPTEXT *xptext;		/* •Ô‚è’l */
-	LINE_PTR *l;		/* Œ»İˆ—‚µ‚Ä‚¢‚ésƒe[ƒuƒ‹ */
+	XPTEXT *xptext;		/* è¿”ã‚Šå€¤ */
+	LINE_PTR *l;		/* ç¾åœ¨å‡¦ç†ã—ã¦ã„ã‚‹è¡Œãƒ†ãƒ¼ãƒ–ãƒ« */
 #if	1
-	register unsigned char *t1 asm ("a4");	/* Œ»İˆ—‚µ‚Ä‚¢‚é•¶ši“]‘—Œ³j */
-	register unsigned char *t2 asm ("a5");	/* V              i“]‘—æj */
-	register unsigned char c asm ("d7");	/* ˆ—‚·‚é•¶š */
+	register unsigned char *t1 asm ("a4");	/* ç¾åœ¨å‡¦ç†ã—ã¦ã„ã‚‹æ–‡å­—ï¼ˆè»¢é€å…ƒï¼‰ */
+	register unsigned char *t2 asm ("a5");	/* ã€ƒ              ï¼ˆè»¢é€å…ˆï¼‰ */
+	register unsigned char c asm ("d7");	/* å‡¦ç†ã™ã‚‹æ–‡å­— */
 #else
-	unsigned char *t1;	/* Œ»İˆ—‚µ‚Ä‚¢‚é•¶ši“]‘—Œ³j */
-	unsigned char *t2;	/* V              i“]‘—æj */
-	unsigned char c;	/* ˆ—‚·‚é•¶š */
+	unsigned char *t1;	/* ç¾åœ¨å‡¦ç†ã—ã¦ã„ã‚‹æ–‡å­—ï¼ˆè»¢é€å…ƒï¼‰ */
+	unsigned char *t2;	/* ã€ƒ              ï¼ˆè»¢é€å…ˆï¼‰ */
+	unsigned char c;	/* å‡¦ç†ã™ã‚‹æ–‡å­— */
 #endif
-	unsigned short org_line;	/* Œ³‚Ì HTML ‚Ì‰½s–Ú‚¾‚Á‚½‚© */
+	unsigned short org_line;	/* å…ƒã® HTML ã®ä½•è¡Œç›®ã ã£ãŸã‹ */
 
 	WORK _w;
 	register WORK *w asm ("a3") = &_w;
 
-	w->align = ALIGN_LEFT;	/* ƒfƒtƒHƒ‹ƒg‚Í¶‘µ‚¦ */
+	w->align = ALIGN_LEFT;	/* ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯å·¦æƒãˆ */
 	w->tag_center = 0;
 	w->tag_href = 0;
 	w->tag_pre = 0;
@@ -1635,14 +1635,14 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 	w->font_size = 6;
 	w->ffifo_ptr = 0;
 	w->t2_size = 0;
-	w->space_flag = 0;	/* ’¼‘O‚ª”¼ŠpƒXƒy[ƒX‚¾‚Á‚½‚© */
+	w->space_flag = 0;	/* ç›´å‰ãŒåŠè§’ã‚¹ãƒšãƒ¼ã‚¹ã ã£ãŸã‹ */
 	w->font_size_stackptr = 0;
-	org_line = 0;		/* Œ³‚Ì HTML ‚Ì‰½s–Ú‚¾‚Á‚½‚© */
+	org_line = 0;		/* å…ƒã® HTML ã®ä½•è¡Œç›®ã ã£ãŸã‹ */
 
 
 	xptext = malloc (sizeof (XPTEXT));
 	if (xptext == NULL) {
-		McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñi XPTEXT —p‚Ìƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+		McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆ XPTEXT ç”¨ã®ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 		return (NULL);
 	};
 	xptext->text = NULL;
@@ -1652,45 +1652,45 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 	xptext->image_table_max = 0;
 
 	*(xptext->title) = '\0';
-	strcpy (xptext->title, "ƒ^ƒCƒgƒ‹–¢İ’è");
-	if (!httpfile->xptext)	/* ‚PƒpƒX–Ú‚©H */
+	strcpy (xptext->title, "ã‚¿ã‚¤ãƒˆãƒ«æœªè¨­å®š");
+	if (!httpfile->xptext)	/* ï¼‘ãƒ‘ã‚¹ç›®ã‹ï¼Ÿ */
 		w->pass = 0;
 	else
 		w->pass = 1;
 
 
-    /* –ˆ‰ñŠm•Û‚·‚éƒ[ƒN */
+    /* æ¯å›ç¢ºä¿ã™ã‚‹ãƒ¯ãƒ¼ã‚¯ */
 
 #define XPTEXT_BUFFER_YOYUU	32768
-    /* ‚±‚êˆÊ‚ ‚ê‚Î‘«‚è‚é‚©‚ÈH */
+    /* ã“ã‚Œä½ã‚ã‚Œã°è¶³ã‚Šã‚‹ã‹ãªï¼Ÿ */
 	w->t2_size = httpfile->content_length * 2 + XPTEXT_BUFFER_YOYUU;
 
-    /* ‚Æ‚è‚ ‚¦‚¸ŒÅ’èƒTƒCƒY‚ÅŠm•Û */
+    /* ã¨ã‚Šã‚ãˆãšå›ºå®šã‚µã‚¤ã‚ºã§ç¢ºä¿ */
 	xptext->text = _dos_malloc (w->t2_size);
 	if ((int) xptext->text < 0) {
-		McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñiƒeƒLƒXƒgƒoƒbƒtƒ@—p‚Ìƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+		McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆãƒ†ã‚­ã‚¹ãƒˆãƒãƒƒãƒ•ã‚¡ç”¨ã®ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 		FreeXptext (xptext);
 		return (NULL);
 	} else {
 		xptext->line_ptr = _dos_malloc (sizeof (LINE_PTR) * line_table_size);
 		if ((int) xptext->line_ptr < 0) {
-			McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñis“ªƒŠƒXƒg—pƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+			McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆè¡Œé ­ãƒªã‚¹ãƒˆç”¨ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 			FreeXptext (xptext);
 			return (NULL);
 		} else {
 			xptext->anchor_table = _dos_malloc (sizeof (ANCHOR_TABLE) * anchor_table_size);
 			if ((int) xptext->anchor_table < 0) {
-				McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñiƒAƒ“ƒJ[ƒe[ƒuƒ‹—p‚Ìƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+				McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆã‚¢ãƒ³ã‚«ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«ç”¨ã®ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 				FreeXptext (xptext);
 				return (NULL);
 			}
 		}
 	}
-    /* —v‚·‚é‚É *t1i‚×‚½“Ç‚İ‚µ‚½ .HTMj‚©‚ç *t2 ‚É®Œ`‚µ‚È‚ª‚çƒRƒs[‚µ‚Ä‚¢‚­‚í‚¯‚¾ */
-	t1 = httpfile->content;	/* html ƒtƒ@ƒCƒ‹–{‘Ì‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
-	w->t1e = t1 + httpfile->content_length;		/* t1 ‚ª w->t1e ‚É’B‚µ‚½‚çI—¹ */
-	t2 = xptext->text;	/* xptext ƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
-	w->t2e = t2 + w->t2_size - YOYUU;	/* t2 ‚ª w->t2e ‚É’B‚µ‚½‚çI—¹iƒoƒbƒtƒ@•s‘«j */
+    /* è¦ã™ã‚‹ã« *t1ï¼ˆã¹ãŸèª­ã¿ã—ãŸ .HTMï¼‰ã‹ã‚‰ *t2 ã«æ•´å½¢ã—ãªãŒã‚‰ã‚³ãƒ”ãƒ¼ã—ã¦ã„ãã‚ã‘ã  */
+	t1 = httpfile->content;	/* html ãƒ•ã‚¡ã‚¤ãƒ«æœ¬ä½“ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
+	w->t1e = t1 + httpfile->content_length;		/* t1 ãŒ w->t1e ã«é”ã—ãŸã‚‰çµ‚äº† */
+	t2 = xptext->text;	/* xptext ãƒãƒƒãƒ•ã‚¡ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
+	w->t2e = t2 + w->t2_size - YOYUU;	/* t2 ãŒ w->t2e ã«é”ã—ãŸã‚‰çµ‚äº†ï¼ˆãƒãƒƒãƒ•ã‚¡ä¸è¶³ï¼‰ */
 	xptext->line = 0;
 	xptext->anchor_table_max = 0;
 
@@ -1698,30 +1698,30 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 	l = xptext->line_ptr;
 
 	if (w->pass == 0) {
-	    /* ‰‰ñ‚Ì‰ğÍ‚È‚ç */
+	    /* åˆå›ã®è§£æãªã‚‰ */
 		short h;
 
 		xptext->link_table = NULL;
 		xptext->link_table_buffer = NULL;
 		xptext->image_table = NULL;
 
-	    /* ‚Æ‚è‚ ‚¦‚¸ŒÅ’èƒTƒCƒY‚ÅŠm•Û */
+	    /* ã¨ã‚Šã‚ãˆãšå›ºå®šã‚µã‚¤ã‚ºã§ç¢ºä¿ */
 		xptext->link_table = _dos_malloc (sizeof (LINK_TABLE) * link_table_size);
 		if ((int) xptext->link_table < 0) {
-			McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñiƒŠƒ“ƒNƒe[ƒuƒ‹—p‚Ìƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+			McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆãƒªãƒ³ã‚¯ãƒ†ãƒ¼ãƒ–ãƒ«ç”¨ã®ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 			FreeXptext (xptext);
 			return (NULL);
 		} else {
 			xptext->link_table_buffer = _dos_malloc (sizeof (unsigned char) * link_table_buffer_size);
 			if ((int) xptext->link_table_buffer < 0) {
-				McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñiƒŠƒ“ƒNƒe[ƒuƒ‹ƒoƒbƒtƒ@—p‚Ìƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+				McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆãƒªãƒ³ã‚¯ãƒ†ãƒ¼ãƒ–ãƒ«ãƒãƒƒãƒ•ã‚¡ç”¨ã®ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 				_dos_mfree (xptext->link_table);
 				FreeXptext (xptext);
 				return (NULL);
 			} else {
 				xptext->image_table = _dos_malloc (sizeof (IMAGE_TABLE) * image_table_size);
 				if ((int) xptext->image_table < 0) {
-					McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñiƒCƒ[ƒWƒe[ƒuƒ‹—p‚Ìƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+					McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆã‚¤ãƒ¡ãƒ¼ã‚¸ãƒ†ãƒ¼ãƒ–ãƒ«ç”¨ã®ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 					_dos_mfree (xptext->link_table_buffer);
 					_dos_mfree (xptext->link_table);
 					FreeXptext (xptext);
@@ -1736,11 +1736,11 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 		for (h = 0; h < 8; h++)
 			html_color[h] = config_color[h];
 
-	    /* debug ƒoƒO‚Á‚Ä‚à NULL ƒ|ƒCƒ“ƒ^‚Å~‚Ü‚é‚æ‚¤‚É */
+	    /* debug ãƒã‚°ã£ã¦ã‚‚ NULL ãƒã‚¤ãƒ³ã‚¿ã§æ­¢ã¾ã‚‹ã‚ˆã†ã« */
 		for (h = 0; h < image_table_size; h++)
 			(xptext->image_table)[h].image_list = NULL;
 	} else {
-	    /* ‚Q‰ñ–ÚˆÈ~‚Ì‰ğÍ‚È‚çˆÈ‰º‚Ì’l‚Í‘O‰ñ‚Ì‰ğÍŒ‹‰Ê‚ğˆø‚«Œp‚® */
+	    /* ï¼’å›ç›®ä»¥é™ã®è§£æãªã‚‰ä»¥ä¸‹ã®å€¤ã¯å‰å›ã®è§£æçµæœã‚’å¼•ãç¶™ã */
 		xptext->link_table = httpfile->xptext->link_table;
 		xptext->link_table_buffer = httpfile->xptext->link_table_buffer;
 		xptext->image_table = httpfile->xptext->image_table;
@@ -1751,7 +1751,7 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 	w->xptext = xptext;
 
 
-    /* sƒ‹[ƒv */
+    /* è¡Œãƒ«ãƒ¼ãƒ— */
 	do {
 		blb_top = NULL;
 		blb_end = NULL;
@@ -1764,64 +1764,64 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 		if (w->ffifo_ptr) {
 			switch (w->ffifo[--w->ffifo_ptr]) {
 			case 'h':
-				strcpy (t2, "`S08`„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª„ª");
+				strcpy (t2, "`S08`â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”");
 				w->width = 64 * 8;
 				t2 += 69;
 				break;
 			case 'l':
-				if (w->tag_ol) {	/* ”Ô†•t‚«ƒŠƒXƒg */
+				if (w->tag_ol) {	/* ç•ªå·ä»˜ããƒªã‚¹ãƒˆ */
 					t2 += sprintf (t2, "%hd:", w->tag_list_no);
 					w->width += w->font_size * 4;
 					if (++w->tag_list_no > 999)
 						w->tag_list_no = 1;
 				} else {
-					if (w->tag_ul) {	/* ”Ô†–³‚µƒŠƒXƒg */
-						t2 += sprintf (t2, "E");
+					if (w->tag_ul) {	/* ç•ªå·ç„¡ã—ãƒªã‚¹ãƒˆ */
+						t2 += sprintf (t2, "ãƒ»");
 						w->width += w->font_size * 2;
 					}
 				}
 				break;
-			case 'd':	/* ƒ^ƒO <dd> */
+			case 'd':	/* ã‚¿ã‚° <dd> */
 				*t2++ = 0x09;
 				w->width = (w->width + 6 * 8) / (short) (6 * 8) * (short) (6 * 8);
 				break;
 			default:
 				break;
 			}
-			w->ffifo_ptr = 0;	/* ‚¢‚ç‚È‚¢ƒnƒY‚È‚ñ‚¾‚ªEEE */
+			w->ffifo_ptr = 0;	/* ã„ã‚‰ãªã„ãƒã‚ºãªã‚“ã ãŒãƒ»ãƒ»ãƒ» */
 		}
-		if (w->font_size != 6)	/* ‘Os‚©‚ç‘å‚«‚¢•¶š‚ª‘±‚¢‚Ä‚¢‚ê‚Î */
+		if (w->font_size != 6)	/* å‰è¡Œã‹ã‚‰å¤§ãã„æ–‡å­—ãŒç¶šã„ã¦ã„ã‚Œã° */
 			t2 += sprintf (t2, "`S%d`", w->font_size);
-		if (w->tag_href)	/* ‘Os‚©‚çƒ^ƒO‚ª‘±‚¢‚Ä‚¢‚ê‚Î */
+		if (w->tag_href)	/* å‰è¡Œã‹ã‚‰ã‚¿ã‚°ãŒç¶šã„ã¦ã„ã‚Œã° */
 			t2 += sprintf (t2, "%s", tag_href_str);
 		*tag_href_str = '\0';
 
-	    /* Œ…ƒ‹[ƒv */
+	    /* æ¡ãƒ«ãƒ¼ãƒ— */
 		do {
 			w->t1_old = t1;
 			c = *t1++;
 
-			if (c == '<') {		/* ƒ^ƒO”­Œ©I */
+			if (c == '<') {		/* ã‚¿ã‚°ç™ºè¦‹ï¼ */
 				w->nl_flag = 0;
 				w->not_read_flag = 0;
 
-			    /* '<' ‚ÌŒã‚ÉƒXƒy[ƒX‚ª‚ ‚ê‚Î“Ç‚İ”ò‚Î‚· */
+			    /* '<' ã®å¾Œã«ã‚¹ãƒšãƒ¼ã‚¹ãŒã‚ã‚Œã°èª­ã¿é£›ã°ã™ */
 				w->_t1 = t1;
 				if (SkipSpace (w)) {
-				    /* ƒGƒ‰[ˆ—‚Ü‚¾ */
+				    /* ã‚¨ãƒ©ãƒ¼å‡¦ç†ã¾ã  */
 					t1 = w->_t1;
 				}
-			    /* t1 ‚Ìw‚·ƒ^ƒO‚ğ tag_no ‚É•Ô‚· */
+			    /* t1 ã®æŒ‡ã™ã‚¿ã‚°ã‚’ tag_no ã«è¿”ã™ */
 				if (GetTagNo (w)) {
-				    /* ƒGƒ‰[ˆ—‚Ü‚¾ */
+				    /* ã‚¨ãƒ©ãƒ¼å‡¦ç†ã¾ã  */
 					t1 = w->_t1;
 				}
 				t1 = w->_t1;
 
-			    /* ‚±‚±‚É—ˆ‚½“_‚Å t1 ‚Íƒ^ƒO‚ÌŸiƒXƒy[ƒX‚ª‚ ‚ê‚Î“Ç‚İ”ò‚Î‚·j‚ğ
-			       w‚µ‚Ä‚¢‚éB"<A HREF=" ‚¾‚Á‚½‚ç 'H'A"<BR>" ‚¾‚Á‚½‚ç '>'B */
+			    /* ã“ã“ã«æ¥ãŸæ™‚ç‚¹ã§ t1 ã¯ã‚¿ã‚°ã®æ¬¡ï¼ˆã‚¹ãƒšãƒ¼ã‚¹ãŒã‚ã‚Œã°èª­ã¿é£›ã°ã™ï¼‰ã‚’
+			       æŒ‡ã—ã¦ã„ã‚‹ã€‚"<A HREF=" ã ã£ãŸã‚‰ 'H'ã€"<BR>" ã ã£ãŸã‚‰ '>'ã€‚ */
 
-			    /* ƒ^ƒO‚É‚æ‚Á‚Ä•ªŠòiŠÖ”‚Ö‚Ìƒ|ƒCƒ“ƒ^‚Á‚Äƒ„ƒcj */
+			    /* ã‚¿ã‚°ã«ã‚ˆã£ã¦åˆ†å²ï¼ˆé–¢æ•°ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã£ã¦ãƒ¤ãƒ„ï¼‰ */
 				if (w->tag_no >= 0) {
 #if 0
 					McDbPrintf ("TAG : %s\n", tag_str[w->tag_no]);
@@ -1832,7 +1832,7 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 					t1 = w->_t1;
 					t2 = w->_t2;
 				}
-			    /* “Ç‚Ü‚È‚©‚Á‚½‚±‚Æ‚É‚µ‚½‚©H */
+			    /* èª­ã¾ãªã‹ã£ãŸã“ã¨ã«ã—ãŸã‹ï¼Ÿ */
 				if (w->not_read_flag) {
 					t1 = w->t1_old;
 				} else {
@@ -1848,9 +1848,9 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 				else
 					continue;
 			}
-		    /* •¶šƒGƒ“ƒeƒBƒeƒB‚Ìˆ— */
+		    /* æ–‡å­—ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ã®å‡¦ç† */
 			if (c == '&') {
-			    /* t1 ‚Ìw‚·•¶šƒGƒ“ƒeƒBƒeƒB‚ğ entity_no ‚É•Ô‚· */
+			    /* t1 ã®æŒ‡ã™æ–‡å­—ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ã‚’ entity_no ã«è¿”ã™ */
 				short entity_no = 0;
 				char **s = entity_str;
 				int *l = entity_len;
@@ -1864,7 +1864,7 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 					l++;
 					entity_no++;
 				} while (*s != NULL);
-			    /* ƒGƒ“ƒeƒBƒeƒB‚É‚æ‚Á‚Ä•ªŠò */
+			    /* ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ã«ã‚ˆã£ã¦åˆ†å² */
 				switch (entity_no) {
 				case ENTITY_LT:
 				case ENTITY_GT:
@@ -1875,17 +1875,17 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 					c = entity_char[entity_no];
 					break;
 				default:
-				    /* ‚Ç‚ê‚Å‚à‚È‚©‚Á‚½ê‡‚»‚Ì‚Ü‚Ü•\¦ */
+				    /* ã©ã‚Œã§ã‚‚ãªã‹ã£ãŸå ´åˆãã®ã¾ã¾è¡¨ç¤º */
 					break;
 				}
 			}
 			if (c == 0x09)
 				c = ' ';
 
-		    /* ˜A‘±‚·‚éƒXƒy[ƒX(0x20)‚Í‚P‚Â‚É‚Ü‚Æ‚ß‚é */
+		    /* é€£ç¶šã™ã‚‹ã‚¹ãƒšãƒ¼ã‚¹(0x20)ã¯ï¼‘ã¤ã«ã¾ã¨ã‚ã‚‹ */
 			if ((c == ' ') && (!w->tag_pre)) {
-				if (w->space_flag)	/* ’¼‘O‚ªƒXƒy[ƒX‚¾‚Á‚½‚© */
-					continue;	/* Ÿ‚Ì•¶š‚Ö */
+				if (w->space_flag)	/* ç›´å‰ãŒã‚¹ãƒšãƒ¼ã‚¹ã ã£ãŸã‹ */
+					continue;	/* æ¬¡ã®æ–‡å­—ã¸ */
 				w->space_flag = !0;
 			} else {
 				w->space_flag = 0;
@@ -1896,24 +1896,24 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 				if (*t1 == 0x0a)
 					t1++;
 				if (!w->tag_pre)
-					continue;	/* Ÿ‚Ì•¶š‚Ö */
+					continue;	/* æ¬¡ã®æ–‡å­—ã¸ */
 				else
-					break;	/* Ÿ‚Ìs‚Ö */
+					break;	/* æ¬¡ã®è¡Œã¸ */
 			}
 			if (c == 0x0a) {
 				org_line++;
 				if (!w->tag_pre)
-					continue;	/* Ÿ‚Ì•¶š‚Ö */
+					continue;	/* æ¬¡ã®æ–‡å­—ã¸ */
 				else
-					break;	/* Ÿ‚Ìs‚Ö */
+					break;	/* æ¬¡ã®è¡Œã¸ */
 			}
 			if (c < ' ') {
-			    //*t2++ = c;    /* 0x20ˆÈ‰º‚Ì•¶š‚Í–³‹ */
+			    //*t2++ = c;    /* 0x20ä»¥ä¸‹ã®æ–‡å­—ã¯ç„¡è¦– */
 				continue;
 			}
-			if (c == '`') {		/* XpressionŒ`®•¶š—ñ‚Ìƒƒ^ƒLƒƒƒ‰ƒNƒ^ */
+			if (c == '`') {		/* Xpressionå½¢å¼æ–‡å­—åˆ—ã®ãƒ¡ã‚¿ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ */
 				if (w->width + w->font_size > WRAP_DOT) {
-					t1 = w->t1_old;		/* “Ç‚Ü‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é */
+					t1 = w->t1_old;		/* èª­ã¾ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹ */
 					break;
 				}
 				*t2++ = c;
@@ -1927,9 +1927,9 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 				continue;
 			}
 			if (c < 0x80) {
-			    /* ‚PƒoƒCƒg•¶š‚Ìê‡ */
+			    /* ï¼‘ãƒã‚¤ãƒˆæ–‡å­—ã®å ´åˆ */
 				if (w->width + w->font_size > WRAP_DOT) {
-					t1 = w->t1_old;		/* “Ç‚Ü‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é */
+					t1 = w->t1_old;		/* èª­ã¾ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹ */
 					break;
 				}
 				*t2++ = c;
@@ -1939,9 +1939,9 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 				continue;
 			} else {
 				if ((c >= 0xa0) && (c <= 0xdf)) {
-				    /* ”¼ŠpƒJƒi‚Ìê‡ */
+				    /* åŠè§’ã‚«ãƒŠã®å ´åˆ */
 					if (w->width + w->font_size > WRAP_DOT) {
-						t1 = w->t1_old;		/* “Ç‚Ü‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é */
+						t1 = w->t1_old;		/* èª­ã¾ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹ */
 						break;
 					}
 					*t2++ = c;
@@ -1950,10 +1950,10 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 					w->width += w->font_size;
 					continue;
 				} else {
-				    /* Š¿š‚Ìê‡ */
+				    /* æ¼¢å­—ã®å ´åˆ */
 					unsigned char c1;
 					if ((w->width + w->font_size * 2) > WRAP_DOT) {
-						t1 = w->t1_old;		/* “Ç‚Ü‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é */
+						t1 = w->t1_old;		/* èª­ã¾ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹ */
 						break;
 					}
 					*t2++ = c;
@@ -1964,7 +1964,7 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 					continue;
 				}
 			}
-		} while ((t1 < w->t1e) && (t2 < w->t2e));	/* Œ…ƒ‹[ƒvI—¹ */
+		} while ((t1 < w->t1e) && (t2 < w->t2e));	/* æ¡ãƒ«ãƒ¼ãƒ—çµ‚äº† */
 		*t2++ = '\0';
 
 		if ((t1 > w->t1e) || (t2 > w->t2e))
@@ -1983,15 +1983,15 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 		}
 		if (blb_top == NULL) {
 			l++->ptr = w->t2t;
-			xptext->line++;		/* s” */
-		} else {	/* ‘Osˆ—‚ª•K—v‚Èê‡ */
+			xptext->line++;		/* è¡Œæ•° */
+		} else {	/* å‰è¡Œå‡¦ç†ãŒå¿…è¦ãªå ´åˆ */
 			unsigned char temp[1024];
-			int len1;	/* Œ»İs‚Ì•¶š” */
+			int len1;	/* ç¾åœ¨è¡Œã®æ–‡å­—æ•° */
 			unsigned short s = l->start_dot;
 			BLB *t_ptr;
 
 			len1 = (int) (t2 - w->t2t);
-			strncpy (temp, w->t2t, len1);	/* Œ»İs‚ğ‘Ş”ğ */
+			strncpy (temp, w->t2t, len1);	/* ç¾åœ¨è¡Œã‚’é€€é¿ */
 
 			t2 = w->t2t;
 			while ((t_ptr = DeleteBLB ()) != NULL) {
@@ -2001,7 +2001,7 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 				*t2++ = '\0';
 				l->start_dot = s;
 				l->org_line = org_line;
-				xptext->line++;		/* s” */
+				xptext->line++;		/* è¡Œæ•° */
 				l++;
 				free (t_ptr);
 			}
@@ -2011,26 +2011,26 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 			*t2++ = '\0';
 			l->start_dot = s;
 			l->org_line = org_line;
-			xptext->line++;		/* s” */
+			xptext->line++;		/* è¡Œæ•° */
 			l++;
 		}
 	} while ((t1 < w->t1e) && (t2 < w->t2e) && (xptext->line < line_table_size));
-    /* sƒ‹[ƒvI—¹ */
+    /* è¡Œãƒ«ãƒ¼ãƒ—çµ‚äº† */
 
 	l->ptr = NULL;
 
 
 	if (t2 >= w->t2e)
-		McPuts ("¦ ƒeƒLƒXƒg‰ğÍƒoƒbƒtƒ@‚ª‘«‚è‚Ü‚¹‚ñ\n");
+		McPuts ("â€» ãƒ†ã‚­ã‚¹ãƒˆè§£æãƒãƒƒãƒ•ã‚¡ãŒè¶³ã‚Šã¾ã›ã‚“\n");
 
 	if ((xptext->line >= line_table_size))
-		McPuts ("¦ s“ªƒe[ƒuƒ‹‚ª‘«‚è‚Ü‚¹‚ñ\n");
+		McPuts ("â€» è¡Œé ­ãƒ†ãƒ¼ãƒ–ãƒ«ãŒè¶³ã‚Šã¾ã›ã‚“\n");
 
 
-    /* —]•ª‚ÉŠm•Û‚µ‚½ƒƒ‚ƒŠƒuƒƒbƒN‚ğØ‚èÌ‚Ä‚é */
+    /* ä½™åˆ†ã«ç¢ºä¿ã—ãŸãƒ¡ãƒ¢ãƒªãƒ–ãƒ­ãƒƒã‚¯ã‚’åˆ‡ã‚Šæ¨ã¦ã‚‹ */
 	_dos_setblock (xptext->text, (int) t2 - (int) (xptext->text) + 1);
 	_dos_setblock (xptext->line_ptr, sizeof (LINE_PTR) * (xptext->line));
-	if (w->pass == 0) {	/* ‰‰ñ‚Ì‰ğÍ‚È‚ç */
+	if (w->pass == 0) {	/* åˆå›ã®è§£æãªã‚‰ */
 		_dos_setblock (xptext->link_table_buffer,
 			       sizeof (char) * ((int) (w->link_table_buffer_ptr - xptext->link_table_buffer)) + 1);
 		_dos_setblock (xptext->link_table, sizeof (LINK_TABLE) * (xptext->link_table_max + 1));
@@ -2041,7 +2041,7 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 
 
 
-/* ƒŠƒ“ƒNƒe[ƒuƒ‹‚Ì in_cache ‚ğXV‚·‚é */
+/* ãƒªãƒ³ã‚¯ãƒ†ãƒ¼ãƒ–ãƒ«ã® in_cache ã‚’æ›´æ–°ã™ã‚‹ */
 void ReCheckLinkTable (HTTPFILE * httpfile)
 {
 	HTTPFILE _t_httpfile, *t_httpfile = &_t_httpfile;
@@ -2060,13 +2060,13 @@ void ReCheckLinkTable (HTTPFILE * httpfile)
 
 
 
-/* ƒAƒ“ƒJ[‚ğŒŸõ‚µ‚Äs”‚ğ•Ô‚· */
+/* ã‚¢ãƒ³ã‚«ãƒ¼ã‚’æ¤œç´¢ã—ã¦è¡Œæ•°ã‚’è¿”ã™ */
 int SearchAnchor (XPTEXT * xptext, char *anchor)
 {
 	int i;
 
 	for (i = 0; i < xptext->anchor_table_max; i++) {
-	    /* anchor+1 ‚È‚Ì‚Í '#' ‚ğ”ò‚Î‚·‚½‚ß */
+	    /* anchor+1 ãªã®ã¯ '#' ã‚’é£›ã°ã™ãŸã‚ */
 		if (!stricmp (((xptext->anchor_table)[i]).anchor, anchor + 1))
 			return (((xptext->anchor_table)[i]).line);
 	}
@@ -2075,7 +2075,7 @@ int SearchAnchor (XPTEXT * xptext, char *anchor)
 
 
 
-/* –ˆ‰ñŠm•Û‚·‚éƒ[ƒN‚ğŠJ•ú */
+/* æ¯å›ç¢ºä¿ã™ã‚‹ãƒ¯ãƒ¼ã‚¯ã‚’é–‹æ”¾ */
 void FreeXptext (XPTEXT * xptext)
 {
 	if (xptext) {
@@ -2086,9 +2086,9 @@ void FreeXptext (XPTEXT * xptext)
 		if (xptext->anchor_table)
 			_dos_mfree (xptext->anchor_table);
 
-	    /* link_table, link_table_buffer, image_table ‚Í‚±‚±‚ÅÌ‚Ä‚Ä‚Í‚¢‚¯‚È‚¢B——R‚ÍWe
-	       bXpression.c ‚Ì FreeXptext() ŒÄ‚Ño‚µ•”‚ğŒ©‚é‚±‚Æi•¡”‰ñ‰ğÍ‚ğs‚¤“x‚É‚±‚±‚ª
-	       ŒÄ‚Î‚ê‚é‚½‚ßj */
+	    /* link_table, link_table_buffer, image_table ã¯ã“ã“ã§æ¨ã¦ã¦ã¯ã„ã‘ãªã„ã€‚ç†ç”±ã¯We
+	       bXpression.c ã® FreeXptext() å‘¼ã³å‡ºã—éƒ¨ã‚’è¦‹ã‚‹ã“ã¨ï¼ˆè¤‡æ•°å›è§£æã‚’è¡Œã†åº¦ã«ã“ã“ãŒ
+	       å‘¼ã°ã‚Œã‚‹ãŸã‚ï¼‰ */
 
 		free (xptext);
 	}
@@ -2109,7 +2109,7 @@ void FreeXptext2 (XPTEXT * xptext)
 			for (i = 0; i < xptext->image_table_max; i++) {
 				IMAGE_LIST *t_ptr;
 				t_ptr = (xptext->image_table)[i].image_list;
-				t_ptr->count--;		/* ƒŠƒ“ƒNƒJƒEƒ“ƒg‚ğ‚P‚Â‰º‚°‚é */
+				t_ptr->count--;		/* ãƒªãƒ³ã‚¯ã‚«ã‚¦ãƒ³ãƒˆã‚’ï¼‘ã¤ä¸‹ã’ã‚‹ */
 			}
 			_dos_mfree (xptext->image_table);
 		}

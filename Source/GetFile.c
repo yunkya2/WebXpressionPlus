@@ -56,7 +56,7 @@ void ShowMouse (void)
 
 
 
-/* URL ‚Åw’è‚µ‚½ƒtƒ@ƒCƒ‹‚ğƒlƒbƒgƒ[ƒN‚©‚çæ‚Á‚Ä‚­‚é */
+/* URL ã§æŒ‡å®šã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã‹ã‚‰å–ã£ã¦ãã‚‹ */
 static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 {
 	int netd;
@@ -72,34 +72,34 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 	ret = GF_ERROR;
 
 
-    /* ƒ\ƒPƒbƒg‚ğì¬‚·‚é */
+    /* ã‚½ã‚±ãƒƒãƒˆã‚’ä½œæˆã™ã‚‹ */
 	netd = socket (AF_INET, SOCK_STREAM, 0);
 	if (netd < 0) {
-		McPuts ("¦ ƒ\ƒPƒbƒg‚ªì¬‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½\n");
+		McPuts ("â€» ã‚½ã‚±ãƒƒãƒˆãŒä½œæˆã§ãã¾ã›ã‚“ã§ã—ãŸ\n");
 		return (ret);
 	}
-	memset (&addr, 0, sizeof (addr));	/* 0 ‚Å–„‚ß‚é */
+	memset (&addr, 0, sizeof (addr));	/* 0 ã§åŸ‹ã‚ã‚‹ */
 
-	addr.sin_family = AF_INET;	/* INETƒhƒƒCƒ“‚ğw’è */
-	addr.sin_port = htons (httpfile->port);		/* http ‚Íƒ|[ƒg 80”Ô */
-    /* ƒzƒXƒg–¼(www.xxx.co.jp) ‚ğ IP ƒAƒhƒŒƒX(int)‚É•ÏŠ· */
+	addr.sin_family = AF_INET;	/* INETãƒ‰ãƒ¡ã‚¤ãƒ³ã‚’æŒ‡å®š */
+	addr.sin_port = htons (httpfile->port);		/* http ã¯ãƒãƒ¼ãƒˆ 80ç•ª */
+    /* ãƒ›ã‚¹ãƒˆå(www.xxx.co.jp) ã‚’ IP ã‚¢ãƒ‰ãƒ¬ã‚¹(int)ã«å¤‰æ› */
 	h = gethostbyname (httpfile->hostname);
 	if (h == NULL) {
-		McPuts ("¦ƒhƒƒCƒ“–¼‚ª‚İ‚Â‚©‚è‚Ü‚¹‚ñ\n");
+		McPuts ("â€»ãƒ‰ãƒ¡ã‚¤ãƒ³åãŒã¿ã¤ã‹ã‚Šã¾ã›ã‚“\n");
 		return (ret);
 	}
 	addr.sin_addr.s_addr = *(long *) h->h_addr;
 
-    /* ‘Šèæ‚ÉÚ‘±‚·‚é */
+    /* ç›¸æ‰‹å…ˆã«æ¥ç¶šã™ã‚‹ */
 	if (req_mode == REQ_HEAD)
-		McDbPuts ("ƒwƒbƒ_‚ğæ“¾‚µ‚Ü‚·");
-	McPrintf ("%s ‚ÉÚ‘±’†...", httpfile->hostname);
+		McDbPuts ("ãƒ˜ãƒƒãƒ€ã‚’å–å¾—ã—ã¾ã™");
+	McPrintf ("%s ã«æ¥ç¶šä¸­...", httpfile->hostname);
 	if (connect (netd, (char *) &addr, sizeof (addr)) < 0) {
-		McPuts ("\n¦ Ú‘±‚É¸”s‚µ‚Ü‚µ‚½\n");
+		McPuts ("\nâ€» æ¥ç¶šã«å¤±æ•—ã—ã¾ã—ãŸ\n");
 		return (ret);
 	}
 	McCursorTop ();
-	McPrintf ("%s ‚ÉÚ‘±‚µ‚Ü‚µ‚½\n", httpfile->hostname);
+	McPrintf ("%s ã«æ¥ç¶šã—ã¾ã—ãŸ\n", httpfile->hostname);
 
 	if (req_mode == REQ_HEAD)
 		sprintf (temp_str, "HEAD %s%s%s HTTP/1.0\r\n", httpfile->path, httpfile->fname, httpfile->query);
@@ -125,17 +125,17 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 #endif
 	write_s (netd, "\r\n", 2);
 
-	McPuts ("ƒŒƒXƒ|ƒ“ƒX‚ğ‘Ò‚¿‚Ü‚·...");
+	McPuts ("ãƒ¬ã‚¹ãƒãƒ³ã‚¹ã‚’å¾…ã¡ã¾ã™...");
 
-    /* ƒwƒbƒ_‚ğ‚Ps‚Ã‚Â“Ç‚İ‚Ş */
+    /* ãƒ˜ãƒƒãƒ€ã‚’ï¼‘è¡Œã¥ã¤èª­ã¿è¾¼ã‚€ */
 	recvline (netd, temp_str, 1024);
 	if ((strncmp (temp_str, "HTTP/1.0 200", 12))
 	    && (strncmp (temp_str, "HTTP/1.1 200", 12))) {
 		McDbPuts (temp_str);
-		close_s (netd);	/* Ú‘±‚ÌØ’f */
+		close_s (netd);	/* æ¥ç¶šã®åˆ‡æ–­ */
 		return (ret);
 	}
-	McCursorTop ();		/* "ƒŒƒXƒ|ƒ“ƒX‚ğ‘Ò‚¿‚Ü‚·"‚ğÁ‹ */
+	McCursorTop ();		/* "ãƒ¬ã‚¹ãƒãƒ³ã‚¹ã‚’å¾…ã¡ã¾ã™"ã‚’æ¶ˆå» */
 	McDbPuts ("\n");
 
 	*httpfile->content_type = '\0';
@@ -143,13 +143,13 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 #define NO_TIMESTAMP	255
 	(httpfile->time_stamp).tm_sec = NO_TIMESTAMP;
 
-    /* ‹ósiƒwƒbƒ_‚ÌI—¹j‚ª—ˆ‚é‚Ü‚Åƒ‹[ƒv */
+    /* ç©ºè¡Œï¼ˆãƒ˜ãƒƒãƒ€ã®çµ‚äº†ï¼‰ãŒæ¥ã‚‹ã¾ã§ãƒ«ãƒ¼ãƒ— */
 	while (recvline (netd, temp_str, 1024), strlen (temp_str) > 3) {
 		char temp_entity[256];
 
 		McDbPrintf ("HEAD > %s", temp_str);
 		sscanf (temp_str, "%s", temp_entity);
-	    /* ƒwƒbƒ_–¼‚Í‘å•¶š^¬•¶š‚ğ‹æ•Ê‚µ‚È‚¢ */
+	    /* ãƒ˜ãƒƒãƒ€åã¯å¤§æ–‡å­—ï¼å°æ–‡å­—ã‚’åŒºåˆ¥ã—ãªã„ */
 		if (!stricmp (temp_entity, "Content-Type:")) {
 			sscanf (temp_str + 14, "%s", httpfile->content_type);
 		}
@@ -165,7 +165,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 
 
 	if (req_mode == REQ_HEAD) {
-		close_s (netd);	/* Ú‘±‚ÌØ’f */
+		close_s (netd);	/* æ¥ç¶šã®åˆ‡æ–­ */
 
 		if ((httpfile->time_stamp).tm_sec == NO_TIMESTAMP) {
 			time_t t;
@@ -186,12 +186,12 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 		if (httpfile->content_length) {
 			alloc_size = httpfile->content_length + YOYUU;
 		} else {
-		    /* 12MB ˆÈãŠm•Û‚Å‚«‚È‚¢‚æ[‚ñ */
+		    /* 12MB ä»¥ä¸Šç¢ºä¿ã§ããªã„ã‚ˆãƒ¼ã‚“ */
 			alloc_size = ((int) _dos_malloc (-1)) & 0x00fffffe - YOYUU;
 		}
 		if (((int) (httpfile->content = _dos_malloc (alloc_size))) < 0) {
-			McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
-			close_s (netd);		/* Ú‘±‚ÌØ’f */
+			McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
+			close_s (netd);		/* æ¥ç¶šã®åˆ‡æ–­ */
 			httpfile->content = NULL;
 			return (ret);
 		}
@@ -199,35 +199,35 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 		alloc_left = alloc_size;
 		lap_time = _iocs_ontime ();
 
-	    /* ƒtƒ@ƒCƒ‹‚Ì“]‘—‚ªŠ®—¹‚·‚é‚Ü‚Åƒ‹[ƒv */
+	    /* ãƒ•ã‚¡ã‚¤ãƒ«ã®è»¢é€ãŒå®Œäº†ã™ã‚‹ã¾ã§ãƒ«ãƒ¼ãƒ— */
 		do {
 			s = read_s (netd, r, alloc_left);
 			read_size += s;
 			r += s;
 			if ((alloc_left -= s) <= 0) {
-				McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
+				McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
 				break;
 			}
 			if (httpfile->content_length)
-				sprintf (temp_str, "óM’† %d/%d ƒoƒCƒg", read_size, httpfile->content_length);
+				sprintf (temp_str, "å—ä¿¡ä¸­ %d/%d ãƒã‚¤ãƒˆ", read_size, httpfile->content_length);
 			else
-				sprintf (temp_str, "óM’† %d ƒoƒCƒg", read_size);
-			McCursorTop ();		/* ƒJ[ƒ\ƒ‹‚ğs‚Ìæ“ª‚É */
+				sprintf (temp_str, "å—ä¿¡ä¸­ %d ãƒã‚¤ãƒˆ", read_size);
+			McCursorTop ();		/* ã‚«ãƒ¼ã‚½ãƒ«ã‚’è¡Œã®å…ˆé ­ã« */
 			McPuts (temp_str);
 			ret = AbortCheckGetFile ();
 		} while ((socklen (netd, 0) >= 0) && (ret == GF_SUCCESS));
 
 		if (ret != GF_SUCCESS) {
-			shutdown (netd, 0);	/* óM‚µ‚½ƒf[ƒ^‚ğó‚¯æ‚ç‚¸C‚·‚×‚Ä”pŠü‚·‚é */
-			shutdown (netd, 2);	/* connection ‚ğ abort‚·‚é */
+			shutdown (netd, 0);	/* å—ä¿¡ã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’å—ã‘å–ã‚‰ãšï¼Œã™ã¹ã¦å»ƒæ£„ã™ã‚‹ */
+			shutdown (netd, 2);	/* connection ã‚’ abortã™ã‚‹ */
 			WaitReleaseAll ();
 		}
-		close_s (netd);	/* Ú‘±‚ÌØ’f */
+		close_s (netd);	/* æ¥ç¶šã®åˆ‡æ–­ */
 		lap_time -= _iocs_ontime ();
-		McCursorTop ();	/* ƒJ[ƒ\ƒ‹‚ğs‚Ìæ“ª‚É */
+		McCursorTop ();	/* ã‚«ãƒ¼ã‚½ãƒ«ã‚’è¡Œã®å…ˆé ­ã« */
 
 #ifndef WEBXPRESSION
-		McPrintf ("	óMI—¹ióM‘¬“x‚Í %8.1f ƒoƒCƒg^•b‚Å‚µ‚½j", (double) read_size / (double) (-lap_time) * 100.0);
+		McPrintf ("	å—ä¿¡çµ‚äº†ï¼ˆå—ä¿¡é€Ÿåº¦ã¯ %8.1f ãƒã‚¤ãƒˆï¼ç§’ã§ã—ãŸï¼‰", (double) read_size / (double) (-lap_time) * 100.0);
 #endif
 
 		if (httpfile->content_length == 0) {
@@ -256,13 +256,13 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 				u.modtime = t + 32400;
 				utime (cache_fname, &u);
 #ifndef WEBXPRESSION
-				McPuts (" : ƒtƒ@ƒCƒ‹‚ğ•Û‘¶‚µ‚Ü‚µ‚½\n");
+				McPuts (" : ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä¿å­˜ã—ã¾ã—ãŸ\n");
 #endif
 			} else {
-				McPuts ("¦ ƒLƒƒƒbƒVƒ…‚ğ‘‚«‚ß‚Ü‚¹‚ñ\n");
+				McPuts ("â€» ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’æ›¸ãè¾¼ã‚ã¾ã›ã‚“\n");
 			}
 		} else {
-			McPuts ("¦ ’†’f‚µ‚Ü‚µ‚½\n");
+			McPuts ("â€» ä¸­æ–­ã—ã¾ã—ãŸ\n");
 			_dos_mfree (httpfile->content);
 			httpfile->content = NULL;
 		}
@@ -272,13 +272,13 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 
 
 
-/* URL ‚Åw’è‚µ‚½ƒtƒ@ƒCƒ‹‚ğƒfƒBƒXƒN‚©‚çæ‚Á‚Ä‚­‚é */
+/* URL ã§æŒ‡å®šã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ‡ã‚£ã‚¹ã‚¯ã‹ã‚‰å–ã£ã¦ãã‚‹ */
 static int GetFromLocal (HTTPFILE * httpfile)
 {
 	FILE *fp;
 	char temp_fname[256], ext[256];
 	int ret = GF_ERROR;
-	/* Šg’£q‚©‚ç content-type ‚ğ“¾‚é‚Ì‚É•K—v */
+	/* æ‹¡å¼µå­ã‹ã‚‰ content-type ã‚’å¾—ã‚‹ã®ã«å¿…è¦ */
 	char *content_type_str[] =
 	{"text/html", "text/html", "text/html", "text/plain", "text/plain",
 	 "image/gif", "image/jpeg", "image/jpeg", "image/png", "image/bmp",
@@ -308,7 +308,7 @@ static int GetFromLocal (HTTPFILE * httpfile)
 			fread (httpfile->content, httpfile->content_length, 1, fp);
 			fclose (fp);
 
-		    /* ƒ}ƒ‹ƒ`ƒsƒŠƒIƒh”ñ‘Î‰EEE */
+		    /* ãƒãƒ«ãƒãƒ”ãƒªã‚ªãƒ‰éå¯¾å¿œãƒ»ãƒ»ãƒ» */
 			ext[0] = '\0';
 			p = &httpfile->fname[0];
 			while (c = *p++) {
@@ -323,17 +323,17 @@ static int GetFromLocal (HTTPFILE * httpfile)
 					break;
 			}
 			strcpy (httpfile->content_type, content_type_str[i]);
-		    /* ‚ Aƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚Ìˆ—‚Ü‚¾ */
+		    /* ã‚ã€ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ã®å‡¦ç†ã¾ã  */
 
 			ret = GF_SUCCESS;
 		} else {
 			McDbPuts ("GetFromLocal() : ");
-			McPuts ("¦ : ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
+			McPuts ("â€» : ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
 			httpfile->content = NULL;
 		}
 	} else {
 		McDbPuts ("GetFromLocal() : ");
-		McPrintf ("¦ : ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹ %s ‚ªƒI[ƒvƒ“‚Å‚«‚Ü‚¹‚ñ\n", httpfile->url);
+		McPrintf ("â€» : ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ« %s ãŒã‚ªãƒ¼ãƒ—ãƒ³ã§ãã¾ã›ã‚“\n", httpfile->url);
 	}
 
 	return (ret);
@@ -341,7 +341,7 @@ static int GetFromLocal (HTTPFILE * httpfile)
 
 
 
-/* URL ‚Åw’è‚µ‚½ƒtƒ@ƒCƒ‹‚ğƒLƒƒƒbƒVƒ…‚©‚çæ‚Á‚Ä‚­‚é */
+/* URL ã§æŒ‡å®šã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‹ã‚‰å–ã£ã¦ãã‚‹ */
 static int GetFromCache (HTTPFILE * httpfile, char *cache_fname)
 {
 	FILE *fp;
@@ -356,12 +356,12 @@ static int GetFromCache (HTTPFILE * httpfile, char *cache_fname)
 			fread (httpfile->content, httpfile->content_length, sizeof (char), fp);
 			ret = GF_SUCCESS;
 		} else {
-			McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñ\n");
+			McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“\n");
 			httpfile->content = NULL;
 		}
 		fclose (fp);
 	} else {
-		McPrintf ("¦ ƒLƒƒƒbƒVƒ…ƒtƒ@ƒCƒ‹ %s ‚ªƒI[ƒvƒ“‚Å‚«‚Ü‚¹‚ñ\n", cache_fname);
+		McPrintf ("â€» ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ•ã‚¡ã‚¤ãƒ« %s ãŒã‚ªãƒ¼ãƒ—ãƒ³ã§ãã¾ã›ã‚“\n", cache_fname);
 	}
 
 	return (ret);
@@ -369,67 +369,67 @@ static int GetFromCache (HTTPFILE * httpfile, char *cache_fname)
 
 
 
-/* URL ‚Åw’è‚µ‚½ƒtƒ@ƒCƒ‹‚ğæ‚Á‚Ä‚­‚é */
-/* httpfile ’†‚Ì URL‚Í•ª‰ğ‚¸‚İ‚Å‚ ‚é‚±‚Æ */
+/* URL ã§æŒ‡å®šã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’å–ã£ã¦ãã‚‹ */
+/* httpfile ä¸­ã® URLã¯åˆ†è§£ãšã¿ã§ã‚ã‚‹ã“ã¨ */
 int GetFile (HTTPFILE * httpfile)
 {
 	char cache_fname[256];
-	int ret = GF_ERROR;	/* •Ô‚è’l */
+	int ret = GF_ERROR;	/* è¿”ã‚Šå€¤ */
 
-/*      McDbPrintf ("GetFile() : %s ‚ÌóM‚ğŠJn‚µ‚Ü‚·\n", httpfile->url); */
+/*      McDbPrintf ("GetFile() : %s ã®å—ä¿¡ã‚’é–‹å§‹ã—ã¾ã™\n", httpfile->url); */
 	switch (WCExist (httpfile, cache_fname)) {
-	case WC_NON:		/* ƒLƒƒƒbƒVƒ…‚É‘¶İ‚µ‚È‚¢ê‡ */
+	case WC_NON:		/* ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«å­˜åœ¨ã—ãªã„å ´åˆ */
 		if (inetd_version >= 0) {
-		    /* TCP/IP ƒhƒ‰ƒCƒo‚ªí’“‚µ‚Ä‚¢‚éê‡ */
+		    /* TCP/IP ãƒ‰ãƒ©ã‚¤ãƒãŒå¸¸é§ã—ã¦ã„ã‚‹å ´åˆ */
 			HideMouse ();
 			ret = GetFromNetwork (httpfile, REQ_GET);
 			ShowMouse ();
 		} else {
-			McPuts ("¦ TCP/IP ƒhƒ‰ƒCƒo‚ªí’“‚µ‚Ä‚¢‚Ü‚¹‚ñ\n");
+			McPuts ("â€» TCP/IP ãƒ‰ãƒ©ã‚¤ãƒãŒå¸¸é§ã—ã¦ã„ã¾ã›ã‚“\n");
 		}
 		break;
 
-	case WC_INCACHE:	/* ƒLƒƒƒbƒVƒ…‚É‘¶İ‚µA‹N“®Œã‰‚ß‚Ä‚ÌƒAƒNƒZƒX‚Ìê‡ */
+	case WC_INCACHE:	/* ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«å­˜åœ¨ã—ã€èµ·å‹•å¾Œåˆã‚ã¦ã®ã‚¢ã‚¯ã‚»ã‚¹ã®å ´åˆ */
 		WCSetAccess (httpfile);
 		if (inetd_version >= 0) {
-		    /* TCP/IP ƒhƒ‰ƒCƒo‚ªí’“‚µ‚Ä‚¢‚éê‡ */
-			HTTPFILE _t_httpfile, *t_httpfile = &_t_httpfile;	/* ƒwƒbƒ_‚ª•Ô‚é */
+		    /* TCP/IP ãƒ‰ãƒ©ã‚¤ãƒãŒå¸¸é§ã—ã¦ã„ã‚‹å ´åˆ */
+			HTTPFILE _t_httpfile, *t_httpfile = &_t_httpfile;	/* ãƒ˜ãƒƒãƒ€ãŒè¿”ã‚‹ */
 
 			InitHttpfile (t_httpfile);
 			CatHttpfile (t_httpfile, httpfile, httpfile->url);
 			strcpy (t_httpfile->referer, httpfile->referer);
 			HideMouse ();
-			McPuts ("XVƒ`ƒFƒbƒN‚ğ‚µ‚Ü‚·\n");
-			ret = GetFromNetwork (t_httpfile, REQ_HEAD);	/* ƒwƒbƒ_‚ğæ“¾ */
+			McPuts ("æ›´æ–°ãƒã‚§ãƒƒã‚¯ã‚’ã—ã¾ã™\n");
+			ret = GetFromNetwork (t_httpfile, REQ_HEAD);	/* ãƒ˜ãƒƒãƒ€ã‚’å–å¾— */
 			ShowMouse ();
 			if (ret == GF_SUCCESS) {
-			    /* ƒwƒbƒ_‚ªæ“¾o—ˆ‚½ê‡ */
-				McDbPuts ("ƒwƒbƒ_æ“¾¬Œ÷\n");
+			    /* ãƒ˜ãƒƒãƒ€ãŒå–å¾—å‡ºæ¥ãŸå ´åˆ */
+				McDbPuts ("ãƒ˜ãƒƒãƒ€å–å¾—æˆåŠŸ\n");
 				if (difftime (mktime (&t_httpfile->time_stamp), mktime (&httpfile->time_stamp)) > (double) 0.0) {
-				    /* ƒtƒ@ƒCƒ‹‚ªXV‚³‚ê‚Ä‚¢‚½ê‡ */
-					McPuts ("ƒtƒ@ƒCƒ‹‚ªXV‚³‚ê‚Ä‚¢‚Ü‚·\n");
+				    /* ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ›´æ–°ã•ã‚Œã¦ã„ãŸå ´åˆ */
+					McPuts ("ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ›´æ–°ã•ã‚Œã¦ã„ã¾ã™\n");
 					HideMouse ();
 					ret = GetFromNetwork (httpfile, REQ_GET);
 					ShowMouse ();
 				} else {
-				    /* ƒtƒ@ƒCƒ‹‚ªXV‚³‚ê‚Ä‚¢‚È‚¢ê‡ */
-					McPuts ("ƒtƒ@ƒCƒ‹‚ªXV‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ\n");
+				    /* ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ›´æ–°ã•ã‚Œã¦ã„ãªã„å ´åˆ */
+					McPuts ("ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ›´æ–°ã•ã‚Œã¦ã„ã¾ã›ã‚“\n");
 					ret = GetFromCache (httpfile, cache_fname);
 				}
 			} else {
-			    /* ƒwƒbƒ_‚ªæ“¾‚Å‚«‚È‚©‚Á‚½ê‡ */
-				McPuts ("XVƒ`ƒFƒbƒN‚ª‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½\n");
+			    /* ãƒ˜ãƒƒãƒ€ãŒå–å¾—ã§ããªã‹ã£ãŸå ´åˆ */
+				McPuts ("æ›´æ–°ãƒã‚§ãƒƒã‚¯ãŒã§ãã¾ã›ã‚“ã§ã—ãŸ\n");
 				HideMouse ();
 				ret = GetFromNetwork (httpfile, REQ_GET);
 				ShowMouse ();
 			}
 		} else {
-		    /* TCP/IP ƒhƒ‰ƒCƒo‚ªí’“‚µ‚Ä‚¢‚È‚¢ê‡ */
+		    /* TCP/IP ãƒ‰ãƒ©ã‚¤ãƒãŒå¸¸é§ã—ã¦ã„ãªã„å ´åˆ */
 			ret = GetFromCache (httpfile, cache_fname);
 		}
 		break;
 
-	case WC_INCACHE2:	/* ƒLƒƒƒbƒVƒ…‚É‘¶İ‚µA‹N“®Œã‚P‰ñˆÈãƒAƒNƒZƒX‚µ‚Ä‚¢‚éê‡ */
+	case WC_INCACHE2:	/* ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«å­˜åœ¨ã—ã€èµ·å‹•å¾Œï¼‘å›ä»¥ä¸Šã‚¢ã‚¯ã‚»ã‚¹ã—ã¦ã„ã‚‹å ´åˆ */
 		ret = GetFromCache (httpfile, cache_fname);
 		break;
 

@@ -1,6 +1,6 @@
 /* MicroConsole.h */
 
-/* ŠÖ”ƒvƒƒgƒ^ƒCƒvéŒ¾ */
+/* é–¢æ•°ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ */
 void McInit (void);
 void McPuts (char *);
 void McDbPuts (char *);

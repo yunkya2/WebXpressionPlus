@@ -1,19 +1,19 @@
 /* Image.h */
 
-/* LoadImage �̕Ԃ�l */
-/* ���̏��ԂɈˑ����Ă���R�[�h������̂Œ��� */
+/* LoadImage の返り値 */
+/* この順番に依存しているコードがあるので注意 */
 enum {
-    /* �����ǂݍ��ޕK�v���Ȃ� */
-	LI_COMPLETE_NOT_LOAD = 0,	/* �ǂݍ��߂Ȃ����� */
-	LI_COMPLETE_LOAD,	/* �P���ǂݍ��� */
+    /* もう読み込む必要がない */
+	LI_COMPLETE_NOT_LOAD = 0,	/* 読み込めなかった */
+	LI_COMPLETE_LOAD,	/* １枚読み込んだ */
 
-    /* �܂��ǂݍ��ޕK�v������ */
-	LI_CONTINUE_NOT_LOAD,	/* �ǂݍ��߂Ȃ����� */
-	LI_CONTINUE_LOAD,	/* �P���ǂݍ��� */
+    /* まだ読み込む必要がある */
+	LI_CONTINUE_NOT_LOAD,	/* 読み込めなかった */
+	LI_CONTINUE_LOAD,	/* １枚読み込んだ */
 };
 
 
-/* �֐��v���g�^�C�v�錾 */
+/* 関数プロトタイプ宣言 */
 void InitLoadImage (void);
 void DispImageList (void);
 IMAGE_LIST *InsertImageNode (HTTPFILE *);

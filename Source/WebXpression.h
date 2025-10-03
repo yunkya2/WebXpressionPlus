@@ -1,80 +1,80 @@
 /* WebXpression.h */
-/* ’FWebXpression.inc ‚Æ“¯“à—e‚É‚·‚é‚±‚ÆI */
+/* æ³¨ï¼šWebXpression.inc ã¨åŒå†…å®¹ã«ã™ã‚‹ã“ã¨ï¼ */
 
 
-/* sŠÇ—ƒe[ƒuƒ‹ */
+/* è¡Œç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ« */
 typedef struct {
-	char *ptr;		/* ƒeƒLƒXƒg‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
-	unsigned short start_dot;	/* ¶’[‚©‚ç‰½ƒhƒbƒg–Ú‚©‚ç•\¦ŠJn‚·‚é‚© */
-	unsigned short org_line;	/* Œ³‚Ì HTML ‚Ì‰½s–Ú‚¾‚Á‚½‚©iƒGƒfƒBƒ^‹N“®—pj */
-	char font_size;		/* ƒTƒCƒY */
-	char font_type;		/* =0 ‚È‚ç•W€ƒtƒHƒ“ƒg */
-	char font_decoration;	/* •¶š‘•ü */
-	char dammy;	/* ƒ_ƒ~[ */
+	char *ptr;		/* ãƒ†ã‚­ã‚¹ãƒˆã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
+	unsigned short start_dot;	/* å·¦ç«¯ã‹ã‚‰ä½•ãƒ‰ãƒƒãƒˆç›®ã‹ã‚‰è¡¨ç¤ºé–‹å§‹ã™ã‚‹ã‹ */
+	unsigned short org_line;	/* å…ƒã® HTML ã®ä½•è¡Œç›®ã ã£ãŸã‹ï¼ˆã‚¨ãƒ‡ã‚£ã‚¿èµ·å‹•ç”¨ï¼‰ */
+	char font_size;		/* ã‚µã‚¤ã‚º */
+	char font_type;		/* =0 ãªã‚‰æ¨™æº–ãƒ•ã‚©ãƒ³ãƒˆ */
+	char font_decoration;	/* æ–‡å­—è£…é£¾ */
+	char dammy;	/* ãƒ€ãƒŸãƒ¼ */
 } LINE_PTR;
 
 
-/* ƒŠƒ“ƒNƒe[ƒuƒ‹\‘¢‘Ì */
+/* ãƒªãƒ³ã‚¯ãƒ†ãƒ¼ãƒ–ãƒ«æ§‹é€ ä½“ */
 typedef struct {
 	char *url;
-	char in_cache;		/* = !0 : ƒLƒƒƒbƒVƒ…‚É‘¶İ‚·‚é */
+	char in_cache;		/* = !0 : ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«å­˜åœ¨ã™ã‚‹ */
 	char dammy;
 } LINK_TABLE;
 
 
 #define SIZE_OF_ANCHOR	32
-/* ƒAƒ“ƒJ[ƒe[ƒuƒ‹\‘¢‘Ì */
+/* ã‚¢ãƒ³ã‚«ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«æ§‹é€ ä½“ */
 typedef struct {
-	int line;		/* ƒAƒ“ƒJ[‚Ì‘¶İ‚·‚és */
+	int line;		/* ã‚¢ãƒ³ã‚«ãƒ¼ã®å­˜åœ¨ã™ã‚‹è¡Œ */
 	char anchor[SIZE_OF_ANCHOR + 1];
 	char dammy;
 } ANCHOR_TABLE;
 
 
-/* ƒCƒ[ƒWƒŠƒXƒg\‘¢‘Ì */
+/* ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒªã‚¹ãƒˆæ§‹é€ ä½“ */
 typedef struct _image_list {
 	struct _image_list *next_ptr;
 	struct _image_list *before_ptr;
-	short count;		/* ƒŠƒ“ƒNƒJƒEƒ“ƒg */
-    /* i‚¢‚­‚Â‚ÌƒCƒ[ƒWƒe[ƒuƒ‹\‘¢‘Ì‚©‚çƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚é‚©j */
+	short count;		/* ãƒªãƒ³ã‚¯ã‚«ã‚¦ãƒ³ãƒˆ */
+    /* ï¼ˆã„ãã¤ã®ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒ†ãƒ¼ãƒ–ãƒ«æ§‹é€ ä½“ã‹ã‚‰ãƒªãƒ³ã‚¯ã•ã‚Œã¦ã„ã‚‹ã‹ï¼‰ */
 	unsigned short x;
 	unsigned short y;
-	void *data;		/* “WŠJ‚µ‚½ƒCƒ[ƒW–{‘Ì‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
-    /* = 0 : ‚Ü‚¾“Ç‚İ‚ñ‚Å‚¢‚È‚¢ */
-    /* = !0 : “Ç‚İ‚ß‚È‚©‚Á‚½ */
-    /* = ‚»‚êˆÈŠO : ƒCƒ[ƒW‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
+	void *data;		/* å±•é–‹ã—ãŸã‚¤ãƒ¡ãƒ¼ã‚¸æœ¬ä½“ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
+    /* = 0 : ã¾ã èª­ã¿è¾¼ã‚“ã§ã„ãªã„ */
+    /* = !0 : èª­ã¿è¾¼ã‚ãªã‹ã£ãŸ */
+    /* = ãã‚Œä»¥å¤– : ã‚¤ãƒ¡ãƒ¼ã‚¸ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
 	char url[256];
 } IMAGE_LIST;
 
 
-/* ƒCƒ[ƒWƒe[ƒuƒ‹\‘¢‘Ì */
+/* ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒ†ãƒ¼ãƒ–ãƒ«æ§‹é€ ä½“ */
 typedef struct {
 	IMAGE_LIST *image_list;
-	unsigned short disp_x;	/* •\¦‚·‚é x ƒTƒCƒY (x<=512) */
-	char in_cache;		/* = !0 : ƒLƒƒƒbƒVƒ…‚É‘¶İ‚·‚é */
+	unsigned short disp_x;	/* è¡¨ç¤ºã™ã‚‹ x ã‚µã‚¤ã‚º (x<=512) */
+	char in_cache;		/* = !0 : ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«å­˜åœ¨ã™ã‚‹ */
 	char dammy;
 } IMAGE_TABLE;
 
 
-/* Xpression Œ`®ƒeƒLƒXƒgŠÇ—\‘¢‘Ì */
+/* Xpression å½¢å¼ãƒ†ã‚­ã‚¹ãƒˆç®¡ç†æ§‹é€ ä½“ */
 typedef struct {
 	int filesize;
 	LINE_PTR *line_ptr;
-	char *text;		/* ®Œ`Œã‚ÌƒeƒLƒXƒg */
-	int line;		/* ®Œ`Œã‚Ìs” */
-	int current_line;	/* Œ»İ•\¦‚µ‚Ä‚¢‚és” */
-	LINK_TABLE *link_table;	/* ƒŠƒ“ƒN‚ğ\‘¢‘Ì‚ÅŠÇ—‚·‚é */
+	char *text;		/* æ•´å½¢å¾Œã®ãƒ†ã‚­ã‚¹ãƒˆ */
+	int line;		/* æ•´å½¢å¾Œã®è¡Œæ•° */
+	int current_line;	/* ç¾åœ¨è¡¨ç¤ºã—ã¦ã„ã‚‹è¡Œæ•° */
+	LINK_TABLE *link_table;	/* ãƒªãƒ³ã‚¯ã‚’æ§‹é€ ä½“ã§ç®¡ç†ã™ã‚‹ */
 	short link_table_max;
 	char *link_table_buffer;
 	IMAGE_TABLE *image_table;
 	short image_table_max;
-	ANCHOR_TABLE *anchor_table;	/* ƒAƒ“ƒJ[‚ğ\‘¢‘Ì‚ÅŠÇ—‚·‚é */
+	ANCHOR_TABLE *anchor_table;	/* ã‚¢ãƒ³ã‚«ãƒ¼ã‚’æ§‹é€ ä½“ã§ç®¡ç†ã™ã‚‹ */
 	short anchor_table_max;
 	char title[64+1];
 } XPTEXT;
 
 
-/* ƒCƒxƒ“ƒgƒtƒ‰ƒO */
+/* ã‚¤ãƒ™ãƒ³ãƒˆãƒ•ãƒ©ã‚° */
 enum {
 	EVENT_IDLE = 0,
 	EVENT_SCROLL_FORWARD,
@@ -99,38 +99,38 @@ enum {
 };
 
 
-/* ƒCƒxƒ“ƒg\‘¢‘Ì */
+/* ã‚¤ãƒ™ãƒ³ãƒˆæ§‹é€ ä½“ */
 typedef struct {
-	char type;		/* ƒCƒxƒ“ƒg‚Ìí—Ş */
-	char type2;		/* ƒCƒxƒ“ƒg‚Ìí—Ş‚»‚Ì‚Q */
-	char shift;		/* = ”ñ0: [SHIFT]ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é */
-	char ctrl;		/* = ”ñ0: [CTRL]ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é */
-	unsigned short mouse_x;	/* ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ÌÀ•W */
+	char type;		/* ã‚¤ãƒ™ãƒ³ãƒˆã®ç¨®é¡ */
+	char type2;		/* ã‚¤ãƒ™ãƒ³ãƒˆã®ç¨®é¡ãã®ï¼’ */
+	char shift;		/* = é0: [SHIFT]ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹ */
+	char ctrl;		/* = é0: [CTRL]ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹ */
+	unsigned short mouse_x;	/* ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã®åº§æ¨™ */
 	unsigned short mouse_y;
 	unsigned short mouse_button;
 	unsigned short mouse_pat;
-	unsigned short old_mouse_x;	/* ‘O‚Ìƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ÌÀ•W */
+	unsigned short old_mouse_x;	/* å‰ã®ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã®åº§æ¨™ */
 	unsigned short old_mouse_y;
 	unsigned short old_mouse_pat;
-	signed short link_num;	/* ƒŠƒ“ƒN”Ô† */
-	XPTEXT *check_xptext;	/* •\¦’†‚Ì xptext */
-	int keycode;		/* ƒL[ƒR[ƒh */
+	signed short link_num;	/* ãƒªãƒ³ã‚¯ç•ªå· */
+	XPTEXT *check_xptext;	/* è¡¨ç¤ºä¸­ã® xptext */
+	int keycode;		/* ã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰ */
 } EVENTREC;
 
 
 
-#ifdef GLOBAL_DEFINE		/* ƒOƒ[ƒoƒ‹•Ï”‚Ì’è‹`‚ÆéŒ¾‚ğ‚P‚Â‚É‚Ü‚Æ‚ß‚éƒeƒN */
-#define Extern			/* Extern ‚ğƒkƒ‹•¶š—ñ‚É’uŠ· */
+#ifdef GLOBAL_DEFINE		/* ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã®å®šç¾©ã¨å®£è¨€ã‚’ï¼‘ã¤ã«ã¾ã¨ã‚ã‚‹ãƒ†ã‚¯ */
+#define Extern			/* Extern ã‚’ãƒŒãƒ«æ–‡å­—åˆ—ã«ç½®æ› */
 #else
-#define Extern extern		/* Extern ‚ğ extern ‚É’uŠ· */
+#define Extern extern		/* Extern ã‚’ extern ã«ç½®æ› */
 #endif
 
 
-/* ƒOƒ[ƒoƒ‹•Ï” */
+/* ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•° */
 
 Extern struct _psp *mypsp;
 Extern unsigned char d_option;
 
 
-/* ŠÖ”ƒvƒƒgƒ^ƒCƒvéŒ¾ */
+/* é–¢æ•°ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ */
 void WaitReleaseAll (void);

@@ -1,4 +1,4 @@
-/* ƒeƒLƒXƒgƒtƒ@ƒCƒ‹‚ğ Xpression Œ`®‚É•ÏŠ· */
+/* ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã‚’ Xpression å½¢å¼ã«å¤‰æ› */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,7 +10,7 @@
 #include "MicroConsole.h"
 #include "Config.h"
 
-/* Ü‚è•Ô‚·ƒhƒbƒg” */
+/* æŠ˜ã‚Šè¿”ã™ãƒ‰ãƒƒãƒˆæ•° */
 #define WRAP_DOT	(short)512
 #define LINE_Y	16
 
@@ -20,21 +20,21 @@
 
 XPTEXT *Plain2Xpression (HTTPFILE * httpfile, XPTEXT * old_xptext)
 {
-	XPTEXT *xptext;		/* •Ô‚è’l */
-	LINE_PTR *l;		/* Œ»İˆ—‚µ‚Ä‚¢‚ésƒe[ƒuƒ‹ */
-	unsigned short width;	/* ƒhƒbƒg” */
-	unsigned char *t1, *t2;	/* Œ»İˆ—‚µ‚Ä‚¢‚é•¶š */
-	unsigned char *t1e, *t2e;	/* t1,t2 ‚Ì––”ö */
-	unsigned char *t1_old;	/* uˆ—‚µ‚½•¶š‚ğ“Ç‚Ü‚È‚©‚Á‚½–‚É‚·‚év—p */
-	unsigned char *t2t;	/* ‚»‚Ìs‚Ìæ“ª‚Ì t2 */
-	unsigned int t2_size = 0;	/* t2 ‚ÌƒTƒCƒY */
-	unsigned char font_size = 6;	/* ”¼Šp•¶š‚Ì‘å‚«‚³ */
-	unsigned short org_line = 0;	/* Œ³‚Ì HTML ‚Ì‰½s–Ú‚¾‚Á‚½‚© */
+	XPTEXT *xptext;		/* è¿”ã‚Šå€¤ */
+	LINE_PTR *l;		/* ç¾åœ¨å‡¦ç†ã—ã¦ã„ã‚‹è¡Œãƒ†ãƒ¼ãƒ–ãƒ« */
+	unsigned short width;	/* ãƒ‰ãƒƒãƒˆæ•° */
+	unsigned char *t1, *t2;	/* ç¾åœ¨å‡¦ç†ã—ã¦ã„ã‚‹æ–‡å­— */
+	unsigned char *t1e, *t2e;	/* t1,t2 ã®æœ«å°¾ */
+	unsigned char *t1_old;	/* ã€Œå‡¦ç†ã—ãŸæ–‡å­—ã‚’èª­ã¾ãªã‹ã£ãŸäº‹ã«ã™ã‚‹ã€ç”¨ */
+	unsigned char *t2t;	/* ãã®è¡Œã®å…ˆé ­ã® t2 */
+	unsigned int t2_size = 0;	/* t2 ã®ã‚µã‚¤ã‚º */
+	unsigned char font_size = 6;	/* åŠè§’æ–‡å­—ã®å¤§ãã• */
+	unsigned short org_line = 0;	/* å…ƒã® HTML ã®ä½•è¡Œç›®ã ã£ãŸã‹ */
 	short h;
 
 	xptext = malloc (sizeof (XPTEXT));
 	if (xptext == NULL) {
-		McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñi XPTEXT —p‚Ìƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+		McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆ XPTEXT ç”¨ã®ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 		return (NULL);
 	};
 	xptext->text = NULL;
@@ -44,32 +44,32 @@ XPTEXT *Plain2Xpression (HTTPFILE * httpfile, XPTEXT * old_xptext)
 	xptext->image_table_max = 0;
 
 	*(xptext->title) = '\0';
-	strcpy (xptext->title, "ƒ^ƒCƒgƒ‹–¢İ’è");
+	strcpy (xptext->title, "ã‚¿ã‚¤ãƒˆãƒ«æœªè¨­å®š");
 
 #define XPTEXT_BUFFER_YOYUU	32768
-	/* ‚±‚êˆÊ‚ ‚ê‚Î‘«‚è‚é‚©‚ÈH */
+	/* ã“ã‚Œä½ã‚ã‚Œã°è¶³ã‚Šã‚‹ã‹ãªï¼Ÿ */
 	t2_size = httpfile->content_length * 2 + XPTEXT_BUFFER_YOYUU;
 
-	/* ‚Æ‚è‚ ‚¦‚¸ŒÅ’èƒTƒCƒY‚ÅŠm•Û */
+	/* ã¨ã‚Šã‚ãˆãšå›ºå®šã‚µã‚¤ã‚ºã§ç¢ºä¿ */
 	xptext->text = _dos_malloc (t2_size);
 	if ((int) xptext->text < 0) {
-		McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñiƒeƒLƒXƒgƒoƒbƒtƒ@—p‚Ìƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+		McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆãƒ†ã‚­ã‚¹ãƒˆãƒãƒƒãƒ•ã‚¡ç”¨ã®ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 		FreeXptext (xptext);
 		return (NULL);
 	} else {
 		xptext->line_ptr = _dos_malloc (sizeof (LINE_PTR) * line_table_size);
 		if ((int) xptext->line_ptr < 0) {
-			McPuts ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñis“ªƒŠƒXƒg—pƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+			McPuts ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆè¡Œé ­ãƒªã‚¹ãƒˆç”¨ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 			FreeXptext (xptext);
 			return (NULL);
 		}
 	}
-	/* —v‚·‚é‚É *t1 ‚©‚ç *t2 ‚É®Œ`‚µ‚È‚ª‚çƒRƒs[‚µ‚Ä‚¢‚­‚í‚¯‚¾ */
-	t1 = httpfile->content;	/* ƒeƒLƒXƒgƒtƒ@ƒCƒ‹–{‘Ì‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
-	t1e = t1 + httpfile->content_length;	/* t1 ‚ª t1e ‚É’B‚µ‚½‚çI—¹ */
-	t2 = xptext->text;	/* xptext ƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^ */
+	/* è¦ã™ã‚‹ã« *t1 ã‹ã‚‰ *t2 ã«æ•´å½¢ã—ãªãŒã‚‰ã‚³ãƒ”ãƒ¼ã—ã¦ã„ãã‚ã‘ã  */
+	t1 = httpfile->content;	/* ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«æœ¬ä½“ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
+	t1e = t1 + httpfile->content_length;	/* t1 ãŒ t1e ã«é”ã—ãŸã‚‰çµ‚äº† */
+	t2 = xptext->text;	/* xptext ãƒãƒƒãƒ•ã‚¡ã¸ã®ãƒã‚¤ãƒ³ã‚¿ */
 	t2e = t2 + t2_size - YOYUU;
-	/* t2 ‚ª t2e ‚É’B‚µ‚½‚çI—¹iƒoƒbƒtƒ@•s‘«j */
+	/* t2 ãŒ t2e ã«é”ã—ãŸã‚‰çµ‚äº†ï¼ˆãƒãƒƒãƒ•ã‚¡ä¸è¶³ï¼‰ */
 	xptext->line = 0;
 	xptext->anchor_table_max = 0;
 
@@ -87,14 +87,14 @@ XPTEXT *Plain2Xpression (HTTPFILE * httpfile, XPTEXT * old_xptext)
 	for (h = 0; h < 8; h++)
 		html_color[h] = config_color[h];
 
-	/* sƒ‹[ƒv */
+	/* è¡Œãƒ«ãƒ¼ãƒ— */
 	do {
 		width = 0;
 		t2t = t2;
 
-		/* Œ…ƒ‹[ƒv */
+		/* æ¡ãƒ«ãƒ¼ãƒ— */
 		do {
-			unsigned char c;	/* ˆ—‚·‚é•¶š */
+			unsigned char c;	/* å‡¦ç†ã™ã‚‹æ–‡å­— */
 
 			t1_old = t1;
 			c = *t1++;
@@ -111,7 +111,7 @@ XPTEXT *Plain2Xpression (HTTPFILE * httpfile, XPTEXT * old_xptext)
 			}
 			if (c == 0x09) {
 				if (width + font_size * 8 > WRAP_DOT) {
-					t1 = t1_old;	/* “Ç‚Ü‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é */
+					t1 = t1_old;	/* èª­ã¾ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹ */
 					break;
 				} else {
 					*t2++ = c;
@@ -126,18 +126,18 @@ XPTEXT *Plain2Xpression (HTTPFILE * httpfile, XPTEXT * old_xptext)
 			}
 			if (c == '`') {
 				if (width + font_size > WRAP_DOT) {
-					t1 = t1_old;	/* “Ç‚Ü‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é */
+					t1 = t1_old;	/* èª­ã¾ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹ */
 					break;
 				}
-				*t2++ = c;	/* '`' ‚Í '``' ‚É */
+				*t2++ = c;	/* '`' ã¯ '``' ã« */
 				*t2++ = c;
 				width += font_size;
 				continue;
 			}
 			if (c < 0x80) {
-				/* ‚PƒoƒCƒg•¶š‚Ìê‡ */
+				/* ï¼‘ãƒã‚¤ãƒˆæ–‡å­—ã®å ´åˆ */
 				if (width + font_size > WRAP_DOT) {
-					t1 = t1_old;	/* “Ç‚Ü‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é */
+					t1 = t1_old;	/* èª­ã¾ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹ */
 					break;
 				}
 				*t2++ = c;
@@ -145,17 +145,17 @@ XPTEXT *Plain2Xpression (HTTPFILE * httpfile, XPTEXT * old_xptext)
 				continue;
 			} else {
 				if ((c >= 0xa0) && (c <= 0xdf)) {
-					/* ”¼ŠpƒJƒi‚Ìê‡ */
+					/* åŠè§’ã‚«ãƒŠã®å ´åˆ */
 					if (width + font_size > WRAP_DOT) {
-						t1 = t1_old;		/* “Ç‚Ü‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é */
+						t1 = t1_old;		/* èª­ã¾ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹ */
 						break;
 					}
 					*t2++ = c;
 					continue;
 				} else {
-					/* Š¿š‚Ìê‡ */
+					/* æ¼¢å­—ã®å ´åˆ */
 					if ((width + font_size * 2) > WRAP_DOT) {
-						t1 = t1_old;	/* “Ç‚Ü‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é */
+						t1 = t1_old;	/* èª­ã¾ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹ */
 						break;
 					}
 					*t2++ = c;
@@ -164,18 +164,18 @@ XPTEXT *Plain2Xpression (HTTPFILE * httpfile, XPTEXT * old_xptext)
 					continue;
 				}
 			}
-		} while ((t1 < t1e) && (t2 < t2e));	/* Œ…ƒ‹[ƒvI—¹ */
+		} while ((t1 < t1e) && (t2 < t2e));	/* æ¡ãƒ«ãƒ¼ãƒ—çµ‚äº† */
 		*t2++ = '\0';
 
 		l->start_dot = 0;
 		l->org_line = org_line;
 		l++->ptr = t2t;
-		xptext->line++;	/* s” */
-	} while ((t1 < t1e) && (t2 < t2e));	/* sƒ‹[ƒvI—¹ */
+		xptext->line++;	/* è¡Œæ•° */
+	} while ((t1 < t1e) && (t2 < t2e));	/* è¡Œãƒ«ãƒ¼ãƒ—çµ‚äº† */
 	l->ptr = NULL;
 
 
-	/* —]•ª‚ÉŠm•Û‚µ‚½ƒƒ‚ƒŠƒuƒƒbƒN‚ğØ‚èÌ‚Ä‚é */
+	/* ä½™åˆ†ã«ç¢ºä¿ã—ãŸãƒ¡ãƒ¢ãƒªãƒ–ãƒ­ãƒƒã‚¯ã‚’åˆ‡ã‚Šæ¨ã¦ã‚‹ */
 	_dos_setblock (xptext->text, (int) t2 - (int) (xptext->text) + 1);
 	_dos_setblock (xptext->line_ptr, sizeof (LINE_PTR) * (xptext->line));
 

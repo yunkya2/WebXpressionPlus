@@ -1,4 +1,4 @@
-/* Config.c	WebXpression.cnf “Ç‚İ‚İ */
+/* Config.c	WebXpression.cnf èª­ã¿è¾¼ã¿ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,7 +49,7 @@ static VAR_RGB var_rgb[]=
 {
 	"color-back", &config_color[0],
 	"color-str", &config_color[1],
-	"color-clear", &config_color[2],	/* ƒ_ƒ~[ */
+	"color-clear", &config_color[2],	/* ãƒ€ãƒŸãƒ¼ */
 	"color-link", &config_color[3],
 	"color-fixed-back", &config_color[4],
 	"color-fixed-highlight", &config_color[5],
@@ -86,14 +86,14 @@ static VAR_STR var_str[]=
 
 
 
-/* ‹N“®‚É‚P‰ñ‚¾‚¯ŒÄ‚Î‚ê‚é */
+/* èµ·å‹•æ™‚ã«ï¼‘å›ã ã‘å‘¼ã°ã‚Œã‚‹ */
 int InitConfig (char *fname)
 {
 	FILE *fp;
 	short h;
 	char temp_str[256];
 
-    /* WebCache.cnf ‚Åİ’è‚·‚é’l‚Ì‰Šú’l */
+    /* WebCache.cnf ã§è¨­å®šã™ã‚‹å€¤ã®åˆæœŸå€¤ */
 	check_local_link = 1;
 	hold_online = 1;
 	image_compress = 1;
@@ -115,26 +115,26 @@ int InitConfig (char *fname)
 	strcpy (temp_str, mypsp->exe_path);
 	_addlastsep (temp_str);
 	strcat (temp_str, fname);
-    /* ƒJƒŒƒ“ƒgƒfƒBƒŒƒNƒgƒŠ‚ğŒŸõ */
+    /* ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’æ¤œç´¢ */
 	if ((fp = fopen (fname, "r")) == NULL) {
-	    /* WebXpression.x ‚Ì‚ ‚éƒfƒBƒŒƒNƒgƒŠ‚ğŒŸõ */
+	    /* WebXpression.x ã®ã‚ã‚‹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’æ¤œç´¢ */
 		if ((fp = fopen (temp_str, "r")) == NULL) {
-			printf ("ƒRƒ“ƒtƒBƒOƒtƒ@ƒCƒ‹‚ª“Ç‚ß‚Ü‚¹‚ñ\n");
+			printf ("ã‚³ãƒ³ãƒ•ã‚£ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ãŒèª­ã‚ã¾ã›ã‚“\n");
 			return (-1);
 		}
 	}
 	while (fscanf (fp, "%s", temp_str) != EOF) {
-		char nl = 0;	/* Ÿs‚Ös‚­ƒtƒ‰ƒO */
+		char nl = 0;	/* æ¬¡è¡Œã¸è¡Œããƒ•ãƒ©ã‚° */
 		if (ferror (fp) || feof (fp))
 			break;
 
 		h = 0;
-		do {		/* char Œ^•Ï”“Ç‚İ‚İ */
+		do {		/* char å‹å¤‰æ•°èª­ã¿è¾¼ã¿ */
 			if (!strcmp (temp_str, var_char[h].var_name)) {
 				unsigned int t;
 				fscanf (fp, "%d", &t);
 				*var_char[h].var_ptr = (unsigned char) t;
-				fgets (temp_str, 256, fp);	/* ˆÈ‰º‰üs‚Ü‚Å“Ç‚İÌ‚Ä‚é */
+				fgets (temp_str, 256, fp);	/* ä»¥ä¸‹æ”¹è¡Œã¾ã§èª­ã¿æ¨ã¦ã‚‹ */
 				nl = !0;
 				break;
 			}
@@ -143,10 +143,10 @@ int InitConfig (char *fname)
 			continue;
 
 		h = 0;
-		do {		/* short Œ^•Ï”“Ç‚İ‚İ */
+		do {		/* short å‹å¤‰æ•°èª­ã¿è¾¼ã¿ */
 			if (!strcmp (temp_str, var_short[h].var_name)) {
 				fscanf (fp, "%hd", var_short[h].var_ptr);
-				fgets (temp_str, 256, fp);	/* ˆÈ‰º‰üs‚Ü‚Å“Ç‚İÌ‚Ä‚é */
+				fgets (temp_str, 256, fp);	/* ä»¥ä¸‹æ”¹è¡Œã¾ã§èª­ã¿æ¨ã¦ã‚‹ */
 				nl = !0;
 				break;
 			}
@@ -155,12 +155,12 @@ int InitConfig (char *fname)
 			continue;
 
 		h = 0;
-		do {		/* short Œ^•Ï”ir,g,b ‚Åw’èj“Ç‚İ‚İ */
+		do {		/* short å‹å¤‰æ•°ï¼ˆr,g,b ã§æŒ‡å®šï¼‰èª­ã¿è¾¼ã¿ */
 			if (!strcmp (temp_str, var_rgb[h].var_name)) {
 				unsigned int r, g, b;
 				fscanf (fp, "%d,%d,%d", &r, &g, &b);
 				*(var_rgb[h].var_ptr) = (unsigned short) ((g << 11) | (r << 6) | (b << 1));
-				fgets (temp_str, 256, fp);	/* ˆÈ‰º‰üs‚Ü‚Å“Ç‚İÌ‚Ä‚é */
+				fgets (temp_str, 256, fp);	/* ä»¥ä¸‹æ”¹è¡Œã¾ã§èª­ã¿æ¨ã¦ã‚‹ */
 				nl = !0;
 				break;
 			}
@@ -169,10 +169,10 @@ int InitConfig (char *fname)
 			continue;
 
 		h = 0;
-		do {		/* int Œ^•Ï”“Ç‚İ‚İ */
+		do {		/* int å‹å¤‰æ•°èª­ã¿è¾¼ã¿ */
 			if (!strcmp (temp_str, var_int[h].var_name)) {
 				fscanf (fp, "%d", var_int[h].var_ptr);
-				fgets (temp_str, 256, fp);	/* ˆÈ‰º‰üs‚Ü‚Å“Ç‚İÌ‚Ä‚é */
+				fgets (temp_str, 256, fp);	/* ä»¥ä¸‹æ”¹è¡Œã¾ã§èª­ã¿æ¨ã¦ã‚‹ */
 				nl = !0;
 				break;
 			}
@@ -181,13 +181,13 @@ int InitConfig (char *fname)
 			continue;
 
 		h = 0;
-		do {		/* char[] Œ^•Ï”“Ç‚İ‚İ */
+		do {		/* char[] å‹å¤‰æ•°èª­ã¿è¾¼ã¿ */
 			if (!strcmp (temp_str, var_str[h].var_name)) {
 				char *p = var_str[h].var_ptr;
 				while (fgetc (fp) != (int) '"');
 				while ((*p++ = (char) fgetc (fp)) != '"');
 				*(p - 1) = '\0';
-				fgets (temp_str, 256, fp);	/* ˆÈ‰º‰üs‚Ü‚Å“Ç‚İÌ‚Ä‚é */
+				fgets (temp_str, 256, fp);	/* ä»¥ä¸‹æ”¹è¡Œã¾ã§èª­ã¿æ¨ã¦ã‚‹ */
 				nl = !0;
 				break;
 			}
@@ -195,7 +195,7 @@ int InitConfig (char *fname)
 		if (nl)
 			continue;
 
-		fgets (temp_str, 256, fp);	/* ˆÈ‰º‰üs‚Ü‚Å“Ç‚İÌ‚Ä‚é */
+		fgets (temp_str, 256, fp);	/* ä»¥ä¸‹æ”¹è¡Œã¾ã§èª­ã¿æ¨ã¦ã‚‹ */
 	}
 
 	return (0);

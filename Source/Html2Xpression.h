@@ -1,18 +1,18 @@
 /* Html2Xpression.h */
 
-#ifdef GLOBAL_DEFINE		/* ƒOƒ[ƒoƒ‹•Ï”‚Ì’è‹`‚ÆéŒ¾‚ğ‚P‚Â‚É‚Ü‚Æ‚ß‚éƒeƒN */
-#define Extern			/* Extern ‚ğƒkƒ‹•¶š—ñ‚É’uŠ· */
+#ifdef GLOBAL_DEFINE		/* ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã®å®šç¾©ã¨å®£è¨€ã‚’ï¼‘ã¤ã«ã¾ã¨ã‚ã‚‹ãƒ†ã‚¯ */
+#define Extern			/* Extern ã‚’ãƒŒãƒ«æ–‡å­—åˆ—ã«ç½®æ› */
 #else
-#define Extern extern		/* Extern ‚ğ extern ‚É’uŠ· */
+#define Extern extern		/* Extern ã‚’ extern ã«ç½®æ› */
 #endif
 
 
-/* ƒOƒ[ƒoƒ‹•Ï” */
-Extern unsigned short html_color[8];	/* HTML ’†‚Åw’è‚³‚ê‚½•¶šF */
+/* ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•° */
+Extern unsigned short html_color[8];	/* HTML ä¸­ã§æŒ‡å®šã•ã‚ŒãŸæ–‡å­—è‰² */
 
 
 
-/* ŠÖ”ƒvƒƒgƒ^ƒCƒvéŒ¾ */
+/* é–¢æ•°ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ */
 void InitHtml2Xpression (void);
 int Html2Sjis (HTTPFILE *);
 XPTEXT *Html2Xpression (HTTPFILE *);

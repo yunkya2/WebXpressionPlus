@@ -5,7 +5,7 @@
 
 #define HTTPFILE_URL_MAX	255
 
-/* HTTPFILE ŠÇ—\‘¢‘Ì */
+/* HTTPFILE ç®¡ç†æ§‹é€ ä½“ */
 typedef struct {
 	char url[HTTPFILE_URL_MAX];
 	char scheme[256];
@@ -15,7 +15,7 @@ typedef struct {
 	char query[256];
 	char anchor[256];
 	int port;
-	struct tm time_stamp;	/* ÅIXV“ú(last_modified) */
+	struct tm time_stamp;	/* æœ€çµ‚æ›´æ–°æ—¥æ™‚(last_modified) */
 	int content_length;
 	char content_type[32];
 	void *content;
@@ -25,6 +25,6 @@ typedef struct {
 
 
 
-/* ŠÖ”ƒvƒƒgƒ^ƒCƒvéŒ¾ */
+/* é–¢æ•°ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ */
 void InitHttpfile (HTTPFILE *);
 void CatHttpfile (HTTPFILE *, HTTPFILE *, char *);

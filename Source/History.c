@@ -10,7 +10,7 @@
 #include "Config.h"
 
 
-/* —š—ğƒe[ƒuƒ‹\‘¢‘Ì */
+/* å±¥æ­´ãƒ†ãƒ¼ãƒ–ãƒ«æ§‹é€ ä½“ */
 typedef struct _history_table {
 	int current_line;
 	char url[256];
@@ -29,13 +29,13 @@ int InitHistory (void)
 
 	history_table = _dos_malloc (sizeof (HISTORY_TABLE) * history_max);
 	if ((int) history_table < 0) {
-		printf ("¦ ƒƒ‚ƒŠ‚ª‘«‚è‚Ü‚¹‚ñiƒqƒXƒgƒŠ[—p‚Ìƒƒ‚ƒŠ‚ªŠm•Û‚Å‚«‚Ü‚¹‚ñj\n");
+		printf ("â€» ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ï¼ˆãƒ’ã‚¹ãƒˆãƒªãƒ¼ç”¨ã®ãƒ¡ãƒ¢ãƒªãŒç¢ºä¿ã§ãã¾ã›ã‚“ï¼‰\n");
 		return (-1);
 	}
 	for (h = 0; h < history_max; h++) {
-		history_table[h].current_line = 0;	/* –¢g—p‚É */
-		*history_table[h].url = '\0';	/* –¢g—p‚É */
-		*history_table[h].old_url = '\0';	/* –¢g—p‚É */
+		history_table[h].current_line = 0;	/* æœªä½¿ç”¨ã« */
+		*history_table[h].url = '\0';	/* æœªä½¿ç”¨ã« */
+		*history_table[h].old_url = '\0';	/* æœªä½¿ç”¨ã« */
 	}
 	history_ptr = 0;
 
@@ -44,7 +44,7 @@ int InitHistory (void)
 
 
 
-/* æ“ª‚Éƒm[ƒh‚ğ‚P‚Â’Ç‰Á‚·‚é */
+/* å…ˆé ­ã«ãƒãƒ¼ãƒ‰ã‚’ï¼‘ã¤è¿½åŠ ã™ã‚‹ */
 void AddHistory (char *url, char *old_url, int current_line)
 {
 	short h;
@@ -52,7 +52,7 @@ void AddHistory (char *url, char *old_url, int current_line)
 		return;
 
 	for (h = 0; h < history_max; h++) {
-		if (!strcmp (history_table[h].url, url)) {	/* Šù‚É‚ ‚Á‚½‚ç’Ç‰Á‚µ‚È‚¢ */
+		if (!strcmp (history_table[h].url, url)) {	/* æ—¢ã«ã‚ã£ãŸã‚‰è¿½åŠ ã—ãªã„ */
 			history_table[h].current_line = current_line;
 			return;
 		}
@@ -78,7 +78,7 @@ void AddHistory (char *url, char *old_url, int current_line)
 
 
 
-/* ‘O‚Ì‚Ìƒm[ƒh‚ğ•Ô‚·iu–ß‚évƒ{ƒ^ƒ“ˆ—j */
+/* å‰ã®ã®ãƒãƒ¼ãƒ‰ã‚’è¿”ã™ï¼ˆã€Œæˆ»ã‚‹ã€ãƒœã‚¿ãƒ³å‡¦ç†ï¼‰ */
 char *BeforeHistory (char *url, int *current_line)
 {
 	short h;
@@ -102,8 +102,8 @@ char *BeforeHistory (char *url, int *current_line)
 
 
 
-/* Ÿ‚Ìƒm[ƒh‚ğ•Ô‚·iui‚Şvƒ{ƒ^ƒ“ˆ—j */
+/* æ¬¡ã®ãƒãƒ¼ãƒ‰ã‚’è¿”ã™ï¼ˆã€Œé€²ã‚€ã€ãƒœã‚¿ãƒ³å‡¦ç†ï¼‰ */
 char *NextHistory (void)
 {
-	return (NULL);		/* ‚Ü‚¾‚È‚¢‚É‚å[‚ñ */
+	return (NULL);		/* ã¾ã ãªã„ã«ã‚‡ãƒ¼ã‚“ */
 }
