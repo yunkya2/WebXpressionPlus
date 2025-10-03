@@ -1114,7 +1114,7 @@ int main (int argc, char *argv[])
 	char *fname = NULL;
 	char *cnf_fname = "WebXpression.cnf";
 	int exit_code = 0;
-	char temp_fname[92];
+	char temp_fname[92 + 7];
 
 	d_option = 0;
 
