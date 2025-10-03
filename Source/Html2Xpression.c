@@ -1733,7 +1733,7 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 
 		xptext->current_line = 0;
 
-		for (h = 0; h < 8; h++)
+		for (h = 0; h < 7; h++)
 			html_color[h] = config_color[h];
 
 	    /* debug バグっても NULL ポインタで止まるように */
