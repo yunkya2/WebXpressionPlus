@@ -12,7 +12,8 @@ OBJS = 	WebXpression.o Html2Xpression.o Plain2Xpression.o Httpfile.o \
 		DrawText.o put.o micro_console.o Image.o History.o \
 		GetFile.o  Config.o Date2Date.o \
 		WebCache.o \
-		cut_disp.o hook.o gifl.o Compress.o MpuCache.o data.o
+		cut_disp.o hook.o gifl.o Compress.o MpuCache.o data.o \
+		supplementary.o
 
 WebXpression.x:	$(OBJS)
 	$(LD) $^ -o $@ $(LIBS)

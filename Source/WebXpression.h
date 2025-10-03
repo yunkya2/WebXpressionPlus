@@ -134,3 +134,5 @@ Extern unsigned char d_option;
 
 /* 関数プロトタイプ宣言 */
 void WaitReleaseAll (void);
+
+#include "supplementary.h"
