@@ -134,6 +134,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 	McPuts ("レスポンスを待ちます...");
 
     /* ヘッダを１行づつ読み込む */
+	recvinit ();
 	recvline (netd, temp_str, 1024);
 	if ((strncmp (temp_str, "HTTP/1.0 200", 12))
 	    && (strncmp (temp_str, "HTTP/1.1 200", 12))) {
@@ -205,9 +206,19 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 		alloc_left = alloc_size;
 		lap_time = _iocs_ontime ();
 
+		s = recvremain(r, alloc_left);
+		read_size += s;
+		r += s;
+		alloc_left -= s;
+
 	    /* ファイルの転送が完了するまでループ */
 		do {
 			s = read (netd, r, alloc_left);
+			if (s < 0) {
+				ret = GF_ERROR;
+				McPuts ("※ 受信エラーが発生しました\n");
+				break;
+			}
 			read_size += s;
 			r += s;
 			if ((alloc_left -= s) <= 0) {
@@ -221,7 +232,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 			McCursorTop ();		/* カーソルを行の先頭に */
 			McPuts (temp_str);
 			ret = AbortCheckGetFile ();
-		} while ((socklen (netd, 0) >= 0) && (ret == GF_SUCCESS));
+		} while ((s > 0) && (ret == GF_SUCCESS));
 
 		if (ret != GF_SUCCESS) {
 			shutdown (netd, 0);	/* 受信したデータを受け取らず，すべて廃棄する */
