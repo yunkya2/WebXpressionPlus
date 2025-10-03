@@ -314,7 +314,7 @@ static int LoadJpeg (HTTPFILE * httpfile)
 		old_MS_CURST = _dos_intvcs (0x176, new_MS_CURST);
 		old_SKEY_MOD = _dos_intvcs (0x17d, new_SKEY_MOD);
 
-		sprintf (cmdline, "-VS%d,%d,$%p", xs, ys, temp_image);
+		sprintf (cmdline, "-VS%d,%d,$%08x", xs, ys, (int)temp_image);
 		McPuts (".JPG を展開しています...\n");
 		jpeg_error_code = spawnlp (P_WAIT, "JPEGED.R", "JPEGED.R", cmdline, temp_fname, NULL);
 
@@ -325,7 +325,7 @@ static int LoadJpeg (HTTPFILE * httpfile)
 		_dos_intvcs (0xff23, old_CONCTRL);
 	} else {
 	    /* Progressive JPEG の場合 */
-		sprintf (cmdline, "-VS$%p", temp_image);
+		sprintf (cmdline, "-VS$%%08x", (int)temp_image);
 		McPuts ("Progressive .JPG を展開しています...\n");
 		jpeg_error_code = spawnlp (P_WAIT, "VSJPEG.X", "VSJPEG.X", cmdline, temp_fname, NULL);
 	}
@@ -429,7 +429,7 @@ static int LoadPNG (HTTPFILE * httpfile)
 		image_list_ptr->data = NULL;
 		return (-1);
 	}
-	sprintf (cmdline, "-VS$%p", temp_image);
+	sprintf (cmdline, "-VS$%08x", (int)temp_image);
 	McPuts (".PNG を展開しています...\n");
 	png_error_code = spawnlp (P_WAIT, "PNGL.X", "PNGL.X", cmdline, temp_fname, NULL);
 
