@@ -251,8 +251,8 @@ int Html2Sjis (HTTPFILE * httpfile)
 	t2_size = httpfile->content_length + SJIS_TEXT_BUFFER_YOYUU;
 
     /* とりあえず固定サイズで確保 */
-	new_html = _dos_malloc (t2_size);
-	if ((int) new_html < 0) {
+	new_html = malloc (t2_size);
+	if ((int) new_html == 0) {
 		McPuts ("※ メモリが足りません（SJIS 変換バッファ用のメモリが確保できません）\n");
 		return (-1);
 	}
@@ -318,11 +318,11 @@ int Html2Sjis (HTTPFILE * httpfile)
 		} while ((t1 < t1e) && (t2 < t2e));
 	}
 
-	_dos_mfree (httpfile->content);		/* 変換前の HTML は捨てる */
-	httpfile->content = new_html;
+	free (httpfile->content);		/* 変換前の HTML は捨てる */
 	httpfile->content_length = (int) (t2 - new_html);
     /* 余分に確保したメモリブロックを切り捨てる */
-	_dos_setblock (new_html, httpfile->content_length);
+	new_html = realloc (new_html, httpfile->content_length);
+	httpfile->content = new_html;
 
 #if	0
 	{
@@ -1666,20 +1666,20 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 	w->t2_size = httpfile->content_length * 2 + XPTEXT_BUFFER_YOYUU;
 
     /* とりあえず固定サイズで確保 */
-	xptext->text = _dos_malloc (w->t2_size);
-	if ((int) xptext->text < 0) {
+	xptext->text = malloc (w->t2_size);
+	if ((int) xptext->text == 0) {
 		McPuts ("※ メモリが足りません（テキストバッファ用のメモリが確保できません）\n");
 		FreeXptext (xptext);
 		return (NULL);
 	} else {
-		xptext->line_ptr = _dos_malloc (sizeof (LINE_PTR) * line_table_size);
-		if ((int) xptext->line_ptr < 0) {
+		xptext->line_ptr = malloc (sizeof (LINE_PTR) * line_table_size);
+		if ((int) xptext->line_ptr == 0) {
 			McPuts ("※ メモリが足りません（行頭リスト用メモリが確保できません）\n");
 			FreeXptext (xptext);
 			return (NULL);
 		} else {
-			xptext->anchor_table = _dos_malloc (sizeof (ANCHOR_TABLE) * anchor_table_size);
-			if ((int) xptext->anchor_table < 0) {
+			xptext->anchor_table = malloc (sizeof (ANCHOR_TABLE) * anchor_table_size);
+			if ((int) xptext->anchor_table == 0) {
 				McPuts ("※ メモリが足りません（アンカーテーブル用のメモリが確保できません）\n");
 				FreeXptext (xptext);
 				return (NULL);
@@ -1706,24 +1706,24 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 		xptext->image_table = NULL;
 
 	    /* とりあえず固定サイズで確保 */
-		xptext->link_table = _dos_malloc (sizeof (LINK_TABLE) * link_table_size);
-		if ((int) xptext->link_table < 0) {
+		xptext->link_table = malloc (sizeof (LINK_TABLE) * link_table_size);
+		if ((int) xptext->link_table == 0) {
 			McPuts ("※ メモリが足りません（リンクテーブル用のメモリが確保できません）\n");
 			FreeXptext (xptext);
 			return (NULL);
 		} else {
-			xptext->link_table_buffer = _dos_malloc (sizeof (unsigned char) * link_table_buffer_size);
-			if ((int) xptext->link_table_buffer < 0) {
+			xptext->link_table_buffer = malloc (sizeof (unsigned char) * link_table_buffer_size);
+			if ((int) xptext->link_table_buffer == 0) {
 				McPuts ("※ メモリが足りません（リンクテーブルバッファ用のメモリが確保できません）\n");
-				_dos_mfree (xptext->link_table);
+				free (xptext->link_table);
 				FreeXptext (xptext);
 				return (NULL);
 			} else {
-				xptext->image_table = _dos_malloc (sizeof (IMAGE_TABLE) * image_table_size);
-				if ((int) xptext->image_table < 0) {
+				xptext->image_table = malloc (sizeof (IMAGE_TABLE) * image_table_size);
+				if ((int) xptext->image_table == 0) {
 					McPuts ("※ メモリが足りません（イメージテーブル用のメモリが確保できません）\n");
-					_dos_mfree (xptext->link_table_buffer);
-					_dos_mfree (xptext->link_table);
+					free (xptext->link_table_buffer);
+					free (xptext->link_table);
 					FreeXptext (xptext);
 					return (NULL);
 				}
@@ -2028,13 +2028,13 @@ XPTEXT *Html2Xpression (HTTPFILE * httpfile)
 
 
     /* 余分に確保したメモリブロックを切り捨てる */
-	_dos_setblock (xptext->text, (int) t2 - (int) (xptext->text) + 1);
-	_dos_setblock (xptext->line_ptr, sizeof (LINE_PTR) * (xptext->line));
+	xptext->text = realloc (xptext->text, (int) t2 - (int) (xptext->text) + 1);
+	xptext->line_ptr = realloc (xptext->line_ptr, sizeof (LINE_PTR) * (xptext->line));
 	if (w->pass == 0) {	/* 初回の解析なら */
-		_dos_setblock (xptext->link_table_buffer,
+		xptext->link_table_buffer = realloc (xptext->link_table_buffer,
 			       sizeof (char) * ((int) (w->link_table_buffer_ptr - xptext->link_table_buffer)) + 1);
-		_dos_setblock (xptext->link_table, sizeof (LINK_TABLE) * (xptext->link_table_max + 1));
-		_dos_setblock (xptext->image_table, sizeof (IMAGE_TABLE) * (xptext->image_table_max + 1));
+		xptext->link_table = realloc (xptext->link_table, sizeof (LINK_TABLE) * (xptext->link_table_max + 1));
+		xptext->image_table = realloc (xptext->image_table, sizeof (IMAGE_TABLE) * (xptext->image_table_max + 1));
 	}
 	return (xptext);
 }
@@ -2080,11 +2080,11 @@ void FreeXptext (XPTEXT * xptext)
 {
 	if (xptext) {
 		if (xptext->text)
-			_dos_mfree (xptext->text);
+			free (xptext->text);
 		if (xptext->line_ptr)
-			_dos_mfree (xptext->line_ptr);
+			free (xptext->line_ptr);
 		if (xptext->anchor_table)
-			_dos_mfree (xptext->anchor_table);
+			free (xptext->anchor_table);
 
 	    /* link_table, link_table_buffer, image_table はここで捨ててはいけない。理由はWe
 	       bXpression.c の FreeXptext() 呼び出し部を見ること（複数回解析を行う度にここが
@@ -2102,16 +2102,16 @@ void FreeXptext2 (XPTEXT * xptext)
 
 	if (xptext != NULL) {
 		if (xptext->link_table != NULL)
-			_dos_mfree (xptext->link_table);
+			free (xptext->link_table);
 		if (xptext->link_table_buffer != NULL)
-			_dos_mfree (xptext->link_table_buffer);
+			free (xptext->link_table_buffer);
 		if (xptext->image_table != NULL) {
 			for (i = 0; i < xptext->image_table_max; i++) {
 				IMAGE_LIST *t_ptr;
 				t_ptr = (xptext->image_table)[i].image_list;
 				t_ptr->count--;		/* リンクカウントを１つ下げる */
 			}
-			_dos_mfree (xptext->image_table);
+			free (xptext->image_table);
 		}
 	}
 }

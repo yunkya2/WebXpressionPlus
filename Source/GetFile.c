@@ -193,10 +193,9 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 		if (httpfile->content_length) {
 			alloc_size = httpfile->content_length + YOYUU;
 		} else {
-		    /* 12MB 以上確保できないよーん */
-			alloc_size = ((int) _dos_malloc (-1)) & 0x00fffffe - YOYUU;
+			alloc_size = (65536 * 2) + YOYUU;
 		}
-		if (((int) (httpfile->content = _dos_malloc (alloc_size))) < 0) {
+		if (((int) (httpfile->content = malloc (alloc_size))) == 0) {
 			McPuts ("※ メモリが足りません\n");
 			close (netd);		/* 接続の切断 */
 			httpfile->content = NULL;
@@ -222,8 +221,17 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 			read_size += s;
 			r += s;
 			if ((alloc_left -= s) <= 0) {
-				McPuts ("※ メモリが足りません\n");
-				break;
+				int extend_size = 65536 * 2;
+				void *new_block = realloc (httpfile->content, alloc_size + extend_size);
+				if (new_block == NULL) {
+					McPuts ("※ メモリが足りません\n");
+					break;
+				} else {
+					httpfile->content = new_block;
+					alloc_size += extend_size;
+					alloc_left += extend_size;
+					r = httpfile->content + read_size;
+				}
 			}
 			if (httpfile->content_length)
 				sprintf (temp_str, "受信中 %d/%d バイト", read_size, httpfile->content_length);
@@ -248,10 +256,10 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 #endif
 
 		if (httpfile->content_length == 0) {
-			_dos_setblock (httpfile->content, read_size);
+			httpfile->content = realloc (httpfile->content, read_size);
 			httpfile->content_length = read_size;
 			if (alloc_left <= 0) {
-				_dos_mfree (httpfile->content);
+				free (httpfile->content);
 				httpfile->content = NULL;
 				return (ret);
 			}
@@ -280,7 +288,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 			}
 		} else {
 			McPuts ("※ 中断しました\n");
-			_dos_mfree (httpfile->content);
+			free (httpfile->content);
 			httpfile->content = NULL;
 		}
 	}
@@ -321,7 +329,7 @@ static int GetFromLocal (HTTPFILE * httpfile)
 		httpfile->content_length = ftell (fp);
 		fseek (fp, 0, SEEK_SET);
 
-		if ((int) (httpfile->content = _dos_malloc (httpfile->content_length)) > 0) {
+		if ((int) (httpfile->content = malloc (httpfile->content_length)) > 0) {
 			fread (httpfile->content, httpfile->content_length, 1, fp);
 			fclose (fp);
 
@@ -369,7 +377,7 @@ static int GetFromCache (HTTPFILE * httpfile, char *cache_fname)
 		return;
 #endif
 	if ((fp = fopen (cache_fname, "rb")) != NULL) {
-		if ((int) (httpfile->content = _dos_malloc (httpfile->content_length)) > 0) {
+		if ((int) (httpfile->content = malloc (httpfile->content_length)) > 0) {
 			fread (httpfile->content, httpfile->content_length, sizeof (char), fp);
 			ret = GF_SUCCESS;
 		} else {

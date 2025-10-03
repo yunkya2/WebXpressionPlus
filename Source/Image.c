@@ -57,7 +57,7 @@ static void DeleteImageNode (IMAGE_LIST * t_ptr)
 {
 	if (image_list_top != NULL) {
 		if (t_ptr->data != NULL)
-			_dos_mfree (t_ptr->data);
+			free (t_ptr->data);
 
 		if (t_ptr->before_ptr == NULL) {
 			if (t_ptr->next_ptr == NULL) {
@@ -188,16 +188,16 @@ static int LoadGif (HTTPFILE * httpfile)
     /* temp_fname を得るだけ */
 	WCExist (httpfile, temp_fname);
 
-	if ((int) (image_list_ptr->data = _dos_malloc (xd * yd * 2)) < 0) {
+	if ((int) (image_list_ptr->data = malloc (xd * yd * 2)) == 0) {
 		McDbPuts ("LoadGif() : ");
 		McPuts ("※ .GIF data 用メモリが足りません\n");
 		image_list_ptr->data = NULL;
 		return (-1);
 	}
-	if ((int) (g = _dos_malloc (sizeof (GIFLOAD))) < 0) {
+	if ((int) (g = malloc (sizeof (GIFLOAD))) == 0) {
 		McDbPuts ("LoadGif() : ");
 		McPuts ("※ .GIF ワーク用メモリが足りません\n");
-		_dos_mfree (image_list_ptr->data);
+		free (image_list_ptr->data);
 		image_list_ptr->data = NULL;
 		return (-1);
 	}
@@ -207,7 +207,7 @@ static int LoadGif (HTTPFILE * httpfile)
 	g->addr = (void *) -1;
 
 	McPuts (".GIF を展開しています...\n");
-    /* g->addr に展開後のイメージが（_dos_malloc2() で確保されて）返ってくる */
+    /* g->addr に展開後のイメージが（malloc2() で確保されて）返ってくる */
     mpu_cache = SetMpuCacheMode (0);	/* キャッシュオフ */
 	g_ret = gifdecodemain (g, temp_fname);	/* .gif デコード */
 	SetMpuCacheMode (mpu_cache);		/* キャッシュを元の状態に */
@@ -217,16 +217,16 @@ static int LoadGif (HTTPFILE * httpfile)
 		McPuts ("※ .GIF のデコードができませんでした\n");
 		if ((int) g->addr > 0)
 			_dos_mfree (g->addr);
-		_dos_mfree (g);
-		_dos_mfree (image_list_ptr->data);
+		free (g);
+		free (image_list_ptr->data);
 		image_list_ptr->data = NULL;
 		return (-1);
 	}
 	if ((int) g->addr < 0) {
 		McDbPuts ("LoadGif() : ");
 		McPuts ("※ .GIF 展開用メモリが足りません\n");
-		_dos_mfree (g);
-		_dos_mfree (image_list_ptr->data);
+		free (g);
+		free (image_list_ptr->data);
 		image_list_ptr->data = NULL;
 		return (-1);
 	}
@@ -236,11 +236,11 @@ static int LoadGif (HTTPFILE * httpfile)
 		else
 			CompressImage256HQ (image_list_ptr->data, g->addr, &g->pal_buf[0], xs, ys);
 		_dos_mfree (g->addr);
-		_dos_mfree (g);
+		free (g);
 	} else {
 		NonCompressImage256 (image_list_ptr->data, g->addr, &g->pal_buf[0], xs, ys);
 		_dos_mfree (g->addr);
-		_dos_mfree (g);
+		free (g);
 	}
 	image_list_ptr->x = xd;
 	image_list_ptr->y = yd;
@@ -299,7 +299,7 @@ static int LoadJpeg (HTTPFILE * httpfile)
 		yd = ys;
 	}
 
-	if ((int) (temp_image = _dos_malloc (xs * ys * 2)) < 0) {
+	if ((int) (temp_image = malloc (xs * ys * 2)) == 0) {
 		McDbPuts ("LoadJpeg() : ");
 		McPuts ("※ .JPG 展開用メモリが足りません\n");
 		image_list_ptr->data = NULL;
@@ -332,12 +332,12 @@ static int LoadJpeg (HTTPFILE * httpfile)
 	if (jpeg_error_code) {
 		McDbPuts ("LoadJpeg() : ");
 		McPuts ("※ JPEG 展開時にエラーが発生しました\n");
-		_dos_mfree (temp_image);
+		free (temp_image);
 		image_list_ptr->data = NULL;
 		return (-1);
 	}
 	if (image_compress) {
-		if ((int) (image_list_ptr->data = _dos_malloc (xd * yd * 2)) > 0) {
+		if ((int) (image_list_ptr->data = malloc (xd * yd * 2)) > 0) {
 			if (!image_quality)
 				CompressImageHS (image_list_ptr->data, temp_image, xs, ys);
 			else
@@ -347,7 +347,7 @@ static int LoadJpeg (HTTPFILE * httpfile)
 			McPuts ("※ .JPG data 用メモリが足りません\n");
 			image_list_ptr->data = NULL;
 		}
-		_dos_mfree (temp_image);
+		free (temp_image);
 		temp_image = NULL;
 	} else {
 		image_list_ptr->data = temp_image;
@@ -423,7 +423,7 @@ static int LoadPNG (HTTPFILE * httpfile)
 		yd = ys;
 	}
 
-	if ((int) (temp_image = _dos_malloc (xs * ys * 2)) < 0) {
+	if ((int) (temp_image = malloc (xs * ys * 2)) == 0) {
 		McDbPuts ("LoadPNG() : ");
 		McPuts ("※ .PNG 展開用メモリが足りません\n");
 		image_list_ptr->data = NULL;
@@ -436,12 +436,12 @@ static int LoadPNG (HTTPFILE * httpfile)
 	if (png_error_code) {
 		McDbPuts ("LoadPNG() : ");
 		McPuts ("※ PNG 展開時にエラーが発生しました\n");
-		_dos_mfree (temp_image);
+		free (temp_image);
 		image_list_ptr->data = NULL;
 		return (-1);
 	}
 	if (image_compress) {
-		if ((int) (image_list_ptr->data = _dos_malloc (xd * yd * 2)) > 0) {
+		if ((int) (image_list_ptr->data = malloc (xd * yd * 2)) > 0) {
 			if (!image_quality)
 				CompressImageHS (image_list_ptr->data, temp_image, xs, ys);
 			else
@@ -453,7 +453,7 @@ static int LoadPNG (HTTPFILE * httpfile)
 			McPuts ("※ .PNG data 用メモリが足りません\n");
 			image_list_ptr->data = NULL;
 		}
-		_dos_mfree (temp_image);
+		free (temp_image);
 		temp_image = NULL;
 	} else {
 		image_list_ptr->data = temp_image;
@@ -500,7 +500,7 @@ int LoadImage (HTTPFILE * httpfile)
 			LoadJpeg (t_httpfile);
 		else if (!strcmp (t_httpfile->content_type, "image/png"))
 			LoadPNG (t_httpfile);
-		_dos_mfree (t_httpfile->content);
+		free (t_httpfile->content);
 
 		image_list_ptr = image_list_ptr->before_ptr;
 		if (image_list_ptr == NULL)

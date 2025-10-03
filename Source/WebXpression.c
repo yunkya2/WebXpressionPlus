@@ -656,14 +656,14 @@ static int ShowHtml (char *in_url)
 				char temp_content[1024];
 
 				recheck_flag = 0;
-				_dos_mfree (httpfile->content);		/* 読んだ画像は捨てる */
+				free (httpfile->content);		/* 読んだ画像は捨てる */
 				httpfile->content = NULL;
 				sprintf (temp_content, "<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><BR><CENTER><IMG SRC=\"%s\"></CENTER></BODY></HTML>\r\n\0",
 					 httpfile->fname, httpfile->url);
 				httpfile->content_length = strlen (temp_content);
 			    /* まだこのエラーチェック正しくない */
-				httpfile->content = _dos_malloc (httpfile->content_length);
-				if ((int) httpfile->content < 0) {
+				httpfile->content = malloc (httpfile->content_length);
+				if ((int) httpfile->content == 0) {
 					McPuts ("※ メモリが足りません（ HTTPFILE 用のメモリが確保できません）\n");
 				}
 				strcpy (httpfile->content_type, "text/html");
@@ -720,7 +720,7 @@ static int ShowHtml (char *in_url)
 			break;
 		case MAIN_ERROR_XPTEXT:
 		case MAIN_ERROR_RECHECK:
-			_dos_mfree (httpfile->content);
+			free (httpfile->content);
 			httpfile->content = NULL;
 			if (old_httpfile->xptext == NULL) {
 				return (-1);	/* 表示できるテキストが全くない */
@@ -743,7 +743,7 @@ static int ShowHtml (char *in_url)
 			old_httpfile->xptext = NULL;
 		}
 		if (old_httpfile->content) {
-			_dos_mfree (old_httpfile->content);
+			free (old_httpfile->content);
 			old_httpfile->content = NULL;
 		}
 		InitHttpfile (old_httpfile);
@@ -985,7 +985,7 @@ static int ShowHtml (char *in_url)
 		httpfile->xptext = NULL;
 	}
 	if (httpfile->content) {
-		_dos_mfree (httpfile->content);
+		free (httpfile->content);
 		httpfile->content = NULL;
 	}
 	return (0);

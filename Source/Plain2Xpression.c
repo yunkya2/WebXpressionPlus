@@ -51,14 +51,14 @@ XPTEXT *Plain2Xpression (HTTPFILE * httpfile, XPTEXT * old_xptext)
 	t2_size = httpfile->content_length * 2 + XPTEXT_BUFFER_YOYUU;
 
 	/* とりあえず固定サイズで確保 */
-	xptext->text = _dos_malloc (t2_size);
-	if ((int) xptext->text < 0) {
+	xptext->text = malloc (t2_size);
+	if ((int) xptext->text == 0) {
 		McPuts ("※ メモリが足りません（テキストバッファ用のメモリが確保できません）\n");
 		FreeXptext (xptext);
 		return (NULL);
 	} else {
-		xptext->line_ptr = _dos_malloc (sizeof (LINE_PTR) * line_table_size);
-		if ((int) xptext->line_ptr < 0) {
+		xptext->line_ptr = malloc (sizeof (LINE_PTR) * line_table_size);
+		if ((int) xptext->line_ptr == 0) {
 			McPuts ("※ メモリが足りません（行頭リスト用メモリが確保できません）\n");
 			FreeXptext (xptext);
 			return (NULL);
@@ -176,8 +176,8 @@ XPTEXT *Plain2Xpression (HTTPFILE * httpfile, XPTEXT * old_xptext)
 
 
 	/* 余分に確保したメモリブロックを切り捨てる */
-	_dos_setblock (xptext->text, (int) t2 - (int) (xptext->text) + 1);
-	_dos_setblock (xptext->line_ptr, sizeof (LINE_PTR) * (xptext->line));
+	xptext->text = realloc (xptext->text, (int) t2 - (int) (xptext->text) + 1);
+	xptext->line_ptr = realloc (xptext->line_ptr, sizeof (LINE_PTR) * (xptext->line));
 
 	return (xptext);
 }

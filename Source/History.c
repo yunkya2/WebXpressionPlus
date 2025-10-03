@@ -27,8 +27,8 @@ int InitHistory (void)
 {
 	short h;
 
-	history_table = _dos_malloc (sizeof (HISTORY_TABLE) * history_max);
-	if ((int) history_table < 0) {
+	history_table = malloc (sizeof (HISTORY_TABLE) * history_max);
+	if ((int) history_table == 0) {
 		printf ("※ メモリが足りません（ヒストリー用のメモリが確保できません）\n");
 		return (-1);
 	}
