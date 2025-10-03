@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <sys/dos.h>
+#include <x68k/dos.h>
 
 #include "History.h"
 #include "Config.h"

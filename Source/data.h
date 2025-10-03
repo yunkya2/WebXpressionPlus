@@ -1,5 +1,6 @@
 /* Data.h */
 
+#include <x68k/iocs.h>
 
 enum {
 	PAT_NO_SCROLL = 0,	/* 上下の矢印 */
@@ -15,5 +16,5 @@ enum {
 
 extern char WebPage2;
 extern char WebPage3;
-extern struct _patst mouse_pat0, mouse_pat1, mouse_pat2, mouse_pat3
+extern struct iocs_patst mouse_pat0, mouse_pat1, mouse_pat2, mouse_pat3
  ,mouse_pat4, mouse_pat5, mouse_pat6, mouse_pat7;

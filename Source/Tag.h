@@ -1,54 +1,54 @@
 /* Tag.h */
 
 
-void TagBr(WORK *);
-void TagA(WORK *);
-void Tag_A(WORK *);
-void TagImg(WORK *);
-void TagFrameset(WORK *);
-void TagFrame(WORK *);
-void TagHr(WORK *);
-void TagP(WORK *);
-void Tag_P(WORK *);
-void TagH1(WORK *);
-void Tag_H1(WORK *);
+static void TagBr(WORK *);
+static void TagA(WORK *);
+static void Tag_A(WORK *);
+static void TagImg(WORK *);
+static void TagFrameset(WORK *);
+static void TagFrame(WORK *);
+static void TagHr(WORK *);
+static void TagP(WORK *);
+static void Tag_P(WORK *);
+static void TagH1(WORK *);
+static void Tag_H1(WORK *);
 #if	0
-void TagH2(WORK *);
-void Tag_H2(WORK *);
+static void TagH2(WORK *);
+static void Tag_H2(WORK *);
 #endif
-void TagH3(WORK *);
-void Tag_H3(WORK *);
+static void TagH3(WORK *);
+static void Tag_H3(WORK *);
 #if	0
-void TagH4(WORK *);
-void Tag_H4(WORK *);
-void TagH5(WORK *);
-void Tag_H5(WORK *);
-void TagH6(WORK *);
-void Tag_H6(WORK *);
+static void TagH4(WORK *);
+static void Tag_H4(WORK *);
+static void TagH5(WORK *);
+static void Tag_H5(WORK *);
+static void TagH6(WORK *);
+static void Tag_H6(WORK *);
 #endif
-void TagTitle(WORK *);
-void Tag_Title(WORK *);
-void TagHead(WORK *);
-void Tag_Head(WORK *);
-void TagCenter(WORK *);
-void Tag_Center(WORK *);
-void TagScript(WORK *);
-void Tag_Script(WORK *);
-void TagPre(WORK *);
-void Tag_Pre(WORK *);
-void TagOl(WORK *);
-void Tag_Ol(WORK *);
-void TagUl(WORK *);
-void Tag_Ul(WORK *);
-void TagLi(WORK *);
-void TagTable(WORK *);
-void Tag_Td(WORK *);
-void Tag_Tr(WORK *);
-void TagDt(WORK *);
-void TagDd(WORK *);
-void TagInput(WORK *);
-void TagBody(WORK *);
-void TagComment(WORK *);
+static void TagTitle(WORK *);
+static void Tag_Title(WORK *);
+static void TagHead(WORK *);
+static void Tag_Head(WORK *);
+static void TagCenter(WORK *);
+static void Tag_Center(WORK *);
+static void TagScript(WORK *);
+static void Tag_Script(WORK *);
+static void TagPre(WORK *);
+static void Tag_Pre(WORK *);
+static void TagOl(WORK *);
+static void Tag_Ol(WORK *);
+static void TagUl(WORK *);
+static void Tag_Ul(WORK *);
+static void TagLi(WORK *);
+static void TagTable(WORK *);
+static void Tag_Td(WORK *);
+static void Tag_Tr(WORK *);
+static void TagDt(WORK *);
+static void TagDd(WORK *);
+static void TagInput(WORK *);
+static void TagBody(WORK *);
+static void TagComment(WORK *);
 
 
 typedef void (*func_tag) (struct _work *);

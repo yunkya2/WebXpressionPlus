@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include "WebXpression.h"
 
 void Date2Date (char *str, struct tm *time_stamp)
 {

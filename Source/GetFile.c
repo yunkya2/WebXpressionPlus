@@ -3,12 +3,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/dos.h>
-#include <sys/iocs.h>
+#include <x68k/dos.h>
+#include <x68k/iocs.h>
 #include <errno.h>
 
-#include <network.h>
-#include <socket.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
 
 
 #ifdef	WEBXPRESSION
@@ -34,8 +37,11 @@ enum {
 
 int GetFileInit (void)
 {
-	inetd_version = _get_version ();
-
+	int version;
+	inetd_version = -1;
+	if (getsockopt(0, 0, SO_GETVERSION, &version, NULL) >= 0) {
+		inetd_version = version;
+	}
 	return (0);
 }
 
@@ -94,7 +100,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 	if (req_mode == REQ_HEAD)
 		McDbPuts ("ヘッダを取得します");
 	McPrintf ("%s に接続中...", httpfile->hostname);
-	if (connect (netd, (char *) &addr, sizeof (addr)) < 0) {
+	if (connect (netd, (struct sockaddr *) &addr, sizeof (addr)) < 0) {
 		McPuts ("\n※ 接続に失敗しました\n");
 		return (ret);
 	}
@@ -105,25 +111,25 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 		sprintf (temp_str, "HEAD %s%s%s HTTP/1.0\r\n", httpfile->path, httpfile->fname, httpfile->query);
 	else
 		sprintf (temp_str, "GET %s%s%s HTTP/1.0\r\n", httpfile->path, httpfile->fname, httpfile->query);
-	write_s (netd, temp_str, strlen (temp_str));
+	write (netd, temp_str, strlen (temp_str));
 	McDbPuts (temp_str);
-    /* write_s (netd, "User-Agent: WebXpression / ver0.01 (X68000)\r\n", 48);    */
+    /* write (netd, "User-Agent: WebXpression / ver0.01 (X68000)\r\n", 48);    */
 	strcpy (temp_str, "Accept: */*\r\n");
-	write_s (netd, temp_str, strlen (temp_str));
+	write (netd, temp_str, strlen (temp_str));
 	McDbPuts (temp_str);
 	sprintf (temp_str, "Host: %s\r\n", httpfile->hostname);
-	write_s (netd, temp_str, strlen (temp_str));
+	write (netd, temp_str, strlen (temp_str));
 	McDbPuts (temp_str);
 #if	1
 	{
 		if (strncmp ("file://", httpfile->referer, 7)) {
 			sprintf (temp_str, "Referer: %s\r\n", httpfile->referer);
-			write_s (netd, temp_str, strlen (temp_str));
+			write (netd, temp_str, strlen (temp_str));
 			McDbPuts (temp_str);
 		}
 	}
 #endif
-	write_s (netd, "\r\n", 2);
+	write (netd, "\r\n", 2);
 
 	McPuts ("レスポンスを待ちます...");
 
@@ -132,7 +138,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 	if ((strncmp (temp_str, "HTTP/1.0 200", 12))
 	    && (strncmp (temp_str, "HTTP/1.1 200", 12))) {
 		McDbPuts (temp_str);
-		close_s (netd);	/* 接続の切断 */
+		close (netd);	/* 接続の切断 */
 		return (ret);
 	}
 	McCursorTop ();		/* "レスポンスを待ちます"を消去 */
@@ -165,7 +171,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 
 
 	if (req_mode == REQ_HEAD) {
-		close_s (netd);	/* 接続の切断 */
+		close (netd);	/* 接続の切断 */
 
 		if ((httpfile->time_stamp).tm_sec == NO_TIMESTAMP) {
 			time_t t;
@@ -179,7 +185,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 		int read_size = 0, s;
 		void *r = NULL;
 		int alloc_size, alloc_left;
-		int lap_time;
+		struct iocs_time lap_time, lap_time2;
 		char cache_fname[256];
 
 #define YOYUU	4096
@@ -191,7 +197,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 		}
 		if (((int) (httpfile->content = _dos_malloc (alloc_size))) < 0) {
 			McPuts ("※ メモリが足りません\n");
-			close_s (netd);		/* 接続の切断 */
+			close (netd);		/* 接続の切断 */
 			httpfile->content = NULL;
 			return (ret);
 		}
@@ -201,7 +207,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 
 	    /* ファイルの転送が完了するまでループ */
 		do {
-			s = read_s (netd, r, alloc_left);
+			s = read (netd, r, alloc_left);
 			read_size += s;
 			r += s;
 			if ((alloc_left -= s) <= 0) {
@@ -222,12 +228,12 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 			shutdown (netd, 2);	/* connection を abortする */
 			WaitReleaseAll ();
 		}
-		close_s (netd);	/* 接続の切断 */
-		lap_time -= _iocs_ontime ();
+		close (netd);	/* 接続の切断 */
+		lap_time2 = _iocs_ontime ();
 		McCursorTop ();	/* カーソルを行の先頭に */
 
 #ifndef WEBXPRESSION
-		McPrintf ("	受信終了（受信速度は %8.1f バイト／秒でした）", (double) read_size / (double) (-lap_time) * 100.0);
+		McPrintf ("	受信終了（受信速度は %8.1f バイト／秒でした）", (double) read_size / (double) (lap_time2.sec - lap_time.sec) * 100.0);
 #endif
 
 		if (httpfile->content_length == 0) {

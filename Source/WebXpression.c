@@ -5,9 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <sys/dos.h>
-#include <sys/iocs.h>
-#include <sys/xglob.h>
+#include <x68k/dos.h>
+#include <x68k/iocs.h>
 
 #define GLOBAL_DEFINE		/* グローバル変数を確保する */
 #include "WebXpression.h"
@@ -20,7 +19,7 @@
 #include "WebCache.h"
 #include "DrawText.h"
 #include "GetFile.h"
-#include "Data.h"
+#include "data.h"
 
 extern int cut_disp (void *, void *, int);
 
@@ -633,7 +632,7 @@ static int ShowHtml (char *in_url)
 		char load_complete;
 		char refresh_counter = 0;	/* refresh_rate を越えるごとに再整形 */
 		char idle_rate = 0;	/* IDLE イベントを処理する間隔 */
-		int lap_time = 0;
+		struct iocs_time lap_time;
 		int gf_ret;	/* GetFile() の返り値 */
 
 		McPrintf ("%s を読み込みます\n", httpfile->url);
@@ -773,13 +772,17 @@ static int ShowHtml (char *in_url)
 					load_complete = LoadImage (httpfile);
 					switch (load_complete) {
 					case LI_COMPLETE_NOT_LOAD:
-						if (t_option)
-							McPrintf ("描画時間 = %d\n", _iocs_ontime () - lap_time);
+						if (t_option) {
+							struct iocs_time lap_time2 = _iocs_ontime ();
+							McPrintf ("描画時間 = %d\n", lap_time2.sec - lap_time.sec);
+						}
 						McPuts (STR_DISP_COMPLETE);
 						break;
 					case LI_COMPLETE_LOAD:
-						if (t_option)
-							McPrintf ("描画時間 = %d\n", _iocs_ontime () - lap_time);
+						if (t_option) {
+							struct iocs_time lap_time2 = _iocs_ontime ();
+							McPrintf ("描画時間 = %d\n", lap_time2.sec - lap_time.sec);
+						}
 						McPuts (STR_DISP_COMPLETE);
 						refresh_counter++;	/* 強制的に再整形 */
 						save_counter++;
@@ -1010,7 +1013,7 @@ static void Init2 (void)
 	unsigned short *vctrl_r2 = (unsigned short *) 0xe82500;
 	unsigned short *vctrl_r3 = (unsigned short *) 0xe82600;
 	unsigned short *p;
-	struct _patst *mouse_pat_table[8] =
+	struct iocs_patst *mouse_pat_table[8] =
 	{
 		&mouse_pat0, &mouse_pat1, &mouse_pat2, &mouse_pat3,
 		&mouse_pat4, &mouse_pat5, &mouse_pat6, &mouse_pat7

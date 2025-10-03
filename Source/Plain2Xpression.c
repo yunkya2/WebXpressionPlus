@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/dos.h>
+#include <x68k/dos.h>
 #include "WebXpression.h"
-#include "HttpFile.h"
+#include "Httpfile.h"
 #include "Html2Xpression.h"
 #include "MicroConsole.h"
 #include "Config.h"

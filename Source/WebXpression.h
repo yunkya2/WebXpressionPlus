@@ -128,7 +128,7 @@ typedef struct {
 
 /* グローバル変数 */
 
-Extern struct _psp *mypsp;
+Extern struct dos_psp *mypsp;
 Extern unsigned char d_option;
 
 

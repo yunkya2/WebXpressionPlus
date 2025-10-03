@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/xglob.h>
+#include <x68k/dos.h>
 
 #include "WebXpression.h"
 #include "Config.h"

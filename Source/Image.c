@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>		/* spawnlp() のために必要 */
-#include <sys/dos.h>
-#include <sys/iocs.h>
+#include <x68k/dos.h>
+#include <x68k/iocs.h>
 #include "WebXpression.h"
-#include "HttpFile.h"
+#include "Httpfile.h"
 #include "MicroConsole.h"
 #include "Config.h"
 #include "Image.h"
