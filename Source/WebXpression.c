@@ -1165,7 +1165,7 @@ int main (int argc, char *argv[])
 	if (fname == NULL) {
 		fname = address_book;
 	} else {
-		if (strnicmp (fname, "http://", 7)) {
+		if (strnicmp (fname, "http://", 7) != 0 && strnicmp (fname, "https://", 8) != 0) {
 		    /* ローカルファイルなら */
 			strcpy (temp_fname, "file://");
 			if (!strnicmp (fname, "file://", 7))

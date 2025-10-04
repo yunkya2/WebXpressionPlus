@@ -232,7 +232,7 @@ int WCExist (HTTPFILE * httpfile, char *cache_fname)
 	TEMPTABLE *tt = tt_top;
 	short h;
 	char *scheme_str[] =
-	{"http://", "file://"};
+	{"http://", "https://", "file://"};
 
     /* scheme によって分岐 */
 	for (h = 0; h < sizeof (scheme_str) / sizeof (char *); h++) {
@@ -241,6 +241,7 @@ int WCExist (HTTPFILE * httpfile, char *cache_fname)
 	}
 	switch (h) {
 	case 0:		/* http:// */
+	case 1:		/* https:// */
 		{
 			char hash;
 
@@ -268,7 +269,7 @@ int WCExist (HTTPFILE * httpfile, char *cache_fname)
 			}
 		}
 		break;
-	case 1:		/* file:// */
+	case 2:		/* file:// */
 	default:
 		{
 			FILE *fp = NULL;
@@ -323,7 +324,7 @@ int WCSetAccess (HTTPFILE * httpfile)
 	TEMPTABLE *tt = tt_top;
 	char hash;
 
-	if (strcmp (httpfile->scheme, "http://"))
+	if (strcmp (httpfile->scheme, "http://") != 0 && strcmp (httpfile->scheme, "https://") != 0)
 		return (-1);	/* http:// でなければ帰る */
 
 	hash = Url2Hash (httpfile->url);
@@ -349,7 +350,7 @@ int WCInsertUrl (HTTPFILE * httpfile, char *cache_fname)
 	TEMPTABLE *tt;
 	short h;
 	char *scheme_str[] =
-	{"http://", "file://"};
+	{"http://", "https://", "file://"};
 
     /* scheme によって分岐 */
 	for (h = 0; h < sizeof (scheme_str) / sizeof (char *); h++) {
@@ -358,6 +359,7 @@ int WCInsertUrl (HTTPFILE * httpfile, char *cache_fname)
 	}
 	switch (h) {
 	case 0:		/* http:// */
+	case 1:		/* https:// */
 		for (c = 0; c < sizeof (ext_type_str) / 4 - 1; c++) {
 			if (!strcmp (httpfile->content_type, content_type_str[c]))
 				break;
@@ -401,7 +403,7 @@ int WCInsertUrl (HTTPFILE * httpfile, char *cache_fname)
 		cache_sum++;
 		abs_max++;
 		break;
-	case 1:		/* file:// */
+	case 2:		/* file:// */
 	default:
 	    /* file:// の場合はキャッシュに登録せず cache_fname だけ返す */
 		{

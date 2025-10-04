@@ -19,6 +19,7 @@ void InitHttpfile (HTTPFILE * h1)
 	h1->query[0] = '\0';
 	h1->anchor[0] = '\0';
 
+	h1->is_ssl = 0;
 	h1->content_length = 0;
 	h1->content_type[0] = '\0';
 	h1->content = NULL;
@@ -74,9 +75,10 @@ void CatHttpfile (HTTPFILE * h1, HTTPFILE * h2, char *url)
 	char *path_end_d;	/* path の最後のコピー先 */
 	char exit_flag = 0;
 	char *scheme_str[] =
-	{"http://", "file://"};
+	{"http://", "https://", "file://"};
 	enum {
 		SCHEME_HTTP = 0,
+		SCHEME_HTTPS,
 		SCHEME_FILE,
 	};
 	short scheme_type;
@@ -89,11 +91,20 @@ void CatHttpfile (HTTPFILE * h1, HTTPFILE * h2, char *url)
 	}
 	switch (scheme_type) {
 	case SCHEME_HTTP:
+	case SCHEME_HTTPS:
 		/* 絶対パス指定だった場合 */
-		strcpy (h1->scheme, "http://");
-		h1->port = 80;
+		if (scheme_type == SCHEME_HTTP) {
+			strcpy (h1->scheme, "http://");
+			h1->port = 80;
+			h1->is_ssl = 0;
+			s = url + 7;
+		} else {
+			strcpy (h1->scheme, "https://");
+			h1->port = 443;
+			h1->is_ssl = 1;
+			s = url + 8;
+		}
 		/* hostname をコピー */
-		s = url + 7;
 		d = h1->hostname;
 		exit_flag = 0;
 		do {
@@ -123,6 +134,7 @@ void CatHttpfile (HTTPFILE * h1, HTTPFILE * h2, char *url)
 		strcpy (h1->scheme, "file://");
 		s = url + 7;
 		d = h1->path;
+		h1->is_ssl = 0;
 		break;
 
 	default:		/* パス以降のみ */
@@ -135,6 +147,7 @@ void CatHttpfile (HTTPFILE * h1, HTTPFILE * h2, char *url)
 		strcpy (h1->scheme, h2->scheme);
 		strcpy (h1->hostname, h2->hostname);
 		h1->port = h2->port;
+		h1->is_ssl = h2->is_ssl;
 		/* まず h2->path を h1->path にコピー */
 		s = h2->path;
 		d = h1->path;
@@ -236,7 +249,8 @@ void CatHttpfile (HTTPFILE * h1, HTTPFILE * h2, char *url)
 
 	strcpy (h1->url, h1->scheme);
 	strcat (h1->url, h1->hostname);
-	if ((scheme_type == SCHEME_HTTP) && (h1->port != 80)) {
+	if (((scheme_type == SCHEME_HTTP) && (h1->port != 80)) ||
+	    ((scheme_type == SCHEME_HTTPS) && (h1->port != 443))) {
 		char temp_str[7];
 		sprintf (temp_str, ":%d", h1->port);
 		strcat (h1->url, temp_str);

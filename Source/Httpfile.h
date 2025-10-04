@@ -15,6 +15,7 @@ typedef struct {
 	char query[256];
 	char anchor[256];
 	int port;
+	int is_ssl;
 	struct tm time_stamp;	/* 最終更新日時(last_modified) */
 	int content_length;
 	char content_type[32];
