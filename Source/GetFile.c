@@ -219,7 +219,15 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 		sscanf (temp_str, "%s", temp_entity);
 	    /* ヘッダ名は大文字／小文字を区別しない */
 		if (!stricmp (temp_entity, "Content-Type:")) {
-			sscanf (temp_str + 14, "%s", httpfile->content_type);
+			/* Content-Type は ; で終わる場合もある */
+			char *p = temp_str + 14;
+			char *q = httpfile->content_type;
+			while (*p == ' ')
+				p++;
+			while (*p > ' ' && *p != ';' && (q - httpfile->content_type) < 63) {
+				*q++ = *p++;
+			}
+			*q = '\0';
 		}
 		if (!stricmp (temp_entity, "Content-Length:")) {
 			sscanf (temp_str + 16, "%d", &httpfile->content_length);
