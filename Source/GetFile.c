@@ -113,14 +113,17 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
     SSL *ssl_sock = NULL;
 
 	if (httpfile->is_ssl) {
+		struct iocs_time tm1, tm2;
+		tm1 = _iocs_ontime();
 		McPrintf ("HTTPSで接続します\n");
 		ssl_ctx = ssl_ctx_new(SSL_SERVER_VERIFY_LATER, SSL_DEFAULT_CLNT_SESS);
 		ext = ssl_ext_new();
 		ssl_sock = ssl_client_new(ssl_ctx, netd, NULL, 0, ext);
 
 		int r = ssl_handshake_status(ssl_sock);
+		tm2 = _iocs_ontime();
 
-		McPrintf ("接続ステータス %d\n", r);
+		McPrintf ("接続ステータス %d (%dms)\n", r, (tm2.sec - tm1.sec) * 10);
 		if (r != SSL_OK) {
 			ssl_free(ssl_sock);
 			ssl_ctx_free(ssl_ctx);
