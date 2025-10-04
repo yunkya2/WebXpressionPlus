@@ -13,6 +13,7 @@
 #include "Jis2sjis.h"
 #include "Entity.h"
 #include "WebCache.h"
+#include "iconv_mini.h"
 
 /* 折り返すドット数 */
 #define WRAP_DOT	((short)512)
@@ -106,7 +107,7 @@ enum {
 
 /* 日本語文字コード */
 enum {
-	K_JIS = 0, K_SJIS, K_EUC,
+	K_JIS = 0, K_SJIS, K_EUC, K_UTF8,
 };
 
 static BLB *blb_top, *blb_end;
@@ -134,6 +135,7 @@ int GetCharset (HTTPFILE * httpfile)
 	int is_jis = 0;
 	int is_sjis = 0;
 	int is_euc = 0;
+	int is_utf8 = 0;
 #define WINNERS_POINT	8	/* is_xxx がこの得点を越えたら打ち切り */
 	unsigned char temp_charset = K_SJIS;	/* 文字コード */
 	unsigned char jis_kanji = 0;	/* JIS 用 ASCII(=0) or KANJI(=!0) */
@@ -170,6 +172,25 @@ int GetCharset (HTTPFILE * httpfile)
 			}
 			continue;	/* 次の文字へ */
 		}
+		/* UTF-8 エンコードされている文字を見つけたら UTF-8 と推測 */
+		if (c >= 0xc2 && c <= 0xdf) {
+			if (t1[0] >= 0x80 && t1[0] <= 0xbf) {	// 2バイト文字
+				temp_charset = K_UTF8;
+				if (++is_utf8 > WINNERS_POINT)
+					break;	/* 判定終了 */
+				t1++;
+				continue;
+			}
+		} else if (c >= 0xe0 && c <= 0xef) {		// 3バイト文字
+			if ((t1[0] >= 0x80 && t1[0] <= 0xbf) &&
+				(t1[1] >= 0x80 && t1[1] <= 0xbf)) {
+				temp_charset = K_UTF8;
+				if (++is_utf8 > WINNERS_POINT)
+					break;	/* 判定終了 */
+				t1 += 2;
+				continue;
+			}
+		}
 	    /* 0x81~0x9f を見つけたら SJIS と推測 */
 		if ((c >= 0x81) && (c <= 0x9f)) {
 			temp_charset = K_SJIS;
@@ -190,6 +211,8 @@ int GetCharset (HTTPFILE * httpfile)
 			continue;	/* 次の文字へ */
 		}
 		switch (temp_charset) {
+		case K_UTF8:
+			break;		/* UTF-8 はスキップ処理済み */
 		case K_SJIS:
 			if ((c >= 0x80) && ((c < 0xa0) || (c > 0xdf)))
 				t1++;	/* 漢字の２バイト目をスキップ */
@@ -206,7 +229,9 @@ int GetCharset (HTTPFILE * httpfile)
 	} while (t1 < t1e);
 
     /* is_sjis, is_jis, is_euc の中で一番大きなものを文字コードとする */
-	if (is_sjis > is_jis) {
+	if (is_utf8 > is_sjis && is_utf8 > is_jis && is_utf8 > is_euc) {
+		ret = K_UTF8;
+	} else if (is_sjis > is_jis) {
 	    /* SJIS か EUC */
 		if (is_sjis > is_euc)
 			ret = K_SJIS;
@@ -262,7 +287,23 @@ int Html2Sjis (HTTPFILE * httpfile)
 	t2e = t2 + t2_size - YOYUU;
     /* t2 が t2e に達したら終了（バッファ不足） */
 
-	if (temp_charset == K_JIS) {
+	if (temp_charset == K_UTF8) {
+		/* UTF-8 の時 */
+		McDbPuts ("UTF-8 と判定\n");
+		/* バッファ内をUTF-8文字列と見なしてSJISに変換する */
+		unsigned char *inbuf = t1;
+		size_t inbytesleft = t1e - t1;
+		unsigned char *outbuf = t2;
+		size_t outbytesleft = t2e - t2;
+		do {
+			int res = iconv_u2s((char **)&inbuf, &inbytesleft, (char **)&outbuf, &outbytesleft);
+			if (res < 0) {		/* 変換エラーの文字はスキップする */
+				inbuf++;
+				inbytesleft--;
+			}
+		} while (inbuf < t1e && outbuf < t2e);
+		t2 = outbuf;
+	} else if (temp_charset == K_JIS) {
 	    /* JIS の時 */
 		unsigned char jis_kanji = 0;	/* JIS 用 ASCII(=0) or KANJI(=!0) */
 		McDbPuts ("JIS と判定\n");
