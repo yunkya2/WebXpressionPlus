@@ -1146,6 +1146,12 @@ static void TagImg (WORK * w)
 			img_src_flag = !0;
 
 			if (w->pass == 0) {
+				char *p = strchr(w->attr_str, '&');
+				if (p) {
+					/* & があれば終端にする */
+					*p = '\0';
+				}
+
 			    /* 初回の解析なら */
 				char temp_fname[256];
 				IMAGE_LIST *t_ptr;
