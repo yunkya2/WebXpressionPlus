@@ -34,6 +34,8 @@ static void TagCenter(WORK *);
 static void Tag_Center(WORK *);
 static void TagScript(WORK *);
 static void Tag_Script(WORK *);
+static void TagStyle(WORK *);
+static void Tag_Style(WORK *);
 static void TagPre(WORK *);
 static void Tag_Pre(WORK *);
 static void TagOl(WORK *);
@@ -83,6 +85,8 @@ func_tag FuncTag[]=
 	Tag_Center,
 	TagScript,
 	Tag_Script,
+	TagStyle,
+	Tag_Style,
 	TagPre,
 	Tag_Pre,
 	TagOl,
@@ -133,6 +137,8 @@ unsigned char *tag_str[]=
 	"/CENTER",
 	"SCRIPT",
 	"/SCRIPT",
+	"STYLE",
+	"/STYLE",
 	"PRE",
 	"/PRE",
 	"OL",

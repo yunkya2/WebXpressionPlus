@@ -1492,6 +1492,28 @@ static void Tag_Script (WORK * w)
 {
 }
 
+static void TagStyle (WORK * w)
+{
+	unsigned char *t1 = w->_t1;
+	unsigned char *t2 = w->_t2;
+
+	do {
+		while ((*t1++ != '/') && (t1 < w->t1e));
+		if (!strnicmp (t1, "style", 5)) {
+			t1 += 5;
+			w->nl_flag = !0;
+			break;
+		}
+	} while ((t1 < w->t1e) && (t2 < w->t2e));
+
+	w->_t1 = t1;
+	w->_t2 = t2;
+}
+
+static void Tag_Style (WORK * w)
+{
+}
+
 static void TagPre (WORK * w)
 {
 	w->tag_pre = !0;
