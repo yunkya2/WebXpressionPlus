@@ -5,7 +5,7 @@ all: $(TARGET)
 CROSS_COMPILE ?= m68k-xelf-
 CC = $(CROSS_COMPILE)gcc
 LD = $(CC)
-CFLAGS += -O3 -g
+CFLAGS += -O3 -g -Iiconv -DICONV_ONLY_U2S
 LIBS += -lsocket
 
 OBJS = 	WebXpression.o Html2Xpression.o Plain2Xpression.o Httpfile.o \
@@ -13,7 +13,8 @@ OBJS = 	WebXpression.o Html2Xpression.o Plain2Xpression.o Httpfile.o \
 		GetFile.o  Config.o Date2Date.o \
 		WebCache.o \
 		cut_disp.o hook.o gifl.o Compress.o MpuCache.o data.o \
-		supplementary.o
+		supplementary.o \
+		iconv/iconv_mini.o
 
 WebXpression.x:	$(OBJS)
 	$(LD) $^ -o $@ $(LIBS)
