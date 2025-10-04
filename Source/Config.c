@@ -24,6 +24,7 @@ static VAR_CHAR var_char[]=
 	"key-repeat-2nd", &key_repeat_2nd,
 	"color-mode", &color_mode,
 	"refresh-rate", &refresh_rate,
+	"ignore-image", &ignore_image,
 	NULL, NULL
 };
 
@@ -102,6 +103,7 @@ int InitConfig (char *fname)
 	key_repeat_2nd = 5;
 	color_mode = 0;
 	refresh_rate = 4;
+	ignore_image = 0;
 	cache_image = 4;
 	webcache_save = 4;
 	history_max = 32;

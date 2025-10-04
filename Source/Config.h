@@ -18,6 +18,7 @@ Extern unsigned char key_repeat_1st;
 Extern unsigned char key_repeat_2nd;
 Extern unsigned char color_mode;
 Extern unsigned char refresh_rate;
+Extern unsigned char ignore_image;
 Extern unsigned short cache_image;
 Extern unsigned short webcache_save;
 Extern unsigned short history_max;

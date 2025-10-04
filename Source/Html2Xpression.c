@@ -1148,6 +1148,9 @@ static void TagImg (WORK * w)
 		case ATTR_IMG_SRC:
 			img_src_flag = !0;
 
+			if (ignore_image)
+				break;	/* 画像を無視する */
+
 			if (w->pass == 0) {
 				char *p = strchr(w->attr_str, '&');
 				if (p) {
@@ -1175,7 +1178,7 @@ static void TagImg (WORK * w)
 						break;
 				}
 				if (c == sizeof (img_ext_type_str) / 4) {
-					return;	/* 対応していない拡張子なのでタグを無視する */
+					break;	/* 対応していない拡張子なのでタグを無視する */
 				}
 
 			    /* 初回の解析なら */
@@ -1235,8 +1238,8 @@ static void TagImg (WORK * w)
 #if	1
 	if (t_ptr == NULL) {
 	    /* アトリビュート SRC が無い */
-		McPuts ("アトリビュート SRC の無い <IMG> タグです\n");
-		McDbPuts ("t_ptr が NULL です\n");
+//		McPuts ("アトリビュート SRC の無い <IMG> タグです\n");
+//		McDbPuts ("t_ptr が NULL です\n");
 		return;
 	}
 #endif
