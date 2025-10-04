@@ -1123,6 +1123,9 @@ static void Tag_A (WORK * w)
 	*tag_href_str = '\0';
 }
 
+/* ブラウザで表示可能な画像の拡張子 */
+static char *img_ext_type_str[] = {"GIF", "JPG", "JPEG", "PNG", "BMP"};
+
 static void TagImg (WORK * w)
 {
 	HTTPFILE *httpfile = w->httpfile;
@@ -1150,6 +1153,29 @@ static void TagImg (WORK * w)
 				if (p) {
 					/* & があれば終端にする */
 					*p = '\0';
+				}
+
+				/* イメージファイルの拡張子を調べる
+				   対応していない拡張子なら無視することで、無駄なファイルのダウンロードを防ぐ
+				   (.svg や .webp など)
+				   */
+				char ext[256];
+			 	/* マルチピリオド非対応・・・ */
+				ext[0] = '\0';
+				p = w->attr_str + strlen (w->attr_str);
+				while (p > w->attr_str) {
+					if (*--p == '.') {
+						strcpy (ext, p + 1);
+						break;
+					}
+				}
+				int c;
+				for (c = 0; c < sizeof (img_ext_type_str) / 4; c++) {
+					if (strnicmp (ext, img_ext_type_str[c], strlen(img_ext_type_str[c])) == 0)
+						break;
+				}
+				if (c == sizeof (img_ext_type_str) / 4) {
+					return;	/* 対応していない拡張子なのでタグを無視する */
 				}
 
 			    /* 初回の解析なら */
@@ -1211,6 +1237,7 @@ static void TagImg (WORK * w)
 	    /* アトリビュート SRC が無い */
 		McPuts ("アトリビュート SRC の無い <IMG> タグです\n");
 		McDbPuts ("t_ptr が NULL です\n");
+		return;
 	}
 #endif
 
