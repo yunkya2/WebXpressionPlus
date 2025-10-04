@@ -6,6 +6,7 @@
 #include <stdarg.h>
 #include <time.h>
 #include <utime.h>
+#include "ssl.h"
 
 #define P_WAIT 0
 
@@ -19,5 +20,8 @@ int utime(const char *filename, const struct utimbuf *times);
 void recvinit(void);
 int recvline(int socket, char *buff, size_t maxlen);
 int recvremain(char *buff, size_t maxlen);
+void recv_ssl_init(void);
+int recvline_ssl(SSL *socket, char *buff, size_t maxlen);
+int recv_ssl(SSL *socket, void *buff, size_t maxlen);
 
 #endif /* _SUPPLEMENTARY_H_ */

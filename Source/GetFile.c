@@ -26,6 +26,7 @@ extern int AbortCheckGetFile (void);
 #include "WebCache.h"
 #include "History.h"
 
+#include "ssl.h"
 
 extern void Date2Date (char *, struct tm *);
 
@@ -107,38 +108,88 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 	McCursorTop ();
 	McPrintf ("%s に接続しました\n", httpfile->hostname);
 
+    SSL_CTX *ssl_ctx = NULL;
+    SSL_EXTENSIONS *ext = NULL;
+    SSL *ssl_sock = NULL;
+
+	if (httpfile->is_ssl) {
+		McPrintf ("HTTPSで接続します\n");
+		ssl_ctx = ssl_ctx_new(SSL_SERVER_VERIFY_LATER, SSL_DEFAULT_CLNT_SESS);
+		ext = ssl_ext_new();
+		ssl_sock = ssl_client_new(ssl_ctx, netd, NULL, 0, ext);
+
+		int r = ssl_handshake_status(ssl_sock);
+
+		McPrintf ("接続ステータス %d\n", r);
+		if (r != SSL_OK) {
+			ssl_free(ssl_sock);
+			ssl_ctx_free(ssl_ctx);
+			close(netd);
+			return -1;
+		}
+	}
+
 	if (req_mode == REQ_HEAD)
 		sprintf (temp_str, "HEAD %s%s%s HTTP/1.0\r\n", httpfile->path, httpfile->fname, httpfile->query);
 	else
 		sprintf (temp_str, "GET %s%s%s HTTP/1.0\r\n", httpfile->path, httpfile->fname, httpfile->query);
-	write (netd, temp_str, strlen (temp_str));
+	if (httpfile->is_ssl) {
+		ssl_write(ssl_sock, (uint8_t *)temp_str, strlen(temp_str));
+	} else {
+		write (netd, temp_str, strlen (temp_str));
+	}
 	McDbPuts (temp_str);
     /* write (netd, "User-Agent: WebXpression / ver0.01 (X68000)\r\n", 48);    */
 	strcpy (temp_str, "Accept: */*\r\n");
-	write (netd, temp_str, strlen (temp_str));
+	if (httpfile->is_ssl) {
+		ssl_write(ssl_sock, (uint8_t *)temp_str, strlen(temp_str));
+	} else {
+		write (netd, temp_str, strlen (temp_str));
+	}
 	McDbPuts (temp_str);
 	sprintf (temp_str, "Host: %s\r\n", httpfile->hostname);
-	write (netd, temp_str, strlen (temp_str));
+	if (httpfile->is_ssl) {
+		ssl_write(ssl_sock, (uint8_t *)temp_str, strlen(temp_str));
+	} else {
+		write (netd, temp_str, strlen (temp_str));
+	}
 	McDbPuts (temp_str);
 #if	1
 	{
 		if (strncmp ("file://", httpfile->referer, 7)) {
 			sprintf (temp_str, "Referer: %s\r\n", httpfile->referer);
-			write (netd, temp_str, strlen (temp_str));
+			if (httpfile->is_ssl) {
+				ssl_write(ssl_sock, (uint8_t *)temp_str, strlen(temp_str));
+			} else {
+				write (netd, temp_str, strlen (temp_str));
+			}
 			McDbPuts (temp_str);
 		}
 	}
 #endif
-	write (netd, "\r\n", 2);
+	if (httpfile->is_ssl) {
+		ssl_write(ssl_sock, (uint8_t *)"\r\n", 2);
+	} else {
+		write (netd, "\r\n", 2);
+	}
 
 	McPuts ("レスポンスを待ちます...");
 
     /* ヘッダを１行づつ読み込む */
-	recvinit ();
-	recvline (netd, temp_str, 1024);
+	if (httpfile->is_ssl) {
+		recv_ssl_init ();
+		recvline_ssl(ssl_sock, temp_str, 1024);
+	} else {
+		recvinit ();
+		recvline (netd, temp_str, 1024);
+	}
 	if ((strncmp (temp_str, "HTTP/1.0 200", 12))
 	    && (strncmp (temp_str, "HTTP/1.1 200", 12))) {
 		McDbPuts (temp_str);
+		if (httpfile->is_ssl) {
+			ssl_free(ssl_sock);
+			ssl_ctx_free(ssl_ctx);
+		}
 		close (netd);	/* 接続の切断 */
 		return (ret);
 	}
@@ -151,7 +202,17 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 	(httpfile->time_stamp).tm_sec = NO_TIMESTAMP;
 
     /* 空行（ヘッダの終了）が来るまでループ */
-	while (recvline (netd, temp_str, 1024), strlen (temp_str) > 3) {
+	while (1) {
+		int res;
+		if (httpfile->is_ssl) {
+			res = recvline_ssl(ssl_sock, temp_str, 1024);
+		} else {
+			res = recvline (netd, temp_str, 1024);
+		}
+		if (res <= 3) {
+			break;
+		}
+
 		char temp_entity[256];
 
 		McDbPrintf ("HEAD > %s", temp_str);
@@ -172,6 +233,10 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 
 
 	if (req_mode == REQ_HEAD) {
+		if (httpfile->is_ssl) {
+			ssl_free(ssl_sock);
+			ssl_ctx_free(ssl_ctx);
+		}
 		close (netd);	/* 接続の切断 */
 
 		if ((httpfile->time_stamp).tm_sec == NO_TIMESTAMP) {
@@ -197,6 +262,10 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 		}
 		if (((int) (httpfile->content = malloc (alloc_size))) == 0) {
 			McPuts ("※ メモリが足りません\n");
+			if (httpfile->is_ssl) {
+				ssl_free(ssl_sock);
+				ssl_ctx_free(ssl_ctx);
+			}
 			close (netd);		/* 接続の切断 */
 			httpfile->content = NULL;
 			return (ret);
@@ -212,10 +281,14 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 
 	    /* ファイルの転送が完了するまでループ */
 		do {
-			s = read (netd, r, alloc_left);
+			if (httpfile->is_ssl) {
+				s = recv_ssl(ssl_sock, r, alloc_left);
+			} else {
+				s = read (netd, r, alloc_left);
+			}
 			if (s < 0) {
 				ret = GF_ERROR;
-				McPuts ("※ 受信エラーが発生しました\n");
+				McPrintf ("※ 受信エラーが発生しました: %d\n", s);
 				break;
 			}
 			read_size += s;
@@ -242,6 +315,10 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 			ret = AbortCheckGetFile ();
 		} while ((s > 0) && (ret == GF_SUCCESS));
 
+		if (httpfile->is_ssl) {
+			ssl_free(ssl_sock);
+			ssl_ctx_free(ssl_ctx);
+		}
 		if (ret != GF_SUCCESS) {
 			shutdown (netd, 0);	/* 受信したデータを受け取らず，すべて廃棄する */
 			shutdown (netd, 2);	/* connection を abortする */

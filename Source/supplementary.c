@@ -14,6 +14,7 @@
 #include <sys/socket.h>
 #include <x68k/dos.h>
 #include "WebXpression.h"
+#include "ssl.h"
 
 /****************************************************************************/
 
@@ -228,4 +229,78 @@ int recvremain(char *buff, size_t maxlen)
     } else {
         return 0;
     }
+}
+
+/****************************************************************************/
+
+static void *remainptr = NULL;
+static size_t remainlen = 0;
+
+void recv_ssl_init(void)
+{
+    recvinit();
+    remainptr = NULL;
+    remainlen = 0;
+}
+
+int recv_ssl(SSL *socket, void *buff, size_t maxlen)
+{
+    if (remainlen > 0) {
+        size_t len = remainlen < maxlen ? remainlen : maxlen;
+        memcpy(buff, remainptr, len);
+        remainptr = (char *)remainptr + len;
+        remainlen -= len;
+        return len;
+    }
+
+    uint8_t *ptr;
+    int res;
+    res = ssl_read(socket, &ptr);
+    if (res == SSL_CLOSE_NOTIFY) {
+        return 0;
+    } else if (res < 0) {
+        return res;
+    }
+    remainlen = res;
+    remainptr = ptr;
+    return recv_ssl(socket, buff, maxlen);
+}
+
+int recvline_ssl(SSL *socket, char *buff, size_t maxlen)
+{
+    char *p;
+    if (lineptr && (p = strchr(lineptr, '\n'))) {
+        size_t len = p - lineptr + 1;
+        if (len > maxlen - 1)
+            len = maxlen - 1;
+        memcpy(buff, lineptr, len);
+        buff[len] = '\0';
+        lineptr = p + 1;
+        return len;
+    }
+
+    if (lineptr) {
+        size_t len = strlen(lineptr);
+        if (len > maxlen - 1) {
+            len = maxlen - 1;
+            memcpy(buff, lineptr, len);
+            buff[len] = '\0';
+            lineptr += len;
+            return len;
+        }
+        memcpy(buff, lineptr, len);
+        buff[len] = '\0';
+        buff += len;
+        maxlen -= len;
+        lineptr = NULL;
+    }
+
+    ssize_t n = recv_ssl(socket, linebuf, LINEBUF_SIZE);
+    if (n > 0) {
+        linebuf[n] = '\0';
+        lineptr = linebuf;
+        lineend = linebuf + n;
+        return recvline_ssl(socket, buff, maxlen);
+    }
+    return -1;
 }
