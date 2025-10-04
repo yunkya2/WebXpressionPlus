@@ -24,8 +24,8 @@
 extern int cut_disp (void *, void *, int);
 
 /* スタックサイズとヒープサイズを指定 */
-int _stacksize = 32 * 1024;
-int _heapsize = 256 * 1024;
+int _stack_size = 32 * 1024;
+int _heap_size = 256 * 1024;
 
 static unsigned char t_option = 0;
 
