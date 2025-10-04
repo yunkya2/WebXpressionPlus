@@ -8,13 +8,35 @@ LD = $(CC)
 CFLAGS += -O3 -g -Iiconv -DICONV_ONLY_U2S
 LIBS += -lsocket
 
-OBJS = 	WebXpression.o Html2Xpression.o Plain2Xpression.o Httpfile.o \
+AXTLS_DIR = axtls
+AXTLS_INCLUDE = axtls-include
+
+CFLAGS += -I$(AXTLS_INCLUDE) -I$(AXTLS_DIR)/ssl -I$(AXTLS_DIR)/crypto
+$(AXTLS_DIR)/%.o: CFLAGS += -Wno-all
+
+OBJS = WebXpression.o Html2Xpression.o Plain2Xpression.o Httpfile.o \
 		DrawText.o put.o micro_console.o Image.o History.o \
 		GetFile.o  Config.o Date2Date.o \
 		WebCache.o \
 		cut_disp.o hook.o gifl.o Compress.o MpuCache.o data.o \
 		supplementary.o \
-		iconv/iconv_mini.o
+		iconv/iconv_mini.o \
+		$(addprefix $(AXTLS_DIR)/, \
+		ssl/asn1.o \
+		ssl/loader.o \
+		ssl/tls1.o \
+		ssl/tls1_svr.o \
+		ssl/tls1_clnt.o \
+		ssl/x509.o \
+		crypto/aes.o \
+		crypto/bigint.o \
+		crypto/crypto_misc.o \
+		crypto/hmac.o \
+		crypto/md5.o \
+		crypto/rsa.o \
+		crypto/sha1.o \
+		crypto/sha256.o \
+		)
 
 WebXpression.x:	$(OBJS)
 	$(LD) $^ -o $@ $(LIBS)
