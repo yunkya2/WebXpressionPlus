@@ -1,4 +1,4 @@
-TARGET = WebXpression.x
+TARGET = WebXpressionPlus.x
 
 all: $(TARGET)
 
@@ -38,7 +38,7 @@ OBJS = WebXpression.o Html2Xpression.o Plain2Xpression.o Httpfile.o \
 		crypto/sha256.o \
 		)
 
-WebXpression.x:	$(OBJS)
+WebXpressionPlus.x:	$(OBJS)
 	$(LD) $^ -o $@ $(LIBS)
 	cp $@ ..
 

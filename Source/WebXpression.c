@@ -59,8 +59,9 @@ enum {
 static void usage (void)
 {
 	puts (
-		     "WWW ブラウザ WebXpression.x ver0.46\n"
+		     "WWW ブラウザ WebXpressionPlus.x ver0.46.1\n"
 		     "		programmed by Mitsuky <FreeSoftware>\n"
+		     "		UTF-8, TLS support by Yuichi Nakamura (@yunkya2)\n"
 		     "Hyper Text Transfer Protocol に従って HTML ファイルを表示します\n"
 		     "ネットワーク上のファイルを表示する場合、TCP/IP ドライバが必要です\n"
 		     "使用法 : WebXpression [option] [URL]\n"
@@ -1051,6 +1052,22 @@ static void Init2 (void)
 	sp = _iocs_b_super (0);
 	cut_disp (&WebPage2, (void *) (TEXTVRAM + (512 + 8 + 8) / 8 + 2 * 0x20000), 128);
 	cut_disp (&WebPage3, (void *) (TEXTVRAM + (512 + 8 + 8) / 8 + 3 * 0x20000), 128);
+	{
+		struct iocs_fntbuf font;
+			for (int i = 0; i < 4; i++) {
+			_iocs_fntget(8, "PLUS"[i] + 0xf000, &font);
+			font.yl = 8;
+			for (int j = 0; j < 8; j++)
+				font.buffer[j] |= font.buffer[j] >> 1;
+			_iocs_tcolor(8);
+			_iocs_textput(728 + i * 8, 49, &font);
+			for (int j = 0; j < 8; j++)
+				font.buffer[j] ^= 0xff;
+			_iocs_tcolor(4);
+			_iocs_textput(728 + i * 8, 49, &font);
+		}
+		_iocs_tcolor(1);
+	}
 	_iocs_b_super (sp);
 
 	_dos_intvcs (0xfff1, InterruptAbort);	/* _CTRLVC */
@@ -1112,7 +1129,7 @@ int main (int argc, char *argv[])
 	int i;
 	int slash_flag = 0;
 	char *fname = NULL;
-	char *cnf_fname = "WebXpression.cnf";
+	char *cnf_fname = "WebXpressionPlus.cnf";
 	int exit_code = 0;
 	char temp_fname[92 + 7];
 
