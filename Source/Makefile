@@ -5,7 +5,7 @@ all: $(TARGET)
 CROSS_COMPILE ?= m68k-xelf-
 CC = $(CROSS_COMPILE)gcc
 LD = $(CC)
-CFLAGS += -O3 -g -Iiconv -DICONV_ONLY_U2S
+CFLAGS += -O3 -g -Iiconv_mini -DICONV_ONLY_U2S
 LIBS += -lsocket
 
 AXTLS_DIR = axtls
@@ -20,7 +20,7 @@ OBJS = WebXpression.o Html2Xpression.o Plain2Xpression.o Httpfile.o \
 		WebCache.o \
 		cut_disp.o hook.o gifl.o Compress.o MpuCache.o data.o \
 		supplementary.o \
-		iconv/iconv_mini.o \
+		iconv_mini/iconv_mini.o \
 		$(addprefix $(AXTLS_DIR)/, \
 		ssl/asn1.o \
 		ssl/loader.o \
