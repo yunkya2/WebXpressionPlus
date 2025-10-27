@@ -1,3 +1,6 @@
 [submodule "Source/axtls"]
 	path = Source/axtls
 	url = https://github.com/yunkya2/axtls-x68k.git
+[submodule "Source/iconv_mini"]
+	path = Source/iconv_mini
+	url = https://github.com/yunkya2/iconv_mini.git
