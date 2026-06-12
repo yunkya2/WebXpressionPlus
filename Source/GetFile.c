@@ -28,6 +28,10 @@ extern int AbortCheckGetFile (void);
 
 #include "ssl.h"
 
+#ifndef SOCK_STREAM_TLS
+#define SOCK_STREAM_TLS		(SOCK_STREAM + 8)
+#endif
+
 extern void Date2Date (char *, struct tm *);
 
 enum {
@@ -80,7 +84,14 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 
 
     /* ソケットを作成する */
-	netd = socket (AF_INET, SOCK_STREAM, 0);
+	netd = -1;
+	if (httpfile->is_ssl) {
+		netd = socket (AF_INET, SOCK_STREAM_TLS, 0);
+		httpfile->is_ssl = 0;	/* TLS対応ソケットが作成できたらアプリ側でのSSL対応は不要 */
+	}
+	if (netd < 0) {
+		netd = socket (AF_INET, SOCK_STREAM, 0);
+	}
 	if (netd < 0) {
 		McPuts ("※ ソケットが作成できませんでした\n");
 		return (ret);
