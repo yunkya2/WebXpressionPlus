@@ -59,7 +59,7 @@ enum {
 static void usage (void)
 {
 	puts (
-		     "WWW ブラウザ WebXpressionPlus.x ver0.46.1\n"
+		     "WWW ブラウザ WebXpressionPlus.x ver" GIT_REPO_VERSION "\n"
 		     "		programmed by Mitsuky <FreeSoftware>\n"
 		     "		UTF-8, TLS support by Yuichi Nakamura (@yunkya2)\n"
 		     "Hyper Text Transfer Protocol に従って HTML ファイルを表示します\n"

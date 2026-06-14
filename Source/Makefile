@@ -5,8 +5,10 @@ all: $(TARGET)
 CROSS_COMPILE ?= m68k-xelf-
 CC = $(CROSS_COMPILE)gcc
 LD = $(CC)
-CFLAGS += -O3 -g -Iiconv_mini -DICONV_ONLY_U2S
+CFLAGS += -O3 -g -Iiconv_mini -DICONV_ONLY_U2S -DGIT_REPO_VERSION=\"$(GIT_REPO_VERSION)\"
 LIBS += -lsocket
+
+GIT_REPO_VERSION=$(shell git describe --tags --always)
 
 AXTLS_DIR = axtls
 AXTLS_INCLUDE = axtls-include
