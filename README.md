@@ -1,4 +1,4 @@
-# WebXpressionPlus.x ver0.46.2
+# WebXpressionPlus.x ver0.46.3
 
 - WebXpression.x programmed by Mitsuky
 - UTF-8, TLS support by Yuichi Nakamura (@yunkya2)
@@ -18,6 +18,8 @@
 X680x0 で、計測技研製 TCP/IP ドライバやその互換ドライバを用いたネットワーク接続が可能な環境が必要です。
 
 TLS プロトコルは X680x0 にとって非常に重い処理なので、正常な動作のためには各種設定のチューニングが不可欠です。具体的には以下の設定を行ってください。
+
+※ 「[イーサネットじょい君](https://github.com/yunkya2/joynetd)」「[WiFi+PCMパイルダー](https://github.com/yunkya2/pilederx_wifipcm)」を使用する場合はチューニングは不要です。また、WiFi+PCMパイルダーではTLSソケット機能を用いてX68kに負荷をかけずにTLS通信が利用できます。
 
 * CONFIG.SYS
   * TCP/IPドライバを動かすために必要な `PROCESS=` 行を以下の設定にします
