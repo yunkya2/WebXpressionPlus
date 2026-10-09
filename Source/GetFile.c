@@ -71,6 +71,7 @@ void ShowMouse (void)
 static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 {
 	int netd;
+	int use_software_tls;
 	struct sockaddr_in addr;
 	struct hostent *h;
 	char temp_str[1024];
@@ -85,9 +86,12 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 
     /* ソケットを作成する */
 	netd = -1;
-	if (httpfile->is_ssl) {
+	use_software_tls = httpfile->is_ssl;
+	if (use_software_tls) {
 		netd = socket (AF_INET, SOCK_STREAM_TLS, 0);
-		httpfile->is_ssl = 0;	/* TLS対応ソケットが作成できたらアプリ側でのSSL対応は不要 */
+		if (netd >= 0) {
+			use_software_tls = 0;	/* TLS対応ソケット側で暗号化する */
+		}
 	}
 	if (netd < 0) {
 		netd = socket (AF_INET, SOCK_STREAM, 0);
@@ -123,7 +127,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
     SSL_EXTENSIONS *ext = NULL;
     SSL *ssl_sock = NULL;
 
-	if (httpfile->is_ssl) {
+	if (use_software_tls) {
 		struct iocs_time tm1, tm2;
 		tm1 = _iocs_ontime();
 		McPrintf ("HTTPSで接続します\n");
@@ -147,7 +151,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 		sprintf (temp_str, "HEAD %s%s%s HTTP/1.0\r\n", httpfile->path, httpfile->fname, httpfile->query);
 	else
 		sprintf (temp_str, "GET %s%s%s HTTP/1.0\r\n", httpfile->path, httpfile->fname, httpfile->query);
-	if (httpfile->is_ssl) {
+	if (use_software_tls) {
 		ssl_write(ssl_sock, (uint8_t *)temp_str, strlen(temp_str));
 	} else {
 		write (netd, temp_str, strlen (temp_str));
@@ -155,14 +159,14 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 	McDbPuts (temp_str);
     /* write (netd, "User-Agent: WebXpression / ver0.01 (X68000)\r\n", 48);    */
 	strcpy (temp_str, "Accept: */*\r\n");
-	if (httpfile->is_ssl) {
+	if (use_software_tls) {
 		ssl_write(ssl_sock, (uint8_t *)temp_str, strlen(temp_str));
 	} else {
 		write (netd, temp_str, strlen (temp_str));
 	}
 	McDbPuts (temp_str);
 	sprintf (temp_str, "Host: %s\r\n", httpfile->hostname);
-	if (httpfile->is_ssl) {
+	if (use_software_tls) {
 		ssl_write(ssl_sock, (uint8_t *)temp_str, strlen(temp_str));
 	} else {
 		write (netd, temp_str, strlen (temp_str));
@@ -172,7 +176,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 	{
 		if (strncmp ("file://", httpfile->referer, 7)) {
 			sprintf (temp_str, "Referer: %s\r\n", httpfile->referer);
-			if (httpfile->is_ssl) {
+			if (use_software_tls) {
 				ssl_write(ssl_sock, (uint8_t *)temp_str, strlen(temp_str));
 			} else {
 				write (netd, temp_str, strlen (temp_str));
@@ -181,7 +185,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 		}
 	}
 #endif
-	if (httpfile->is_ssl) {
+	if (use_software_tls) {
 		ssl_write(ssl_sock, (uint8_t *)"\r\n", 2);
 	} else {
 		write (netd, "\r\n", 2);
@@ -190,7 +194,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 	McPuts ("レスポンスを待ちます...");
 
     /* ヘッダを１行づつ読み込む */
-	if (httpfile->is_ssl) {
+	if (use_software_tls) {
 		recv_ssl_init ();
 		recvline_ssl(ssl_sock, temp_str, 1024);
 	} else {
@@ -200,7 +204,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 	if ((strncmp (temp_str, "HTTP/1.0 200", 12))
 	    && (strncmp (temp_str, "HTTP/1.1 200", 12))) {
 		McDbPuts (temp_str);
-		if (httpfile->is_ssl) {
+		if (use_software_tls) {
 			ssl_free(ssl_sock);
 			ssl_ctx_free(ssl_ctx);
 		}
@@ -218,7 +222,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
     /* 空行（ヘッダの終了）が来るまでループ */
 	while (1) {
 		int res;
-		if (httpfile->is_ssl) {
+		if (use_software_tls) {
 			res = recvline_ssl(ssl_sock, temp_str, 1024);
 		} else {
 			res = recvline (netd, temp_str, 1024);
@@ -255,7 +259,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 
 
 	if (req_mode == REQ_HEAD) {
-		if (httpfile->is_ssl) {
+		if (use_software_tls) {
 			ssl_free(ssl_sock);
 			ssl_ctx_free(ssl_ctx);
 		}
@@ -284,7 +288,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 		}
 		if (((int) (httpfile->content = malloc (alloc_size))) == 0) {
 			McPuts ("※ メモリが足りません\n");
-			if (httpfile->is_ssl) {
+			if (use_software_tls) {
 				ssl_free(ssl_sock);
 				ssl_ctx_free(ssl_ctx);
 			}
@@ -303,7 +307,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 
 	    /* ファイルの転送が完了するまでループ */
 		do {
-			if (httpfile->is_ssl) {
+			if (use_software_tls) {
 				s = recv_ssl(ssl_sock, r, alloc_left);
 			} else {
 				s = read (netd, r, alloc_left);
@@ -337,7 +341,7 @@ static signed int GetFromNetwork (HTTPFILE * httpfile, char req_mode)
 			ret = AbortCheckGetFile ();
 		} while ((s > 0) && (ret == GF_SUCCESS));
 
-		if (httpfile->is_ssl) {
+		if (use_software_tls) {
 			ssl_free(ssl_sock);
 			ssl_ctx_free(ssl_ctx);
 		}
